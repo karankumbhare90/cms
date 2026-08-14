@@ -1,0 +1,66 @@
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  theme: {
+    extend: {
+      container: {
+        center: true,
+        padding: '16',
+      },
+      colors: {
+        color1: '#e2e8f0',
+        color2: '#cbd5e1',
+        color3: '#f8fafc',
+        color4: '#263550',
+        color5: '#172033',
+        color6: '#0b1220',
+      },
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+  safelist: [
+    'facebook-icon',
+    'messenger-icon',
+    'linkedin-icon',
+    'twitter-icon',
+    'instagram-icon',
+    'bg-c1',
+    'bg-c2',
+    'bg-c3',
+    'bg-c4',
+    'bg-c5',
+    'bg-c6',
+    'bg-c7',
+    'bg-c8',
+    'adr-info',
+    'address-footer',
+    'address',
+    'padding-top-0',
+    'padding-bottom-0',
+    'padding-top-bottom-0',
+    'padding-top-20',
+    'padding-bottom-20',
+    'padding-top-bottom-20',
+    'padding-top-40',
+    'padding-bottom-40',
+    'padding-top-bottom-40',
+    'padding-top-56',
+    'padding-bottom-56',
+    'padding-top-bottom-56',
+    'padding-top-80',
+    'padding-bottom-80',
+    'padding-top-bottom-80',
+    'content-wrap-margin-top-0',
+    'z-[-1]',
+    'padding-top-32',
+    'padding-bottom-32',
+    'padding-top-bottom-32',
+    'bg-gradient',
+  ],
+}
+
+export default config

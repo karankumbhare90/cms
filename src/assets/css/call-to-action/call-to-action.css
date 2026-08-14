@@ -1,0 +1,7 @@
+@media (max-width: 991px) {
+  .call-to-action.image-present {
+    .inner-wrap {
+      @apply !pt-0;
+    }
+  }
+}

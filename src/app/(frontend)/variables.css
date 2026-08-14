@@ -1,0 +1,331 @@
+:root {
+  --color-1: #ffffff;
+  /* white */
+  --color-2: #e5f1fc;
+  /* off white */
+  --color-3: #f7f9fb;
+  /* blue pale */
+  --color-4: #009bde;
+  /* green */
+  --color-5: #0a2a43;
+  /* blue dark */
+  --color-6: #6fa32e;
+  /* green dark */
+
+  --body-bg-color: #ffffff;
+
+  /** global text color */
+  --fonts-color-base: #4a6580;
+
+  /** title font-color light bg */
+  --title-colour-light-bg: #1a3550;
+
+  /** title font-color dark bg */
+  --title-colour-dark-bg: #ffffff;
+
+  --font-size-base: 1rem;
+  --font-size-base-sm: 0.8125rem;
+
+  /* Mobile typography (sm breakpoint) */
+  --h1-size-sm: 2rem;
+  /* 32px */
+  --h2-size-sm: 1.625rem;
+  /* 26px */
+  --h3-size-sm: 1.25rem;
+  /* 20px */
+  --h4-size-sm: 1.0625rem;
+  /* 17px */
+  --h5-size-sm: 1.0625rem;
+  /* 17px - follows H4 */
+  --h6-size-sm: 1.0625rem;
+  /* 17px - follows H4 */
+  --p-size-sm: 1rem;
+  /* 16px - Body Large */
+
+  /* Tablet typography (md breakpoint) */
+  --h1-size-md: 2.5rem;
+  /* 40px */
+  --h2-size-md: 1.875rem;
+  /* 30px */
+  --h3-size-md: 1.375rem;
+  /* 22px */
+  --h4-size-md: 1.125rem;
+  /* 18px */
+  --h5-size-md: 1.125rem;
+  /* 18px - follows H4 */
+  --h6-size-md: 1.125rem;
+  /* 18px - follows H4 */
+  --p-size-md: 1.0625rem;
+  /* 17px - Body Large */
+
+  /* Desktop typography (>= lg breakpoint) */
+  --h1-size: 3rem;
+  /* 48px */
+  --h2-size: 2.25rem;
+  /* 36px */
+  --h3-size: 1.5rem;
+  /* 24px */
+  --h4-size: 1.25rem;
+  /* 20px */
+  --h5-size: 1.25rem;
+  /* 20px - follows H4 */
+  --h6-size: 1.25rem;
+  /* 20px - follows H4 */
+  --p-size: 1.125rem;
+  /* 18px - Body Large */
+
+  /* Extra Large typography (xl breakpoint) */
+  --h1-size-xl: 4rem;
+  /* 64px */
+  --h2-size-xl: 3rem;
+  /* 48px */
+  --h3-size-xl: 2rem;
+  /* 32px */
+  --h4-size-xl: 1.5rem;
+  /* 24px */
+  --h5-size-xl: 1.5rem;
+  /* 24px - follows H4 */
+  --h6-size-xl: 1.5rem;
+  /* 24px - follows H4 */
+  --p-size-xl: 1.25rem;
+  /* 20px - Body Large */
+
+  --h1-line-height: 1.1;
+  --h2-line-height: 1.1;
+  --h3-line-height: 1.1;
+  --h4-line-height: 1.2;
+  --h5-line-height: 1.1;
+  --h6-line-height: 1.4;
+  --p-line-height: 1.75;
+
+  --h1-font-weight: 700;
+  --h2-font-weight: 700;
+  --h3-font-weight: 700;
+  --h4-font-weight: 600;
+  --h5-font-weight: 600;
+  --h6-font-weight: 600;
+  --p-font-weight: 300;
+
+  --spacing-xs: 0.5rem;
+  --spacing-s: 1rem;
+  --spacing-m: 1.5rem;
+  --spacing-l: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-xxl: 4rem;
+  --spacing-xxxl: 6rem;
+  --spacing-xxxxl: 7.5rem;
+
+  --content-wrap-spacing: 3rem;
+  --content-wrap-spacing-sm: var(--spacing-l);
+
+  --spacing-xs-sm: 0.5rem;
+  --spacing-s-sm: 1rem;
+  --spacing-m-sm: 1.5rem;
+  --spacing-xl-sm: 2rem;
+  --rte-title-top-space: 3rem;
+  --rte-title-top-space-sm: 2rem;
+  --large-text-bold-font-size: 1.25rem;
+  --medium-text-bold-font-size: 1.125rem;
+  --normal-text-bold-font-size: 1rem;
+  --small-text-bold-font-size: 0.875rem;
+
+  --large-text-line-height: 1.75rem;
+  --medium-text-line-height: 1.75rem;
+  --normal-text-line-height: 1.5rem;
+  --small-text-line-height: 1.25rem;
+
+  --description-text-font: 'Montserrat', sans-serif;
+  --description-text-size: 18px;
+  --description-text-font-weight: 300;
+  --description-text-font-color: var(--fonts-color-base);
+  --description-text-size-sm: 16px;
+  /** Button style base */
+  --button-fontsize-base: 1rem;
+  --button-fontsize-lg: 1.125rem;
+  --button-fontsize-xl: 1.25rem;
+
+  /** Button style primary */
+  --btn-primary-border-color: var(--color-4);
+  --btn-primary-height: 2.625rem;
+  --btn-primary-font-weight: 700;
+  --btn-primary-text-color: var(--color-1);
+  --btn-primary-border-radius: 0.75rem;
+  --btn-primary-bg-color: var(--color-4);
+  /** hover */
+  --btn-primary-text-color-hover: var(--color-1);
+  --btn-primary-bg-color-hover: var(--color-4);
+  --btn-primary-border-color-hover: var(--color-4);
+
+  /** Button style secondary */
+  --btn-secondary-border-color: var(--color-4);
+  --btn-secondary-height: 2.625rem;
+  --btn-secondary-font-weight: 700;
+  --btn-secondary-text-color: var(--color-4);
+  --btn-secondary-border-radius: 0.75rem;
+  --btn-secondary-bg-color: transparent;
+  /** hover */
+  --btn-secondary-text-color-hover: var(--color-4);
+  --btn-secondary-bg-color-hover: transparent;
+  --btn-secondary-border-color-hover: var(--color-4);
+
+  /** Button style primary when dark bg colour */
+  --btn-primary-border-color-dark-bg: var(--color-1);
+  --btn-primary-height-dark-bg: 2.625rem;
+  --btn-primary-font-weight-dark-bg: 500;
+  --btn-primary-text-color-dark-bg: var(--title-colour-light-bg);
+  --btn-primary-border-radius-dark-bg: 0.75rem;
+  --btn-primary-bg-color-dark-bg: var(--color-1);
+  /** hover */
+  --btn-primary-text-color-hover-dark-bg: var(--fonts-color-base);
+  --btn-primary-bg-color-hover-dark-bg: var(--color-1);
+  --btn-primary-border-color-hover-dark-bg: var(--color-1);
+
+  /** Button style secondary when dark bg colour  */
+  --btn-secondary-border-color-dark-bg: var(--color-1);
+  --btn-secondary-height-dark-bg: 2.625rem;
+  --btn-secondary-font-weight-dark-bg: 500;
+  --btn-secondary-text-color-dark-bg: var(--color-1);
+  --btn-secondary-border-radius-dark-bg: 0.75rem;
+  --btn-secondary-bg-color-dark-bg: transparent;
+  /** hover */
+  --btn-secondary-text-color-hover-dark-bg: var(--color-1);
+  --btn-secondary-bg-color-hover-dark-bg: transparent;
+  --btn-secondary-border-color-hover-dark-bg: var(--color-1);
+
+  /* Page Hero Slider / Banner - leave space till image loaded*/
+  --hero-bottom-space-xxlarge: 28.25%;
+  --hero-bottom-space-xlarge: 37.52%;
+  --hero-bottom-space-large: 40.88%;
+  --hero-bottom-space-medium: 50.04%;
+  --hero-bottom-space-xmedium: 60.54%;
+  --hero-bottom-space-small: 78.22%;
+  --hero-bottom-space-xsmall: 126.34%;
+
+  /*Bread Crumbs*/
+  --breadcrumb-bg-color: transparent;
+  --breadcrumb-color: var(--title-colour-light-bg);
+  --breadcrumb-color-hover: var(--color-4);
+  --breadcrumb-separator: '>';
+
+  /*breadcrumb dark colour*/
+  --breadcrumb-color-dark-bg: var(--color-1);
+  --breadcrumb-color-hover-dark-bg: var(--color-1);
+
+  /*page banner top space*/
+  --banner-top-space-sm: calc(50% + 2.1875rem);
+  --banner-top-space-md: calc(50% + 2.1875rem);
+  --banner-top-space-lg: calc(50% + 0.4375rem);
+  --banner-top-space-xl: calc(50% + 0.4375rem);
+  --banner-top-space-2xl: calc(50% + 0.4375rem);
+  --banner-top-space-3xl: calc(50% + 0.4375rem);
+
+  /* Page Banner - default medium leaver space till image loaded*/
+  --banner-bottom-space-xxlarge: 26.08%;
+  --banner-bottom-space-xlarge: 23.63%;
+  --banner-bottom-space-large: 27.01%;
+  --banner-bottom-space-medium: 31.52%;
+  --banner-bottom-space-xmedium: 38.14%;
+  --banner-bottom-space-small: 56.28%;
+  --banner-bottom-space-xsmall: 103.73%;
+
+  /* Page Banner - takeover*/
+  --takeover-banner-bottom-space-xxlarge: 31.55%;
+  --takeover-banner-bottom-space-xlarge: 40.65%;
+  --takeover-banner-bottom-space-large: 46.46%;
+  --takeover-banner-bottom-space-medium: 54.21%;
+  --takeover-banner-bottom-space-xmedium: 65.59%;
+  --takeover-banner-bottom-space-small: 84.74%;
+  --takeover-banner-bottom-space-xsmall: 113.04%;
+
+  /* Page Banner - short*/
+  --short-banner-bottom-space-xxlarge: 16.79%;
+  --short-banner-bottom-space-xlarge: 19.13%;
+  --short-banner-bottom-space-large: 21.29%;
+  --short-banner-bottom-space-medium: 28.18%;
+  --short-banner-bottom-space-xmedium: 32.41%;
+  --short-banner-bottom-space-small: 41.55%;
+  --short-banner-bottom-space-xsmall: 62.08%;
+
+  /* Call to action*/
+  --cta-top-space: 3rem;
+  --cta-bottom-space: 3rem;
+
+  /*Accordion*/
+  --accordion-heading-color: var(--title-colour-light-bg);
+  --accordion-description-color: var(--fonts-color-base);
+  --accordion-active-border-color: var(--color-4);
+  --accordion-active-section-bg-color: var(--color-1);
+  --accordion-active-heading-bg-color: var(--color-1);
+  --accordion-img-mb: 48px;
+  --accordion-img-pt: 48px;
+
+  /*gallery grid*/
+  --gallery-grid-gallery-griditem: 2rem;
+
+  /*PODs*/
+  --pod-title-and-description-color-with-dark-bg: var(--color-1);
+  --pod-for-above-section-pod-title-top-spacing: var(--spacing-l);
+  --pod-for-box-section-pod-title-color: var(--color-1);
+  --pod-for-box-section-pod-description-color: var(--color-1);
+
+  /* Forms*/
+  /* <input> background color*/
+  --input-bg: #ffffff;
+
+  /* <input> background color autofill highlight*/
+  --input-color-autofill: #323f53;
+
+  /* Text color for <input>*/
+  --input-color: var(--fonts-color-base);
+
+  /* <input> border color*/
+  --input-border: #e5e7eb;
+  --input-border-validation-error: #ff0000;
+
+  /* Default `.form-control` height*/
+  --input-heightbase: 3rem;
+
+  /* .form-group` margin*/
+  --form-group-margin-botom: 48px;
+
+  /*Error handling*/
+  --validation-error-font-size: 14px;
+  --validation-error-font-weight: 400;
+  --state-warning-text: #ff0000;
+
+  --generic-text-color: #ffffff;
+
+  /* Contact form and Contact detail*/
+  --sidebar-item-bottom: var(--spacing-s);
+  --sidebar-item-border: #e5e7eb;
+  --sidebar-item-border-radius: 4px;
+  --sidebar-item-head-font-size: 16px;
+  --sidebar-item-head-font-weight: 500;
+  --sidebar-item-head-bg-color: var(--color-5);
+  --sidebar-item-head-font-color: var(--color-1);
+  --sidebar-item-head-lr-spacing: var(--spacing-m);
+  --sidebar-item-head-tb-spacing: var(--spacing-m-sm);
+  --sidebar-item-body-textcolor: var(--title-colour-light-bg);
+  --sidebar-item-body-textcolor-hover: var(--color-5);
+
+  --single-blogtitle: var(--title-colour-light-bg);
+  --single-blog-content-btn-colour: var(--color-4);
+
+  /* blog page sidebar*/
+  --blog-sidebar-accor-border-colour: #e5e7eb;
+  --blog-sidebar-accor-heading-colour: var(--title-colour-light-bg);
+  --blog-sidebar-accor-heading-hovercolour: var(--color-4);
+
+  --grid-blog-cate-item-bg-colour: var(--color-5);
+  --grid-blog-cate-item-colour: var(--color-1);
+  --grid-blog-content-date-colour: var(--color-1);
+  --grid-blog-content-author-colour: var(--color-1);
+  --grid-blog-content-title-colour: var(--color-1);
+
+  --vertical-blog-content-date-colour: var(--title-colour-light-bg);
+  --vertical-blog-content-author-colour: var(--title-colour-light-bg);
+  --vertical-blog-content-title-colour: var(--title-colour-light-bg);
+  --vertical-listing-item-bg-colour: var(--color-8);
+  --vertical-blog-content-item-colour: var(--color-5);
+  --vertical-blog-content-readmore-colour: #1a3550;
+}

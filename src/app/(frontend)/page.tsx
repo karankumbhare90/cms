@@ -1,59 +1,63 @@
 import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
 import { getPayload } from 'payload'
 import React from 'react'
-import { fileURLToPath } from 'url'
-
 import config from '@/payload.config'
-import './styles.css'
+import { notFound } from 'next/navigation'
+import { RenderBlocks } from '@/components/RenderBlocks'
+
+export async function generateMetadata() {
+  const payload = await getPayload({ config })
+  const result = await payload.find({
+    collection: 'pages',
+    where: {
+      pageType: {
+        equals: 'home',
+      },
+    },
+    limit: 1,
+  })
+
+  const page = result.docs[0]
+  if (!page) return {}
+
+  return {
+    title: page.seo?.metaTitle || page.title,
+    description: page.seo?.metaDescription || '',
+  }
+}
 
 export default async function HomePage() {
-  const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+  const result = await payload.find({
+    collection: 'pages',
+    where: {
+      pageType: {
+        equals: 'home',
+      },
+    },
+    limit: 1,
+  })
 
-  return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </a>
+  const page = result.docs[0]
+
+  if (!page) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Welcome to SilverPoint</h1>
+          <p className="text-xl">Please set up a Home Page in the Payload Admin panel.</p>
         </div>
       </div>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
-        </a>
-      </div>
+    )
+  }
+
+  return (
+    <div className="pt-20">
+      {' '}
+      {/* Add padding for fixed header */}
+      <RenderBlocks blocks={page.layout as any[]} />
     </div>
   )
 }
