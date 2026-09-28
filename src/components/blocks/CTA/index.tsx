@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { getThemeClass } from '@/utils/theme'
 import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
@@ -11,14 +12,34 @@ export const CTA: React.FC<any> = ({
   backgroundImage,
   image,
   imagePosition = 'left',
+  contentWidth = 'wide',
 }) => {
   const themeClass = getThemeClass(settings)
   const textAlignment = getTextAlignment(settings)
   const bgUrl = backgroundImage?.url
   const imgUrl = image?.url
-  const customClass = settings.customClass || ''
+  const customClass = settings?.customClass || ''
+  const textAlign = settings?.textAlign || 'left'
 
   const isImageRight = imagePosition === 'right'
+
+  // Width class: full=12/12, wide=8/12, half=6/12
+  const widthClass =
+    contentWidth === 'full'
+      ? 'w-full'
+      : contentWidth === 'half'
+        ? 'w-full lg:w-6/12'
+        : 'w-full lg:w-8/12' // wide (default)
+
+  // Margin alignment — only applies when not full width
+  const marginClass =
+    contentWidth === 'full'
+      ? ''
+      : textAlign === 'center'
+        ? 'mx-auto'
+        : textAlign === 'right'
+          ? 'ml-auto'
+          : 'mr-auto' // left (default)
 
   return (
     <section
@@ -39,9 +60,13 @@ export const CTA: React.FC<any> = ({
           <div
             className={`w-full lg:w-1/2 relative lg:absolute ${isImageRight ? 'right-0' : 'left-0'} top-0 h-[400px] lg:h-full`}
           >
-            <img
+            <Image
               src={imgUrl}
               alt={image?.alt || 'Call to action image'}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              quality={75}
+              loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
@@ -50,9 +75,9 @@ export const CTA: React.FC<any> = ({
           <div
             className={`flex flex-wrap items-center ${imgUrl ? (isImageRight ? 'lg:justify-start' : 'lg:justify-end') : 'items-center'}`}
           >
-            {/* Content */}
+            {/* Content — width + margin driven by contentWidth & textAlign settings */}
             <div
-              className={`w-full flex flex-col justify-center ${imgUrl ? `lg:w-1/2 pt-8 sm:pt-10 ${isImageRight ? 'lg:pr-8 xl:pr-10' : 'lg:pl-8 xl:pl-10'}` : 'items-center'}`}
+              className={`${widthClass} ${marginClass} flex flex-col justify-center ${imgUrl ? `pt-8 sm:pt-10 ${isImageRight ? 'lg:pr-8 xl:pr-10' : 'lg:pl-8 xl:pl-10'}` : ''}`}
             >
               <div className="w-full">
                 <IntroText introText={introText} />

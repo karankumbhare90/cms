@@ -1,0 +1,27 @@
+.hero-content-wrapper .intro-text h1,
+.hero-content-wrapper .intro-text h2,
+.hero-content-wrapper .intro-text h3 {
+  color: white;
+  white-space: pre-line;
+  margin-bottom: 24px;
+}
+.hero-content-wrapper .description-wrap p,
+.hero-content-wrapper .rich-text-content p {
+  font-size: 17px;
+  color: rgba(219, 234, 254, 0.8);
+  line-height: 1.75;
+  margin-bottom: 40px;
+  max-width: 36rem;
+}
+
+.hero-content-wrapper .btn.button-secondary {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: transparent;
+}
+.hero-content-wrapper .btn.button-secondary:hover,
+.hero-content-wrapper .btn.button-secondary:focus {
+  border-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white !important;
+}

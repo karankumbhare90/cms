@@ -106,6 +106,16 @@ export const Pod: Block = {
                 { label: '6', value: '6' },
               ],
             },
+            {
+              name: 'iconMode',
+              type: 'checkbox',
+              defaultValue: false,
+              label: 'Icon Mode',
+              admin: {
+                description:
+                  'Display images as small icons (32×32px) with padding and rounded shadow container',
+              },
+            },
           ],
         },
       ],

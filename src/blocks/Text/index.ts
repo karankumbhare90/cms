@@ -19,7 +19,23 @@ export const Text: Block = {
         },
         {
           label: 'Settings',
-          fields: [blockSettings],
+          fields: [
+            blockSettings,
+            {
+              name: 'contentWidth',
+              type: 'select',
+              defaultValue: 'wide',
+              label: 'Content Width',
+              admin: {
+                description: 'Controls the width of the text content block',
+              },
+              options: [
+                { label: 'Full (12/12)', value: 'full' },
+                { label: 'Wide (8/12)', value: 'wide' },
+                { label: 'Half (6/12)', value: 'half' },
+              ],
+            },
+          ],
         },
       ],
     },

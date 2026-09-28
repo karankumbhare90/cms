@@ -65,6 +65,12 @@ export const LogoGrid: Block = {
               admin: {
                 condition: (_, siblingData) => !siblingData.enableCarousel,
               }
+            },
+            {
+              name: 'enableGridBorder',
+              type: 'checkbox',
+              defaultValue: false,
+              label: 'Enable Grid Border',
             }
           ],
         },

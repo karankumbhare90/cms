@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useRef } from 'react'
+import Image from 'next/image'
 import { getThemeClass } from '@/utils/theme'
 import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
@@ -46,21 +47,25 @@ const CounterItem = ({ item }: { item: any }) => {
   return (
     <div
       ref={ref}
-      className="flex flex-col items-center text-center p-6 bg-white/5 rounded-2xl shadow-lg border border-white/10 backdrop-blur-sm transition-transform hover:-translate-y-2"
+      className="flex flex-col items-center text-center p-6 bg-white/5 rounded-2xl shadow-lg border border-white/10 backdrop-blur-sm transition-transform hover:-translate-y-2 gap-2.5"
     >
       {item.image?.url && (
-        <img
+        <Image
           src={item.image.url}
           alt={item.image.alt || 'Icon'}
+          width={64}
+          height={64}
+          quality={80}
+          loading="lazy"
           className="w-16 h-16 mb-4 object-contain drop-shadow-md"
         />
       )}
-      <div className="text-4xl md:text-5xl font-black mb-2 text-blue-500 drop-shadow-sm">
+      <div className="text-4xl md:text-5xl font-black text-blue-500 drop-shadow-sm">
         {isNumber ? count : item.text}
         {item.posttext && <span className="ml-1 text-2xl font-bold">{item.posttext}</span>}
       </div>
       {item.description && (
-        <p className="text-gray-600 dark:text-gray-300 font-medium">{item.description}</p>
+        <p className="mt-0 text-gray-600 dark:text-gray-300 font-medium">{item.description}</p>
       )}
     </div>
   )
@@ -87,24 +92,26 @@ export const Counter: React.FC<any> = ({
 
   return (
     <section className={`counter ${themeClass} ${textAlignment}`}>
-      <div className="container mx-auto px-6">
-        <div className="prose prose-lg md:prose-xl dark:prose-invert max-w-3xl mx-auto mb-16 flex flex-col items-center">
-          <IntroText introText={introText} />
+      <div className="inner-wrap">
+        <div className="container mx-auto px-6">
+          <div className="w-full">
+            <IntroText introText={introText} />
+          </div>
+
+          {counterItems && counterItems.length > 0 && (
+            <div className={`content-wrap grid gap-8 ${gridClass}`}>
+              {counterItems.map((item: any, idx: number) => (
+                <CounterItem key={idx} item={item} />
+              ))}
+            </div>
+          )}
+
+          {introLinks && introLinks.length > 0 && (
+            <div className="mt-16">
+              <IntroLinks introLinks={introLinks} />
+            </div>
+          )}
         </div>
-
-        {counterItems && counterItems.length > 0 && (
-          <div className={`grid gap-8 ${gridClass}`}>
-            {counterItems.map((item: any, idx: number) => (
-              <CounterItem key={idx} item={item} />
-            ))}
-          </div>
-        )}
-
-        {introLinks && introLinks.length > 0 && (
-          <div className="mt-16">
-            <IntroLinks introLinks={introLinks} />
-          </div>
-        )}
       </div>
     </section>
   )

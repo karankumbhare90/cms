@@ -1,4 +1,5 @@
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { DynamicRichText } from './DynamicRichText'
+import parse from 'html-react-parser'
 
 export const IntroText = ({ introText }: any) => {
   const HeadingTag = (introText?.headingSize || 'h2') as React.ElementType
@@ -6,9 +7,13 @@ export const IntroText = ({ introText }: any) => {
   return (
     <>
       <div className="intro-text">
-        {introText?.heading && <HeadingTag>{introText.heading}</HeadingTag>}
+        {introText?.subHeading && (
+          <p className="subheading text-blue-600 font-bold text-xs md:text-sm uppercase tracking-wider mb-2">
+            {introText.subHeading}
+          </p>
+        )}
 
-        {introText?.subHeading && <h6 className="subheading">{introText.subHeading}</h6>}
+        {introText?.heading && <HeadingTag>{parse(introText.heading)}</HeadingTag>}
       </div>
 
       {introText?.description && (
@@ -17,7 +22,9 @@ export const IntroText = ({ introText }: any) => {
         </div>
       )}
 
-      {introText?.content && <RichText className="rich-text-content" data={introText.content} />}
+      {introText?.content && (
+        <DynamicRichText content={introText.content} className="rich-text-content" />
+      )}
     </>
   )
 }

@@ -16,18 +16,45 @@ export const Hero: Block = {
         {
           label: 'Content',
           fields: [
-            introText,
             {
-              name: 'backgroundImage',
-              type: 'upload',
-              relationTo: 'media',
+              name: 'slides',
+              type: 'array',
+              minRows: 1,
+              fields: [
+                introText,
+                {
+                  name: 'media',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Background Media (Image or Video)',
+                },
+                {
+                  name: 'videoAutoplay',
+                  type: 'checkbox',
+                  defaultValue: true,
+                  label: 'Autoplay Video (if media is a video)',
+                },
+                introLinks,
+              ],
             },
-            introLinks,
           ],
         },
         {
           label: 'Settings',
-          fields: [blockSettings],
+          fields: [
+            blockSettings,
+            {
+              name: 'bannerWidth',
+              type: 'select',
+              defaultValue: 'full',
+              label: 'Banner Width',
+              options: [
+                { label: 'Half Width', value: 'half' },
+                { label: 'Wide Width', value: 'wide' },
+                { label: 'Full Width', value: 'full' },
+              ],
+            },
+          ],
         },
       ],
     },

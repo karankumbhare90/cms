@@ -4,33 +4,35 @@ import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
 import { IntroLinks } from '@/blocks/Shared/_IntroLinks'
 
-export const Map: React.FC<any> = ({ introText, mapData, introLinks, settings }) => {
+export const Map: React.FC<any> = ({ introText, mapData, introLinks, settings, widthType }) => {
   const themeClass = getThemeClass(settings)
   const textAlignment = getTextAlignment(settings)
-  const isFullWidth = settings?.widthType === 'full'
+  const isFullWidth = widthType === 'full'
 
   return (
-    <section className={`py-16 md:py-24 ${themeClass} ${textAlignment}`}>
-      <div className="container mx-auto px-6">
-        <div className="prose prose-lg md:prose-xl dark:prose-invert mx-auto mb-16 flex flex-col items-center text-center">
-          <IntroText introText={introText} />
+    <section className={`map ${themeClass} ${textAlignment}`}>
+      <div className="inner-wrap">
+        <div className="container">
+          <div className="w-full">
+            <IntroText introText={introText} />
+          </div>
         </div>
-      </div>
-      
-      {mapData && (
-        <div className={`${isFullWidth ? 'w-full' : 'container mx-auto px-6 max-w-6xl'} h-[400px] md:h-[600px] relative`}>
-          <div 
-            className="w-full h-full [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0 rounded-2xl overflow-hidden shadow-xl" 
-            dangerouslySetInnerHTML={{ __html: mapData }} 
-          />
-        </div>
-      )}
 
-      {introLinks && introLinks.length > 0 && (
-        <div className="container mx-auto px-6 mt-16 flex justify-center">
-          <IntroLinks introLinks={introLinks} />
-        </div>
-      )}
+        {mapData && (
+          <div className={`${isFullWidth ? 'w-full' : 'container'} relative content-wrap`}>
+            <div
+              className={`w-full h-auto overflow-hidden  [&_iframe]:w-full ${isFullWidth ? 'w-full' : 'rounded-2xl shadow-xl'}`}
+              dangerouslySetInnerHTML={{ __html: mapData }}
+            />
+          </div>
+        )}
+
+        {introLinks && introLinks.length > 0 && (
+          <div className="container w-full  ">
+            <IntroLinks introLinks={introLinks} />
+          </div>
+        )}
+      </div>
     </section>
   )
 }

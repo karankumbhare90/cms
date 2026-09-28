@@ -1,0 +1,23 @@
+.gel-dropdown {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.group:hover .gel-dropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.group:hover .gel-chevron {
+  transform: rotate(180deg);
+}
+
+.gel-chevron {
+  transition: transform 0.15s ease;
+  display: inline-block;
+}

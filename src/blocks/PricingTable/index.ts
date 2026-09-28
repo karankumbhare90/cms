@@ -1,13 +1,13 @@
-import { Block } from "payload";
-import { blockSettings } from "../../fields/blockSettings";
-import { introText } from "../../fields/introText";
-import { introLinks } from "../../fields/introLinks";
+import { Block } from 'payload'
+import { blockSettings } from '../../fields/blockSettings'
+import { introText } from '../../fields/introText'
+import { introLinks } from '../../fields/introLinks'
 
 export const PricingTable: Block = {
   slug: 'pricingTable',
   labels: {
     singular: 'Pricing Table',
-    plural: 'Pricing Tables'
+    plural: 'Pricing Tables',
   },
   fields: [
     {
@@ -38,7 +38,7 @@ export const PricingTable: Block = {
                       required: true,
                       defaultValue: ' ', // Added to prevent immediate validation error
                     },
-                  ]
+                  ],
                 },
                 {
                   name: 'description',
@@ -53,7 +53,7 @@ export const PricingTable: Block = {
                       name: 'feature',
                       type: 'text',
                       required: true,
-                      defaultValue: ' ', // Added to prevent immediate validation error
+                      defaultValue: ' ',
                     }
                   ]
                 },
@@ -62,17 +62,15 @@ export const PricingTable: Block = {
                   type: 'checkbox',
                   label: 'Highlight as Popular Plan',
                   defaultValue: false,
-                }
-              ]
+                },
+              ],
             },
             introLinks,
           ],
         },
         {
           label: 'Settings',
-          fields: [
-            blockSettings,
-          ],
+          fields: [blockSettings],
         },
       ],
     },

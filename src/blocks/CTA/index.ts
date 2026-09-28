@@ -52,6 +52,20 @@ export const CTA: Block = {
               type: 'upload',
               relationTo: 'media',
             },
+            {
+              name: 'contentWidth',
+              type: 'select',
+              defaultValue: 'wide',
+              label: 'Content Width',
+              admin: {
+                description: 'Controls the width of the CTA content block',
+              },
+              options: [
+                { label: 'Full (12/12)', value: 'full' },
+                { label: 'Wide (8/12)', value: 'wide' },
+                { label: 'Half (6/12)', value: 'half' },
+              ],
+            },
           ],
         },
       ],

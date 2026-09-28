@@ -1,5 +1,6 @@
 import React from 'react'
 import { getThemeClass } from '@/utils/theme'
+import { buildPagePath } from '@/utils/pageUtils'
 
 export const Content: React.FC<any> = ({ introText, introLinks, settings }) => {
   const themeClass = getThemeClass(settings)
@@ -36,11 +37,15 @@ export const Content: React.FC<any> = ({ introText, introLinks, settings }) => {
         {introLinks && introLinks.length > 0 && (
           <div className="mt-12 flex flex-wrap gap-4">
             {introLinks.map((link: any, idx: number) => {
+              const pageObj =
+                typeof link.reference === 'object' && link.reference !== null && 'value' in link.reference
+                  ? link.reference.value
+                  : link.reference
               const url =
                 link.type === 'custom'
                   ? link.url
-                  : typeof link.reference?.value === 'object'
-                    ? `/${link.reference.value.slug}`
+                  : typeof pageObj === 'object' && pageObj !== null
+                    ? buildPagePath(pageObj)
                     : '#'
               return (
                 <a

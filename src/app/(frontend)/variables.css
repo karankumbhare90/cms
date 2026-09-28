@@ -1,127 +1,85 @@
 :root {
-  --color-1: #ffffff;
-  /* white */
-  --color-2: #e5f1fc;
-  /* off white */
-  --color-3: #f7f9fb;
-  /* blue pale */
-  --color-4: #009bde;
-  /* green */
-  --color-5: #0a2a43;
-  /* blue dark */
-  --color-6: #6fa32e;
-  /* green dark */
+  --color-1: #ffffff; /* white */
+  --color-2: #f4f6f9; /* light grey */
+  --color-3: #f8faff; /* very light blue */
+  --color-4: #eff6ff; /* light blue */
+  --color-5: #bfdbfe; /* medium light blue */
+  --color-6: #2563eb; /* primary blue */
+  --color-7: #1e40af; /* dark blue */
+  --color-8: #022e64; /* darkest blue */
 
   --body-bg-color: #ffffff;
+  --primary-gradient: linear-gradient(95.47deg, var(--color-6) 0%, var(--color-7) 100%);
 
   /** global text color */
-  --fonts-color-base: #4a6580;
+  --fonts-color-base: #374151;
 
   /** title font-color light bg */
-  --title-colour-light-bg: #1a3550;
+  --title-colour-light-bg: #0c1e33;
 
   /** title font-color dark bg */
   --title-colour-dark-bg: #ffffff;
 
-  --font-size-base: 1rem;
-  --font-size-base-sm: 0.8125rem;
+  --font-family-base: 'Inter', sans-serif;
+  --font-size-base: 20px;
+  --font-size-base-sm: 18px;
 
-  /* Mobile typography (sm breakpoint) */
-  --h1-size-sm: 2rem;
-  /* 32px */
-  --h2-size-sm: 1.625rem;
-  /* 26px */
-  --h3-size-sm: 1.25rem;
-  /* 20px */
-  --h4-size-sm: 1.0625rem;
-  /* 17px */
-  --h5-size-sm: 1.0625rem;
-  /* 17px - follows H4 */
-  --h6-size-sm: 1.0625rem;
-  /* 17px - follows H4 */
-  --p-size-sm: 1rem;
-  /* 16px - Body Large */
+  /* Desktop Font's Size */
+  --h1-size: 4rem; /* 64px */
+  --h2-size: 3rem; /* 48px */
+  --h3-size: 2rem; /* 32px */
+  --h4-size: 1.625rem; /* 26px */
+  --h5-size: 1.5rem; /* 24px */
+  --h6-size: 1.375rem; /* 22px */
+  --p-size: 1.25rem; /* 20px */
+  --cta-size: 1.125rem; /* 18px */
 
-  /* Tablet typography (md breakpoint) */
-  --h1-size-md: 2.5rem;
-  /* 40px */
-  --h2-size-md: 1.875rem;
-  /* 30px */
-  --h3-size-md: 1.375rem;
-  /* 22px */
-  --h4-size-md: 1.125rem;
-  /* 18px */
-  --h5-size-md: 1.125rem;
-  /* 18px - follows H4 */
-  --h6-size-md: 1.125rem;
-  /* 18px - follows H4 */
-  --p-size-md: 1.0625rem;
-  /* 17px - Body Large */
+  /* Responsive Font Size */
+  --h1-size-sm: 2.5rem; /* 40px */
+  --h2-size-sm: 2rem; /* 32px */
+  --h3-size-sm: 1.5rem; /* 24px */
+  --h4-size-sm: 1.375rem; /* 22px */
+  --h5-size-sm: 1.25rem; /* 20px */
+  --h6-size-sm: 1.125rem; /* 18px */
+  --p-size-sm: 1.125rem; /* 18px */
+  --cta-size-sm: 1.125rem; /* 18px */
 
-  /* Desktop typography (>= lg breakpoint) */
-  --h1-size: 3rem;
-  /* 48px */
-  --h2-size: 2.25rem;
-  /* 36px */
-  --h3-size: 1.5rem;
-  /* 24px */
-  --h4-size: 1.25rem;
-  /* 20px */
-  --h5-size: 1.25rem;
-  /* 20px - follows H4 */
-  --h6-size: 1.25rem;
-  /* 20px - follows H4 */
-  --p-size: 1.125rem;
-  /* 18px - Body Large */
+  --h1-line-height: 1.25;
+  --h2-line-height: 1.25;
+  --h3-line-height: 1.25;
+  --h4-line-height: 1.25;
+  --h5-line-height: 1.25;
+  --h6-line-height: 1.25;
+  --p-line-height: 1.5;
+  --cta-line-height: 1.25;
 
-  /* Extra Large typography (xl breakpoint) */
-  --h1-size-xl: 4rem;
-  /* 64px */
-  --h2-size-xl: 3rem;
-  /* 48px */
-  --h3-size-xl: 2rem;
-  /* 32px */
-  --h4-size-xl: 1.5rem;
-  /* 24px */
-  --h5-size-xl: 1.5rem;
-  /* 24px - follows H4 */
-  --h6-size-xl: 1.5rem;
-  /* 24px - follows H4 */
-  --p-size-xl: 1.25rem;
-  /* 20px - Body Large */
-
-  --h1-line-height: 1.1;
-  --h2-line-height: 1.1;
-  --h3-line-height: 1.1;
-  --h4-line-height: 1.2;
-  --h5-line-height: 1.1;
-  --h6-line-height: 1.4;
-  --p-line-height: 1.75;
-
-  --h1-font-weight: 700;
-  --h2-font-weight: 700;
+  --h1-font-weight: 800;
+  --h2-font-weight: 800;
   --h3-font-weight: 700;
-  --h4-font-weight: 600;
+  --h4-font-weight: 700;
   --h5-font-weight: 600;
   --h6-font-weight: 600;
-  --p-font-weight: 300;
+  --p-font-weight: 400;
+  --cta-font-weight: 600;
 
   --spacing-xs: 0.5rem;
   --spacing-s: 1rem;
   --spacing-m: 1.5rem;
   --spacing-l: 2rem;
   --spacing-xl: 3rem;
-  --spacing-xxl: 4rem;
-  --spacing-xxxl: 6rem;
-  --spacing-xxxxl: 7.5rem;
+  --spacing-xxl: 3.5rem;
+  --spacing-xxxl: 4rem;
+  --spacing-xxxxl: 5rem;
 
-  --content-wrap-spacing: 3rem;
+  --content-wrap-spacing: 2.5rem;
   --content-wrap-spacing-sm: var(--spacing-l);
 
-  --spacing-xs-sm: 0.5rem;
-  --spacing-s-sm: 1rem;
-  --spacing-m-sm: 1.5rem;
-  --spacing-xl-sm: 2rem;
+  --spacing-xs-sm: 0.25rem;
+  --spacing-s-sm: 0.5rem;
+  --spacing-m-sm: 0.75rem;
+  --spacing-xl-sm: 1.5rem;
+
+  /* Rich text spacing*/
   --rte-title-top-space: 3rem;
   --rte-title-top-space-sm: 2rem;
   --large-text-bold-font-size: 1.25rem;
@@ -134,62 +92,55 @@
   --normal-text-line-height: 1.5rem;
   --small-text-line-height: 1.25rem;
 
-  --description-text-font: 'Montserrat', sans-serif;
-  --description-text-size: 18px;
-  --description-text-font-weight: 300;
+  --description-text-font: 'Inter', sans-serif;
+  --description-text-size: 20px;
+  --description-text-font-weight: 400;
   --description-text-font-color: var(--fonts-color-base);
-  --description-text-size-sm: 16px;
+  --description-text-size-sm: 18px;
+
   /** Button style base */
   --button-fontsize-base: 1rem;
   --button-fontsize-lg: 1.125rem;
   --button-fontsize-xl: 1.25rem;
 
   /** Button style primary */
-  --btn-primary-border-color: var(--color-4);
-  --btn-primary-height: 2.625rem;
-  --btn-primary-font-weight: 700;
+  --btn-primary-font-weight: 600;
   --btn-primary-text-color: var(--color-1);
-  --btn-primary-border-radius: 0.75rem;
-  --btn-primary-bg-color: var(--color-4);
+  --btn-primary-border-radius: 6px;
+  --btn-primary-bg-color: var(--primary-gradient);
   /** hover */
+
   --btn-primary-text-color-hover: var(--color-1);
-  --btn-primary-bg-color-hover: var(--color-4);
-  --btn-primary-border-color-hover: var(--color-4);
 
   /** Button style secondary */
-  --btn-secondary-border-color: var(--color-4);
-  --btn-secondary-height: 2.625rem;
-  --btn-secondary-font-weight: 700;
-  --btn-secondary-text-color: var(--color-4);
-  --btn-secondary-border-radius: 0.75rem;
+  --btn-secondary-border-color: var(--primary-gradient);
+  --btn-secondary-font-weight: 600;
+  --btn-secondary-text-color: var(--color-6);
+  --btn-secondary-border-radius: 6px;
   --btn-secondary-bg-color: transparent;
   /** hover */
-  --btn-secondary-text-color-hover: var(--color-4);
-  --btn-secondary-bg-color-hover: transparent;
-  --btn-secondary-border-color-hover: var(--color-4);
+  --btn-secondary-text-color-hover: var(--color-6);
+  --btn-secondary-bg-color-hover: #2563eb0d;
+  --btn-secondary-border-color-hover: var(--primary-gradient);
 
   /** Button style primary when dark bg colour */
-  --btn-primary-border-color-dark-bg: var(--color-1);
-  --btn-primary-height-dark-bg: 2.625rem;
-  --btn-primary-font-weight-dark-bg: 500;
-  --btn-primary-text-color-dark-bg: var(--title-colour-light-bg);
-  --btn-primary-border-radius-dark-bg: 0.75rem;
+  --btn-primary-font-weight-dark-bg: 600;
+  --btn-primary-text-color-dark-bg: var(--color-6);
+  --btn-primary-border-radius-dark-bg: 6px;
   --btn-primary-bg-color-dark-bg: var(--color-1);
   /** hover */
-  --btn-primary-text-color-hover-dark-bg: var(--fonts-color-base);
-  --btn-primary-bg-color-hover-dark-bg: var(--color-1);
-  --btn-primary-border-color-hover-dark-bg: var(--color-1);
+  --btn-primary-text-color-hover-dark-bg: var(--color-6);
+  --btn-primary-bg-color-hover-dark-bg: #eff6ff;
 
   /** Button style secondary when dark bg colour  */
   --btn-secondary-border-color-dark-bg: var(--color-1);
-  --btn-secondary-height-dark-bg: 2.625rem;
-  --btn-secondary-font-weight-dark-bg: 500;
+  --btn-secondary-font-weight-dark-bg: 600;
   --btn-secondary-text-color-dark-bg: var(--color-1);
-  --btn-secondary-border-radius-dark-bg: 0.75rem;
+  --btn-secondary-border-radius-dark-bg: 6px;
   --btn-secondary-bg-color-dark-bg: transparent;
   /** hover */
   --btn-secondary-text-color-hover-dark-bg: var(--color-1);
-  --btn-secondary-bg-color-hover-dark-bg: transparent;
+  --btn-secondary-bg-color-hover-dark-bg: #ffffff1a;
   --btn-secondary-border-color-hover-dark-bg: var(--color-1);
 
   /* Page Hero Slider / Banner - leave space till image loaded*/
@@ -197,14 +148,14 @@
   --hero-bottom-space-xlarge: 37.52%;
   --hero-bottom-space-large: 40.88%;
   --hero-bottom-space-medium: 50.04%;
-  --hero-bottom-space-xmedium: 60.54%;
-  --hero-bottom-space-small: 78.22%;
-  --hero-bottom-space-xsmall: 126.34%;
+  --hero-bottom-space-xmedium: 82.9%;
+  --hero-bottom-space-small: 106.6%;
+  --hero-bottom-space-xsmall: 142.9%;
 
   /*Bread Crumbs*/
   --breadcrumb-bg-color: transparent;
-  --breadcrumb-color: var(--title-colour-light-bg);
-  --breadcrumb-color-hover: var(--color-4);
+  --breadcrumb-color: var(--color-3);
+  --breadcrumb-color-hover: var(--color-6);
   --breadcrumb-separator: '>';
 
   /*breadcrumb dark colour*/
@@ -251,13 +202,13 @@
   --cta-bottom-space: 3rem;
 
   /*Accordion*/
-  --accordion-heading-color: var(--title-colour-light-bg);
-  --accordion-description-color: var(--fonts-color-base);
-  --accordion-active-border-color: var(--color-4);
+  --accordion-heading-color: var(--color-3);
+  --accordion-description-color: #374151;
+  --accordion-active-border-color: var(--color-6);
   --accordion-active-section-bg-color: var(--color-1);
   --accordion-active-heading-bg-color: var(--color-1);
-  --accordion-img-mb: 48px;
-  --accordion-img-pt: 48px;
+  --accordion-img-mb: 50px;
+  --accordion-img-pt: 50px;
 
   /*gallery grid*/
   --gallery-grid-gallery-griditem: 2rem;
@@ -279,14 +230,14 @@
   --input-color: var(--fonts-color-base);
 
   /* <input> border color*/
-  --input-border: #e5e7eb;
+  --input-border: #b4b4b4;
   --input-border-validation-error: #ff0000;
 
   /* Default `.form-control` height*/
   --input-heightbase: 3rem;
 
   /* .form-group` margin*/
-  --form-group-margin-botom: 48px;
+  --form-group-margin-botom: 40px;
 
   /*Error handling*/
   --validation-error-font-size: 14px;
@@ -297,7 +248,7 @@
 
   /* Contact form and Contact detail*/
   --sidebar-item-bottom: var(--spacing-s);
-  --sidebar-item-border: #e5e7eb;
+  --sidebar-item-border: #dcdcdc;
   --sidebar-item-border-radius: 4px;
   --sidebar-item-head-font-size: 16px;
   --sidebar-item-head-font-weight: 500;
@@ -305,16 +256,16 @@
   --sidebar-item-head-font-color: var(--color-1);
   --sidebar-item-head-lr-spacing: var(--spacing-m);
   --sidebar-item-head-tb-spacing: var(--spacing-m-sm);
-  --sidebar-item-body-textcolor: var(--title-colour-light-bg);
+  --sidebar-item-body-textcolor: var(--color-3);
   --sidebar-item-body-textcolor-hover: var(--color-5);
 
-  --single-blogtitle: var(--title-colour-light-bg);
-  --single-blog-content-btn-colour: var(--color-4);
+  --single-blogtitle: var(--color-3);
+  --single-blog-content-btn-colour: var(--color-6);
 
   /* blog page sidebar*/
-  --blog-sidebar-accor-border-colour: #e5e7eb;
-  --blog-sidebar-accor-heading-colour: var(--title-colour-light-bg);
-  --blog-sidebar-accor-heading-hovercolour: var(--color-4);
+  --blog-sidebar-accor-border-colour: #e0effe;
+  --blog-sidebar-accor-heading-colour: #0c1e33;
+  --blog-sidebar-accor-heading-hovercolour: var(--color-6);
 
   --grid-blog-cate-item-bg-colour: var(--color-5);
   --grid-blog-cate-item-colour: var(--color-1);
@@ -322,10 +273,10 @@
   --grid-blog-content-author-colour: var(--color-1);
   --grid-blog-content-title-colour: var(--color-1);
 
-  --vertical-blog-content-date-colour: var(--title-colour-light-bg);
-  --vertical-blog-content-author-colour: var(--title-colour-light-bg);
-  --vertical-blog-content-title-colour: var(--title-colour-light-bg);
-  --vertical-listing-item-bg-colour: var(--color-8);
+  --vertical-blog-content-date-colour: var(--color-3);
+  --vertical-blog-content-author-colour: var(--color-3);
+  --vertical-blog-content-title-colour: var(--color-3);
+  --vertical-listing-item-bg-colour: #e0e0e0;
   --vertical-blog-content-item-colour: var(--color-5);
-  --vertical-blog-content-readmore-colour: #1a3550;
+  --vertical-blog-content-readmore-colour: #333333;
 }

@@ -3,6 +3,19 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createPortal } from 'react-dom'
+import { buildPagePath } from '@/utils/pageUtils'
+
+const getLinkUrl = (link: any) => {
+  if (!link) return '#'
+  if (link.type === 'custom') return link.url || '#'
+  if (typeof link.reference === 'object' && link.reference !== null) {
+    return buildPagePath(link.reference)
+  }
+  if (typeof link.reference === 'string' && link.reference) {
+    return `/${link.reference}`
+  }
+  return '#'
+}
 
 export function MobileMenu({
   navigation,
@@ -34,201 +47,249 @@ export function MobileMenu({
     }
   }, [isOpen])
 
+  const toggleAccordion = (index: number) => {
+    setExpandedItem((prev) => (prev === index ? null : index))
+  }
+
+  const toggleSubAccordion = (index: number) => {
+    setExpandedSubItem((prev) => (prev === index ? null : index))
+  }
+
   const drawerContent = (
     <>
-      {/* Drawer Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* Drawer Content */}
-      <div
-        className={`fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white shadow-2xl z-[101] transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="flex justify-end items-center p-6 border-b border-gray-100">
-          {/* <span className="text-xl font-black text-gray-900 tracking-tight">Menu</span> */}
-          <button
-            aria-label="Close Menu"
-            onClick={() => setIsOpen(false)}
-            className="text-gray-500 hover:text-gray-900 focus:outline-none transition-colors"
-          >
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="flex flex-col p-6 overflow-y-auto h-full">
-          <ul className="flex flex-col space-y-4">
+          className="xl:hidden fixed inset-0 flex flex-col overflow-y-auto z-40 border-t border-white/10"
+          style={{ background: '#0C1E33', top: 'var(--header-height, 110px)' }}
+        >
+          <div className="container py-3 flex flex-col gap-0.5 pb-6">
             {(navigation?.links as any[])?.map((link, index) => {
               const hasSubLinks = link.subLinks && link.subLinks.length > 0
-              const url =
-                link.type === 'custom'
-                  ? link.url
-                  : typeof link.reference === 'object' && link.reference !== null
-                    ? `/${link.reference.slug}`
-                    : typeof link.reference === 'string'
-                      ? `/${link.reference}`
-                      : '#'
+              const url = getLinkUrl(link)
+
+              const accordionOpen = expandedItem === index
+
+              if (!hasSubLinks) {
+                return (
+                  <Link
+                    key={index}
+                    href={url || '#'}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center px-3 py-3 rounded-[8px] text-[15px] font-medium transition-colors"
+                    style={{
+                      fontFamily: 'var(--font-family-base)',
+                      color: 'rgba(255,255,255,0.75)',
+                      background: 'transparent',
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              }
+
               return (
-                <li key={index} className="flex flex-col">
-                  {hasSubLinks ? (
-                    <>
-                      <button
-                        onClick={() => setExpandedItem(expandedItem === index ? null : index)}
-                        className="flex items-center justify-between text-lg font-semibold text-gray-700 hover:text-blue-600 uppercase tracking-wide transition-colors w-full text-left py-2"
-                      >
-                        {link.label}
-                        <svg className={`w-5 h-5 transition-transform duration-300 ${expandedItem === index ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                      {expandedItem === index && (
-                        <ul className="flex flex-col pl-4 mt-2 space-y-3 border-l-2 border-gray-100 mb-2">
-                          {link.subLinks.map((sub: any, subIdx: number) => {
-                            const subUrl = sub.type === 'custom' 
-                              ? sub.url 
-                              : typeof sub.reference === 'object' && sub.reference !== null
-                                ? `/${sub.reference.slug}` 
-                                : typeof sub.reference === 'string'
-                                  ? `/${sub.reference}`
-                                  : '#'
-                            const hasSubSubLinks = sub.subLinks && sub.subLinks.length > 0;
-                            return (
-                              <li key={subIdx} className="flex flex-col">
-                                {hasSubSubLinks ? (
-                                  <>
-                                    <button
-                                      onClick={() => setExpandedSubItem(expandedSubItem === subIdx ? null : subIdx)}
-                                      className="flex items-center justify-between text-base font-medium text-gray-600 hover:text-blue-600 capitalize transition-colors w-full text-left py-1"
-                                    >
-                                      {sub.label}
-                                      <svg className={`w-4 h-4 transition-transform duration-300 ${expandedSubItem === subIdx ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                      </svg>
-                                    </button>
-                                    {expandedSubItem === subIdx && (
-                                      <ul className="flex flex-col pl-4 mt-1 space-y-2 border-l-2 border-gray-100 mb-1">
-                                        {sub.subLinks.map((subSub: any, subSubIdx: number) => {
-                                          const subSubUrl = subSub.type === 'custom'
-                                            ? subSub.url
-                                            : typeof subSub.reference === 'object' && subSub.reference !== null
-                                              ? `/${subSub.reference.slug}`
-                                              : typeof subSub.reference === 'string'
-                                                ? `/${subSub.reference}`
-                                                : '#'
-                                          return (
-                                            <li key={subSubIdx}>
-                                              <Link
-                                                href={subSubUrl || '#'}
-                                                onClick={() => setIsOpen(false)}
-                                                className="text-sm font-medium text-gray-500 hover:text-blue-600 capitalize transition-colors block py-1"
-                                              >
-                                                {subSub.label}
-                                              </Link>
-                                            </li>
-                                          )
-                                        })}
-                                      </ul>
-                                    )}
-                                  </>
-                                ) : (
-                                  <Link
-                                    href={subUrl || '#'}
-                                    onClick={() => setIsOpen(false)}
-                                    className="text-base font-medium text-gray-600 hover:text-blue-600 capitalize transition-colors block py-1"
-                                  >
-                                    {sub.label}
-                                  </Link>
-                                )}
-                              </li>
-                            )
-                          })}
-                        </ul>
-                      )}
-                    </>
-                  ) : (
+                <div key={index}>
+                  <div
+                    className="flex items-center rounded-[8px] overflow-hidden"
+                    style={{ background: accordionOpen ? 'rgba(255,255,255,0.09)' : 'transparent' }}
+                  >
                     <Link
                       href={url || '#'}
                       onClick={() => setIsOpen(false)}
-                      className="text-lg font-semibold text-gray-700 hover:text-blue-600 uppercase tracking-wide transition-colors block py-2"
+                      className="flex-1 px-3 py-3 text-[15px] font-medium transition-colors"
+                      style={{
+                        fontFamily: 'var(--font-family-base)',
+                        color: accordionOpen ? 'white' : 'rgba(255,255,255,0.75)',
+                      }}
                     >
                       {link.label}
                     </Link>
+                    <button
+                      onClick={() => toggleAccordion(index)}
+                      className="px-3 py-3 text-white/50 hover:text-white transition-colors"
+                      aria-label={`Toggle ${link.label} submenu`}
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        fill="none"
+                        viewBox="0 0 14 14"
+                        style={{
+                          transition: 'transform 0.2s',
+                          transform: accordionOpen ? 'rotate(180deg)' : 'none',
+                        }}
+                      >
+                        <path
+                          d="M2.5 5l4.5 4.5L11.5 5"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {accordionOpen && (
+                    <div className="ml-3 mt-2 mb-2 flex flex-col gap-0.5 pl-3 border-l border-white/10">
+                      {link.subLinks.map((sub: any, subIdx: number) => {
+                        const subUrl = getLinkUrl(sub)
+                        const hasSubSubLinks = sub.subLinks && sub.subLinks.length > 0
+                        const subAccordionOpen = expandedSubItem === subIdx
+
+                        if (!hasSubSubLinks) {
+                          return (
+                            <Link
+                              key={subIdx}
+                              href={subUrl || '#'}
+                              onClick={() => setIsOpen(false)}
+                              className="px-3 py-2.5 rounded-[7px] text-[14px] transition-colors"
+                              style={{
+                                fontFamily: 'var(--font-family-base)',
+                                color: 'rgba(255,255,255,0.60)',
+                                background: 'transparent',
+                              }}
+                            >
+                              {sub.label}
+                            </Link>
+                          )
+                        }
+
+                        return (
+                          <div key={subIdx}>
+                            <div
+                              className="flex items-center rounded-[7px] overflow-hidden"
+                              style={{
+                                background: subAccordionOpen
+                                  ? 'rgba(255,255,255,0.06)'
+                                  : 'transparent',
+                              }}
+                            >
+                              <Link
+                                href={subUrl || '#'}
+                                onClick={() => setIsOpen(false)}
+                                className="flex-1 px-3 py-2.5 text-[14px] transition-colors"
+                                style={{
+                                  fontFamily: 'var(--font-family-base)',
+                                  color: subAccordionOpen ? 'white' : 'rgba(255,255,255,0.60)',
+                                }}
+                              >
+                                {sub.label}
+                              </Link>
+                              <button
+                                onClick={() => toggleSubAccordion(subIdx)}
+                                className="px-3 py-2.5 text-white/50 hover:text-white transition-colors"
+                              >
+                                <svg
+                                  width="12"
+                                  height="12"
+                                  fill="none"
+                                  viewBox="0 0 14 14"
+                                  style={{
+                                    transition: 'transform 0.2s',
+                                    transform: subAccordionOpen ? 'rotate(180deg)' : 'none',
+                                  }}
+                                >
+                                  <path
+                                    d="M2.5 5l4.5 4.5L11.5 5"
+                                    stroke="currentColor"
+                                    strokeWidth="1.6"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+
+                            {subAccordionOpen && (
+                              <div className="ml-3 mt-0.5 mb-1 flex flex-col gap-0.5 pl-3 border-l border-white/12">
+                                {sub.subLinks.map((subSub: any, subSubIdx: number) => {
+                                  const subSubUrl = getLinkUrl(subSub)
+
+                                  return (
+                                    <Link
+                                      key={subSubIdx}
+                                      href={subSubUrl || '#'}
+                                      onClick={() => setIsOpen(false)}
+                                      className="px-3 py-2 rounded-[6px] text-[13px] transition-colors"
+                                      style={{
+                                        fontFamily: 'var(--font-family-base)',
+                                        color: 'rgba(255,255,255,0.50)',
+                                      }}
+                                    >
+                                      {subSub.label}
+                                    </Link>
+                                  )
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
                   )}
-                </li>
+                </div>
               )
             })}
-          </ul>
+          </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col space-y-4">
-            <Link
-              href="/admin/login"
-              onClick={() => setIsOpen(false)}
-              className="flex w-full items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full transition-all active:scale-95"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Admin Login
-            </Link>
-
-            {showCTA && ctaLink && ctaLink.length > 0 && (
-              <a
-                href={ctaLink[0].url || '#'}
-                onClick={() => setIsOpen(false)}
-                className="flex w-full items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-md shadow-blue-500/30 transition-all active:scale-95"
-              >
-                {ctaLink[0].label}
-              </a>
-            )}
+          <div className="w-full border-t border-white/10">
+            <div className="container pb-5 pt-5  bg-[#0C1E33] sticky bottom-0">
+              {showCTA && ctaLink && ctaLink.length > 0 ? (
+                <Link
+                  href={ctaLink[0].url || '#'}
+                  onClick={() => setIsOpen(false)}
+                  className="outline-none !text-white w-full flex items-center justify-center py-3 rounded-[8px] text-[15px] font-semibold hover:opacity-90 transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg,#2563EB,#1E40AF)',
+                    fontFamily: 'var(--font-family-base)',
+                  }}
+                >
+                  {ctaLink[0].label}
+                </Link>
+              ) : (
+                <Link
+                  href="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full flex items-center justify-center py-3 rounded-[8px] text-[15px] font-semibold text-white hover:opacity-90 transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg,#2563EB,#1E40AF)',
+                    fontFamily: 'var(--font-family-base)',
+                  }}
+                >
+                  Contact Us
+                </Link>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   )
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <div className="lg:hidden flex items-center">
-        <button
-          aria-label="Toggle Menu"
-          onClick={() => setIsOpen(true)}
-          className="text-gray-900 focus:outline-none hover:text-blue-600 transition-colors"
-        >
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
+      <button
+        className="text-white p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center focus:outline-none"
+        onClick={() => {
+          setIsOpen((o) => !o)
+          setExpandedItem(null)
+          setExpandedSubItem(null)
+        }}
+        aria-label="Toggle menu"
+      >
+        <svg width="22" height="22" fill="none" viewBox="0 0 22 22">
+          {isOpen ? (
+            <path d="M4 4l14 14M18 4L4 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+          ) : (
+            <>
+              <rect y="4" width="22" height="2" rx="1" fill="white" />
+              <rect y="10" width="22" height="2" rx="1" fill="white" />
+              <rect y="16" width="22" height="2" rx="1" fill="white" />
+            </>
+          )}
+        </svg>
+      </button>
 
       {mounted && createPortal(drawerContent, document.body)}
     </>

@@ -10,3 +10,14 @@ export function getTextAlignment(settings?: any): string {
 
   return ''
 }
+
+export function getBlockAlignment(settings?: any): string {
+  if (!settings) return 'mx-auto'
+
+  const textAlign = settings.textAlign
+
+  if (textAlign === 'left') return 'mr-auto ml-0'
+  if (textAlign === 'right') return 'ml-auto mr-0'
+
+  return 'mx-auto'
+}

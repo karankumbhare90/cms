@@ -1,63 +1,38 @@
-import { headers as getHeaders } from 'next/headers.js'
-import { getPayload } from 'payload'
 import React from 'react'
-import config from '@/payload.config'
-import { notFound } from 'next/navigation'
 import { RenderBlocks } from '@/components/RenderBlocks'
+import { getHomePageCached, getSiteSettingsCached } from '@/utils/cachedData'
+import type { Metadata } from 'next'
 
-export async function generateMetadata() {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'pages',
-    where: {
-      pageType: {
-        equals: 'home',
-      },
-    },
-    limit: 1,
-  })
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getHomePageCached()
+  const siteSettings = await getSiteSettingsCached()
+  const fallbackDescription =
+    siteSettings?.metaDescription ||
+    siteSettings?.description ||
+    'Professional CMS and Web Development Solutions for modern digital experiences.'
 
-  const page = result.docs[0]
-  if (!page) return {}
+  if (!page) {
+    return {
+      description: fallbackDescription,
+    }
+  }
 
   return {
     title: page.seo?.metaTitle || page.title,
-    description: page.seo?.metaDescription || '',
+    description: page.seo?.metaDescription || fallbackDescription,
   }
 }
 
 export default async function HomePage() {
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
+  const page = await getHomePageCached()
 
-  const result = await payload.find({
-    collection: 'pages',
-    where: {
-      pageType: {
-        equals: 'home',
-      },
-    },
-    limit: 1,
-  })
-
-  const page = result.docs[0]
-
-  if (!page) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Welcome to SilverPoint</h1>
-          <p className="text-xl">Please set up a Home Page in the Payload Admin panel.</p>
-        </div>
-      </div>
-    )
-  }
+  if (!page) return null
 
   return (
-    <div className="pt-20">
-      {' '}
+    <div style={{ paddingTop: 'var(--header-height, 73px)' }}>
       {/* Add padding for fixed header */}
       <RenderBlocks blocks={page.layout as any[]} />
     </div>
   )
 }
+

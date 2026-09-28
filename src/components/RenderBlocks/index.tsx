@@ -1,4 +1,5 @@
 import React from 'react'
+import { AnimateOnScroll } from '../AnimateOnScroll'
 import { Hero } from '../blocks/Hero'
 import { Content } from '../blocks/Content'
 import { Text } from '../blocks/Text'
@@ -22,6 +23,7 @@ import { Timeline } from '../blocks/Timeline'
 import { ProcessSteps } from '../blocks/ProcessSteps'
 import { PortfolioGrid } from '../blocks/PortfolioGrid'
 import { Sitemap } from '../blocks/Sitemap'
+import { ContactUs } from '../blocks/ContactUs'
 
 const blockComponents = {
   hero: Hero,
@@ -47,6 +49,7 @@ const blockComponents = {
   processSteps: ProcessSteps,
   portfolioGrid: PortfolioGrid,
   sitemap: Sitemap,
+  contactUs: ContactUs,
   // we will add more as we build them
 }
 
@@ -59,15 +62,26 @@ export const RenderBlocks: React.FC<{ blocks: any[] }> = ({ blocks }) => {
     <div className="flex flex-col">
       {blocks.map((block, index) => {
         const { blockType } = block
-        
+
+        if (block?.settings?.hideComponent) {
+          return null
+        }
+
         if (blockType && blockType in blockComponents) {
           const Block = blockComponents[blockType as keyof typeof blockComponents]
 
           if (Block) {
-            return <Block key={index} id={`block-${index}`} {...block} />
+            if (blockType === 'hero') {
+              return <Block key={index} id={`block-${index}`} {...block} />
+            }
+            return (
+              <AnimateOnScroll key={index}>
+                <Block id={`block-${index}`} {...block} />
+              </AnimateOnScroll>
+            )
           }
         }
-        
+
         return null
       })}
     </div>

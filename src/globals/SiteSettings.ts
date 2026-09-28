@@ -40,7 +40,7 @@ export const SiteSettings: GlobalConfig = {
               relationTo: 'media',
               admin: {
                 description: 'Used for main site logos',
-              }
+              },
             },
             {
               name: 'siteFavicon',
@@ -48,7 +48,7 @@ export const SiteSettings: GlobalConfig = {
               relationTo: 'media',
               admin: {
                 description: 'Used for the browser tab icon (.ico or .png)',
-              }
+              },
             },
           ],
         },
@@ -64,6 +64,23 @@ export const SiteSettings: GlobalConfig = {
               type: 'text',
             },
             {
+              name: 'fromEmail',
+              label: 'From Email (SMTP User)',
+              type: 'text',
+              admin: {
+                description:
+                  'The email address used to send the emails (e.g. no-reply@gelinst.com.au)',
+              },
+            },
+            {
+              name: 'adminEmail',
+              label: 'Admin Email (Lead Receiver)',
+              type: 'text',
+              admin: {
+                description: 'The email address that will receive the contact form submissions',
+              },
+            },
+            {
               name: 'phone',
               type: 'text',
             },
@@ -73,7 +90,7 @@ export const SiteSettings: GlobalConfig = {
               type: 'text',
               admin: {
                 description: 'Link to Google Maps or similar',
-              }
+              },
             },
           ],
         },
@@ -87,20 +104,12 @@ export const SiteSettings: GlobalConfig = {
               fields: [
                 {
                   name: 'icon',
-                  type: 'select',
+                  type: 'text',
                   label: 'Icon (React Icons)',
-                  options: [
-                    { label: 'Facebook (FaFacebook)', value: 'FaFacebook' },
-                    { label: 'Twitter / X (FaTwitter)', value: 'FaTwitter' },
-                    { label: 'Instagram (FaInstagram)', value: 'FaInstagram' },
-                    { label: 'LinkedIn (FaLinkedin)', value: 'FaLinkedin' },
-                    { label: 'YouTube (FaYoutube)', value: 'FaYoutube' },
-                    { label: 'GitHub (FaGithub)', value: 'FaGithub' },
-                    { label: 'TikTok (FaTiktok)', value: 'FaTiktok' },
-                    { label: 'Pinterest (FaPinterest)', value: 'FaPinterest' },
-                    { label: 'Discord (FaDiscord)', value: 'FaDiscord' },
-                    { label: 'Twitch (FaTwitch)', value: 'FaTwitch' },
-                  ]
+                  admin: {
+                    description:
+                      'Enter the exact name of the React Icon (e.g., FaFacebook, FaInstagram, RiTwitterXFill)',
+                  },
                 },
                 {
                   type: 'row',
@@ -127,14 +136,14 @@ export const SiteSettings: GlobalConfig = {
               type: 'text',
               admin: {
                 description: 'Default Meta Title for the entire site',
-              }
+              },
             },
             {
               name: 'metaDescription',
               type: 'textarea',
               admin: {
                 description: 'Default Meta Description for the entire site',
-              }
+              },
             },
             {
               name: 'ogImage',
@@ -143,7 +152,7 @@ export const SiteSettings: GlobalConfig = {
               relationTo: 'media',
               admin: {
                 description: 'Default image shown when sharing the site on social media',
-              }
+              },
             },
           ],
         },
@@ -151,20 +160,29 @@ export const SiteSettings: GlobalConfig = {
           label: 'Header',
           fields: [
             {
+              name: 'displayTopHeader',
+              label: 'Display Top Header',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Toggle this on to display the top header bar with contact information',
+              },
+            },
+            {
               name: 'displayHeaderCTA',
               type: 'checkbox',
               defaultValue: false,
               admin: {
                 description: 'Toggle this on to display a Call to Action button in the site header',
-              }
+              },
             },
             {
               ...introLinks,
               name: 'headerCTA',
               admin: {
-                condition: (_, siblingData) => siblingData?.displayHeaderCTA === true,
+                condition: (_: any, siblingData: any) => siblingData?.displayHeaderCTA === true,
               },
-            },
+            } as any,
           ],
         },
       ],

@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { getThemeClass } from '@/utils/theme'
 import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
@@ -9,13 +10,13 @@ export const TextWithImage: React.FC<any> = ({
   image,
   introLinks,
   settings,
-  imagePosition = 'right',
+  textPosition = 'left',
 }) => {
   const themeClass = getThemeClass(settings)
   const textAlignment = getTextAlignment(settings)
-  const customClass = settings.customClass || ''
+  const customClass = settings?.customClass || ''
 
-  const isImageRight = imagePosition === 'right'
+  const isTextRight = textPosition === 'right'
 
   return (
     <section
@@ -24,7 +25,7 @@ export const TextWithImage: React.FC<any> = ({
       <div className="inner-wrap">
         <div className="w-full container mx-auto">
           <div
-            className={`flex flex-col lg:flex-row items-center gap-6 md:gap-7 lg:gap-8 xl:gap-10 2xl:gap-12 ${isImageRight ? '' : 'lg:flex-row-reverse'}`}
+            className={`flex flex-col lg:flex-row items-center gap-6 md:gap-7 lg:gap-8 xl:gap-10 2xl:gap-12 ${isTextRight ? 'lg:flex-row-reverse' : ''}`}
           >
             {/* Text Content */}
             <div className="flex-1 w-full">
@@ -38,11 +39,15 @@ export const TextWithImage: React.FC<any> = ({
             {/* Image */}
             <div className="flex-1 w-full">
               {image && image.url && (
-                <div className="relative w-full aspect-video lg:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
-                  <img
+                <div className="relative w-full aspect-video lg:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
+                  <Image
                     src={image.url}
                     alt={image.alt || 'Content block image'}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    quality={75}
+                    loading="lazy"
+                    className="object-cover"
                   />
                 </div>
               )}

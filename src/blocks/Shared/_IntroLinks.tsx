@@ -1,11 +1,18 @@
 import React from 'react'
 import { TiArrowRight } from 'react-icons/ti'
+import { buildPagePath } from '@/utils/pageUtils'
 
-export const IntroLinks = ({ introLinks }: { introLinks: any[] }) => {
+export const IntroLinks = ({
+  introLinks,
+  className,
+}: {
+  introLinks: any[]
+  className?: string
+}) => {
   if (!introLinks || introLinks.length === 0) {
     return (
       <div className="flex flex-wrap gap-4 justify-center mt-8">
-        <a href="#" className="btn button-primary">
+        <a href="#" className={`btn button-primary ${className || ''}`.trim()}>
           Get Started
         </a>
         <a href="#" className="btn button-secondary">
@@ -24,18 +31,21 @@ export const IntroLinks = ({ introLinks }: { introLinks: any[] }) => {
           link.type === 'custom'
             ? link.url
             : typeof link.reference?.value === 'object'
-              ? `/${link.reference.value.slug}`
-              : '#'
+              ? buildPagePath(link.reference.value)
+              : typeof link.reference === 'object' && link.reference?.slug
+                ? buildPagePath(link.reference)
+                : '#'
 
-        const linkClass =
+        const baseClass =
           link.appearance === 'secondary' || link.appearance === 'outline'
             ? 'btn button-secondary'
             : 'btn button-primary'
 
+        const linkClass = className ? `${baseClass} ${className}` : baseClass
+
         return (
           <a key={idx} href={url || '#'} className={linkClass}>
             {link.label}
-            <TiArrowRight className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
           </a>
         )
       })}

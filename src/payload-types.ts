@@ -70,6 +70,9 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
+    posts: Post;
+    authors: Author;
+    categories: Category;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +83,9 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -93,11 +99,13 @@ export interface Config {
     'site-settings': SiteSetting;
     navigation: Navigation;
     footer: Footer;
+    'blog-settings': BlogSetting;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'blog-settings': BlogSettingsSelect<false> | BlogSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -181,29 +189,39 @@ export interface Page {
   pageType?: ('home' | 'page' | 'blog-landing' | 'blog-detail') | null;
   slug: string;
   parent?: (string | null) | Page;
-  listingTitle?: string | null;
-  listingDescription?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
+  listingLayout?: {
+    listingTitle?: string | null;
+    listingDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
         version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  listingImage?: (string | null) | Media;
+      };
+      [k: string]: unknown;
+    } | null;
+    listingImage?: (string | null) | Media;
+  };
   banner?: {
     pageTitle?: string | null;
     pageDescription?: string | null;
     displayBreadcrumb?: boolean | null;
     bannerBackground?: (string | null) | Media;
     textAlign?: ('left' | 'center' | 'right') | null;
+    /**
+     * Show a dark overlay over the banner background image to improve text readability.
+     */
+    displayOverlay?: boolean | null;
+    /**
+     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     */
+    overlayOpacity?: number | null;
   };
   blogPageTitle?: string | null;
   mainImage?: (string | null) | Media;
@@ -250,50 +268,58 @@ export interface Page {
   layout?:
     | (
         | {
-            introText?: {
-              subheading?: string | null;
-              heading?: string | null;
-              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
-              description?: string | null;
-              content?: {
-                root: {
-                  type: string;
-                  children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                  }[];
-                  direction: ('ltr' | 'rtl') | null;
-                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                  indent: number;
-                  version: number;
-                };
-                [k: string]: unknown;
-              } | null;
-            };
-            backgroundImage?: (string | null) | Media;
-            introLinks?:
+            slides?:
               | {
-                  label: string;
-                  type?: ('custom' | 'reference') | null;
-                  url?: string | null;
-                  reference?: (string | null) | Page;
-                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  introText?: {
+                    subheading?: string | null;
+                    heading?: string | null;
+                    headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    description?: string | null;
+                    content?: {
+                      root: {
+                        type: string;
+                        children: {
+                          type: any;
+                          version: number;
+                          [k: string]: unknown;
+                        }[];
+                        direction: ('ltr' | 'rtl') | null;
+                        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                        indent: number;
+                        version: number;
+                      };
+                      [k: string]: unknown;
+                    } | null;
+                  };
+                  media?: (string | null) | Media;
+                  videoAutoplay?: boolean | null;
+                  introLinks?:
+                    | {
+                        label: string;
+                        type?: ('custom' | 'reference') | null;
+                        url?: string | null;
+                        reference?: (string | null) | Page;
+                        appearance?: ('primary' | 'secondary' | 'outline') | null;
+                        id?: string | null;
+                      }[]
+                    | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
               hideComponent?: boolean | null;
             };
+            bannerWidth?: ('half' | 'wide' | 'full') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'hero';
@@ -331,12 +357,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -379,17 +406,22 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
               hideComponent?: boolean | null;
             };
+            /**
+             * Controls the width of the text content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'text';
@@ -429,18 +461,23 @@ export interface Page {
             image?: (string | null) | Media;
             imagePosition?: ('left' | 'right') | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
               hideComponent?: boolean | null;
             };
             backgroundImage?: (string | null) | Media;
+            /**
+             * Controls the width of the CTA content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'cta';
@@ -479,12 +516,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -533,12 +571,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -591,12 +630,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -657,12 +697,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -673,6 +714,10 @@ export interface Page {
              */
             introTextPosition?: ('above' | 'below') | null;
             itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
+            /**
+             * Display images as small icons (32×32px) with padding and rounded shadow container
+             */
+            iconMode?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'pod';
@@ -731,12 +776,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -789,12 +835,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -849,12 +896,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -862,6 +910,7 @@ export interface Page {
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
+            enableGridBorder?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'logoGrid';
@@ -914,12 +963,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -971,12 +1021,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1026,12 +1077,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1081,12 +1133,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1134,12 +1187,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1204,12 +1258,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1264,12 +1319,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1317,12 +1373,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1370,12 +1427,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1415,12 +1473,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1473,12 +1532,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1529,12 +1589,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1590,12 +1651,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1643,12 +1705,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1699,12 +1762,13 @@ export interface Page {
                 }[]
               | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1725,12 +1789,13 @@ export interface Page {
              */
             author?: string | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1806,12 +1871,13 @@ export interface Page {
             displayContactInfo?: boolean | null;
             contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1823,12 +1889,5195 @@ export interface Page {
           }
         | {
             settings?: {
-              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6') | null;
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
               /**
                * Add custom CSS classes here (space separated)
                */
               customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'sitemap';
+          }
+      )[]
+    | null;
+  seo?: {
+    /**
+     * Title for search engines
+     */
+    metaTitle?: string | null;
+    /**
+     * Description for search engines
+     */
+    metaDescription?: string | null;
+    /**
+     * Image for social sharing
+     */
+    ogImage?: (string | null) | Media;
+  };
+  navigation?: {
+    /**
+     * Used for menu links (defaults to page title)
+     */
+    navTitle?: string | null;
+    hideFromNavigation?: boolean | null;
+    hideFromSitemap?: boolean | null;
+    hideFromXMLSitemap?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  blogTitle?: string | null;
+  blogExcerpt?: string | null;
+  blogDetail?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  blogMainImage?: (string | null) | Media;
+  author?: (string | null) | Author;
+  category?: (string | null) | Category;
+  /**
+   * Comma separated values
+   */
+  tags?: string | null;
+  listingLayout?: {
+    listingTitle?: string | null;
+    listingDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    listingImage?: (string | null) | Media;
+  };
+  banner?: {
+    pageTitle?: string | null;
+    pageDescription?: string | null;
+    displayBreadcrumb?: boolean | null;
+    bannerBackground?: (string | null) | Media;
+    textAlign?: ('left' | 'center' | 'right') | null;
+    /**
+     * Show a dark overlay over the banner background image to improve text readability.
+     */
+    displayOverlay?: boolean | null;
+    /**
+     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     */
+    overlayOpacity?: number | null;
+  };
+  layout?:
+    | (
+        | {
+            slides?:
+              | {
+                  introText?: {
+                    subheading?: string | null;
+                    heading?: string | null;
+                    headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    description?: string | null;
+                    content?: {
+                      root: {
+                        type: string;
+                        children: {
+                          type: any;
+                          version: number;
+                          [k: string]: unknown;
+                        }[];
+                        direction: ('ltr' | 'rtl') | null;
+                        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                        indent: number;
+                        version: number;
+                      };
+                      [k: string]: unknown;
+                    } | null;
+                  };
+                  media?: (string | null) | Media;
+                  videoAutoplay?: boolean | null;
+                  introLinks?:
+                    | {
+                        label: string;
+                        type?: ('custom' | 'reference') | null;
+                        url?: string | null;
+                        reference?: (string | null) | Page;
+                        appearance?: ('primary' | 'secondary' | 'outline') | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            bannerWidth?: ('half' | 'wide' | 'full') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            /**
+             * Controls the width of the text content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            image?: (string | null) | Media;
+            imagePosition?: ('left' | 'right') | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            backgroundImage?: (string | null) | Media;
+            /**
+             * Controls the width of the CTA content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            image?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            textPosition?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textWithImage';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            video?: (string | null) | Media;
+            /**
+             * Optional thumbnail image for the video
+             */
+            thumbnail?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            textPosition?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textWithVideo';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            counterItems?:
+              | {
+                  image?: (string | null) | Media;
+                  text: string;
+                  description?: string | null;
+                  posttext?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'counter';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            podItems?:
+              | {
+                  image?: (string | null) | Media;
+                  title: string;
+                  content?: string | null;
+                  /**
+                   * Optional link for this pod item
+                   */
+                  link?: {
+                    label?: string | null;
+                    type?: ('custom' | 'reference') | null;
+                    url?: string | null;
+                    reference?: (string | null) | Page;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            /**
+             * Position of the Intro Text relative to the pod items
+             */
+            introTextPosition?: ('above' | 'below') | null;
+            itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
+            /**
+             * Display images as small icons (32×32px) with padding and rounded shadow container
+             */
+            iconMode?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pod';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            faqs?:
+              | {
+                  question: string;
+                  answer: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            testimonials?:
+              | {
+                  quote: string;
+                  authorName: string;
+                  role?: string | null;
+                  rating?: number | null;
+                  image?: (string | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('1' | '2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonial';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            logos?:
+              | {
+                  image?: (string | null) | Media;
+                  /**
+                   * Optional URL or text associated with the logo
+                   */
+                  linkText?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
+            enableGridBorder?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'logoGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            pricingPlans?:
+              | {
+                  planName: string;
+                  price: string;
+                  description?: string | null;
+                  features?:
+                    | {
+                        feature: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  isPopular?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricingTable';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            teamMembers?:
+              | {
+                  image?: (string | null) | Media;
+                  name: string;
+                  designation: string;
+                  experienceOrJoiningDate?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'teamGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Enter a category name to filter posts. Leave blank to fetch the latest posts from all categories.
+             */
+            category?: string | null;
+            numberOfPosts?: number | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'latestPosts';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            mediaItems?:
+              | {
+                  image?: (string | null) | Media;
+                  caption?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableMasonry?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGallery';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Paste the iframe embed code from Google Maps or other map providers.
+             */
+            mapData: string;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            widthType?: ('full' | 'wide') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'map';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            tabsList?:
+              | {
+                  tabLabel: string;
+                  tabContent?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'tabs';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * The name of the competitor or alternative you are comparing against.
+             */
+            competitorName: string;
+            features?:
+              | {
+                  featureName: string;
+                  ourProductHasFeature?: boolean | null;
+                  competitorHasFeature?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'comparisonTable';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            targetDate?: string | null;
+            /**
+             * Message to display when the countdown has finished.
+             */
+            expiredMessage?: string | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            themeColor?: ('primary' | 'secondary' | 'dark') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'countdownTimer';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Paste your form iframe or script tag here (e.g., Mailchimp, Hubspot).
+             */
+            htmlEmbedCode: string;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'formEmbed';
+          }
+        | {
+            /**
+             * The short message to display in the banner.
+             */
+            message: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            bannerType?: ('info' | 'success' | 'warning') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'noticeBanner';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            events?:
+              | {
+                  dateOrYear: string;
+                  title: string;
+                  description?: string | null;
+                  image?: (string | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            steps?:
+              | {
+                  stepNumberOrIcon: string;
+                  title: string;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            layoutStyle?: ('horizontal' | 'vertical') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'processSteps';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            portfolioItems?:
+              | {
+                  image?: (string | null) | Media;
+                  title: string;
+                  description?: string | null;
+                  /**
+                   * Optional URL for the portfolio piece.
+                   */
+                  link?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            itemsPerRow?: ('2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'portfolioGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            beforeImage?: (string | null) | Media;
+            beforeLabel?: string | null;
+            afterImage?: (string | null) | Media;
+            afterLabel?: string | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'beforeAndAfter';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Enter the YouTube, Vimeo, or direct MP4 URL.
+             */
+            videoUrl: string;
+            /**
+             * Optional image to show before the video starts playing.
+             */
+            posterImage?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            autoPlay?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'videoPlayer';
+          }
+        | {
+            /**
+             * The main quote text to highlight.
+             */
+            quote: string;
+            /**
+             * Optional author or source of the quote.
+             */
+            author?: string | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pullquote';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Message to show when the form is successfully submitted.
+             */
+            thankYouMessage?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Message to show if the form submission fails.
+             */
+            failureMessage?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            subject?: string | null;
+            /**
+             * Where should this form be sent?
+             */
+            recipientEmailAddress?: string | null;
+            displayContactInfo?: boolean | null;
+            contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactUs';
+          }
+        | {
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'sitemap';
+          }
+      )[]
+    | null;
+  seo?: {
+    /**
+     * Title for search engines
+     */
+    metaTitle?: string | null;
+    /**
+     * Description for search engines
+     */
+    metaDescription?: string | null;
+    /**
+     * Image for social sharing
+     */
+    ogImage?: (string | null) | Media;
+  };
+  navigation?: {
+    /**
+     * Used for menu links (defaults to page title)
+     */
+    navTitle?: string | null;
+    hideFromNavigation?: boolean | null;
+    hideFromSitemap?: boolean | null;
+    hideFromXMLSitemap?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: string;
+  title: string;
+  slug: string;
+  authorName?: string | null;
+  authorDesignation?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  authorImage?: (string | null) | Media;
+  authorSocialMedia?:
+    | {
+        /**
+         * Enter the exact name of the React Icon (e.g., FaFacebook, FaInstagram)
+         */
+        icon?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  listingLayout?: {
+    listingTitle?: string | null;
+    listingDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    listingImage?: (string | null) | Media;
+  };
+  banner?: {
+    pageTitle?: string | null;
+    pageDescription?: string | null;
+    displayBreadcrumb?: boolean | null;
+    bannerBackground?: (string | null) | Media;
+    textAlign?: ('left' | 'center' | 'right') | null;
+    /**
+     * Show a dark overlay over the banner background image to improve text readability.
+     */
+    displayOverlay?: boolean | null;
+    /**
+     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     */
+    overlayOpacity?: number | null;
+  };
+  layout?:
+    | (
+        | {
+            slides?:
+              | {
+                  introText?: {
+                    subheading?: string | null;
+                    heading?: string | null;
+                    headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    description?: string | null;
+                    content?: {
+                      root: {
+                        type: string;
+                        children: {
+                          type: any;
+                          version: number;
+                          [k: string]: unknown;
+                        }[];
+                        direction: ('ltr' | 'rtl') | null;
+                        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                        indent: number;
+                        version: number;
+                      };
+                      [k: string]: unknown;
+                    } | null;
+                  };
+                  media?: (string | null) | Media;
+                  videoAutoplay?: boolean | null;
+                  introLinks?:
+                    | {
+                        label: string;
+                        type?: ('custom' | 'reference') | null;
+                        url?: string | null;
+                        reference?: (string | null) | Page;
+                        appearance?: ('primary' | 'secondary' | 'outline') | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            bannerWidth?: ('half' | 'wide' | 'full') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            /**
+             * Controls the width of the text content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            image?: (string | null) | Media;
+            imagePosition?: ('left' | 'right') | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            backgroundImage?: (string | null) | Media;
+            /**
+             * Controls the width of the CTA content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            image?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            textPosition?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textWithImage';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            video?: (string | null) | Media;
+            /**
+             * Optional thumbnail image for the video
+             */
+            thumbnail?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            textPosition?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textWithVideo';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            counterItems?:
+              | {
+                  image?: (string | null) | Media;
+                  text: string;
+                  description?: string | null;
+                  posttext?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'counter';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            podItems?:
+              | {
+                  image?: (string | null) | Media;
+                  title: string;
+                  content?: string | null;
+                  /**
+                   * Optional link for this pod item
+                   */
+                  link?: {
+                    label?: string | null;
+                    type?: ('custom' | 'reference') | null;
+                    url?: string | null;
+                    reference?: (string | null) | Page;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            /**
+             * Position of the Intro Text relative to the pod items
+             */
+            introTextPosition?: ('above' | 'below') | null;
+            itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
+            /**
+             * Display images as small icons (32×32px) with padding and rounded shadow container
+             */
+            iconMode?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pod';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            faqs?:
+              | {
+                  question: string;
+                  answer: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            testimonials?:
+              | {
+                  quote: string;
+                  authorName: string;
+                  role?: string | null;
+                  rating?: number | null;
+                  image?: (string | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('1' | '2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonial';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            logos?:
+              | {
+                  image?: (string | null) | Media;
+                  /**
+                   * Optional URL or text associated with the logo
+                   */
+                  linkText?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
+            enableGridBorder?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'logoGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            pricingPlans?:
+              | {
+                  planName: string;
+                  price: string;
+                  description?: string | null;
+                  features?:
+                    | {
+                        feature: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  isPopular?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricingTable';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            teamMembers?:
+              | {
+                  image?: (string | null) | Media;
+                  name: string;
+                  designation: string;
+                  experienceOrJoiningDate?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'teamGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Enter a category name to filter posts. Leave blank to fetch the latest posts from all categories.
+             */
+            category?: string | null;
+            numberOfPosts?: number | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'latestPosts';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            mediaItems?:
+              | {
+                  image?: (string | null) | Media;
+                  caption?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableMasonry?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGallery';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Paste the iframe embed code from Google Maps or other map providers.
+             */
+            mapData: string;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            widthType?: ('full' | 'wide') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'map';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            tabsList?:
+              | {
+                  tabLabel: string;
+                  tabContent?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'tabs';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * The name of the competitor or alternative you are comparing against.
+             */
+            competitorName: string;
+            features?:
+              | {
+                  featureName: string;
+                  ourProductHasFeature?: boolean | null;
+                  competitorHasFeature?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'comparisonTable';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            targetDate?: string | null;
+            /**
+             * Message to display when the countdown has finished.
+             */
+            expiredMessage?: string | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            themeColor?: ('primary' | 'secondary' | 'dark') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'countdownTimer';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Paste your form iframe or script tag here (e.g., Mailchimp, Hubspot).
+             */
+            htmlEmbedCode: string;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'formEmbed';
+          }
+        | {
+            /**
+             * The short message to display in the banner.
+             */
+            message: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            bannerType?: ('info' | 'success' | 'warning') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'noticeBanner';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            events?:
+              | {
+                  dateOrYear: string;
+                  title: string;
+                  description?: string | null;
+                  image?: (string | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            steps?:
+              | {
+                  stepNumberOrIcon: string;
+                  title: string;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            layoutStyle?: ('horizontal' | 'vertical') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'processSteps';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            portfolioItems?:
+              | {
+                  image?: (string | null) | Media;
+                  title: string;
+                  description?: string | null;
+                  /**
+                   * Optional URL for the portfolio piece.
+                   */
+                  link?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            itemsPerRow?: ('2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'portfolioGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            beforeImage?: (string | null) | Media;
+            beforeLabel?: string | null;
+            afterImage?: (string | null) | Media;
+            afterLabel?: string | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'beforeAndAfter';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Enter the YouTube, Vimeo, or direct MP4 URL.
+             */
+            videoUrl: string;
+            /**
+             * Optional image to show before the video starts playing.
+             */
+            posterImage?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            autoPlay?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'videoPlayer';
+          }
+        | {
+            /**
+             * The main quote text to highlight.
+             */
+            quote: string;
+            /**
+             * Optional author or source of the quote.
+             */
+            author?: string | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pullquote';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Message to show when the form is successfully submitted.
+             */
+            thankYouMessage?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Message to show if the form submission fails.
+             */
+            failureMessage?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            subject?: string | null;
+            /**
+             * Where should this form be sent?
+             */
+            recipientEmailAddress?: string | null;
+            displayContactInfo?: boolean | null;
+            contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactUs';
+          }
+        | {
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'sitemap';
+          }
+      )[]
+    | null;
+  seo?: {
+    /**
+     * Title for search engines
+     */
+    metaTitle?: string | null;
+    /**
+     * Description for search engines
+     */
+    metaDescription?: string | null;
+    /**
+     * Image for social sharing
+     */
+    ogImage?: (string | null) | Media;
+  };
+  navigation?: {
+    /**
+     * Used for menu links (defaults to page title)
+     */
+    navTitle?: string | null;
+    hideFromNavigation?: boolean | null;
+    hideFromSitemap?: boolean | null;
+    hideFromXMLSitemap?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: string;
+  title: string;
+  slug: string;
+  categoryName?: string | null;
+  listingLayout?: {
+    listingTitle?: string | null;
+    listingDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    listingImage?: (string | null) | Media;
+  };
+  banner?: {
+    pageTitle?: string | null;
+    pageDescription?: string | null;
+    displayBreadcrumb?: boolean | null;
+    bannerBackground?: (string | null) | Media;
+    textAlign?: ('left' | 'center' | 'right') | null;
+    /**
+     * Show a dark overlay over the banner background image to improve text readability.
+     */
+    displayOverlay?: boolean | null;
+    /**
+     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     */
+    overlayOpacity?: number | null;
+  };
+  layout?:
+    | (
+        | {
+            slides?:
+              | {
+                  introText?: {
+                    subheading?: string | null;
+                    heading?: string | null;
+                    headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    description?: string | null;
+                    content?: {
+                      root: {
+                        type: string;
+                        children: {
+                          type: any;
+                          version: number;
+                          [k: string]: unknown;
+                        }[];
+                        direction: ('ltr' | 'rtl') | null;
+                        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                        indent: number;
+                        version: number;
+                      };
+                      [k: string]: unknown;
+                    } | null;
+                  };
+                  media?: (string | null) | Media;
+                  videoAutoplay?: boolean | null;
+                  introLinks?:
+                    | {
+                        label: string;
+                        type?: ('custom' | 'reference') | null;
+                        url?: string | null;
+                        reference?: (string | null) | Page;
+                        appearance?: ('primary' | 'secondary' | 'outline') | null;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            bannerWidth?: ('half' | 'wide' | 'full') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            /**
+             * Controls the width of the text content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            image?: (string | null) | Media;
+            imagePosition?: ('left' | 'right') | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            backgroundImage?: (string | null) | Media;
+            /**
+             * Controls the width of the CTA content block
+             */
+            contentWidth?: ('full' | 'wide' | 'half') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            image?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            textPosition?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textWithImage';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            video?: (string | null) | Media;
+            /**
+             * Optional thumbnail image for the video
+             */
+            thumbnail?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            textPosition?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textWithVideo';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            counterItems?:
+              | {
+                  image?: (string | null) | Media;
+                  text: string;
+                  description?: string | null;
+                  posttext?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'counter';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            podItems?:
+              | {
+                  image?: (string | null) | Media;
+                  title: string;
+                  content?: string | null;
+                  /**
+                   * Optional link for this pod item
+                   */
+                  link?: {
+                    label?: string | null;
+                    type?: ('custom' | 'reference') | null;
+                    url?: string | null;
+                    reference?: (string | null) | Page;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            /**
+             * Position of the Intro Text relative to the pod items
+             */
+            introTextPosition?: ('above' | 'below') | null;
+            itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
+            /**
+             * Display images as small icons (32×32px) with padding and rounded shadow container
+             */
+            iconMode?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pod';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            faqs?:
+              | {
+                  question: string;
+                  answer: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            testimonials?:
+              | {
+                  quote: string;
+                  authorName: string;
+                  role?: string | null;
+                  rating?: number | null;
+                  image?: (string | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('1' | '2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonial';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            logos?:
+              | {
+                  image?: (string | null) | Media;
+                  /**
+                   * Optional URL or text associated with the logo
+                   */
+                  linkText?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
+            enableGridBorder?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'logoGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            pricingPlans?:
+              | {
+                  planName: string;
+                  price: string;
+                  description?: string | null;
+                  features?:
+                    | {
+                        feature: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  isPopular?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricingTable';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            teamMembers?:
+              | {
+                  image?: (string | null) | Media;
+                  name: string;
+                  designation: string;
+                  experienceOrJoiningDate?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableCarousel?: boolean | null;
+            itemsPerRow?: ('2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'teamGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Enter a category name to filter posts. Leave blank to fetch the latest posts from all categories.
+             */
+            category?: string | null;
+            numberOfPosts?: number | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'latestPosts';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            mediaItems?:
+              | {
+                  image?: (string | null) | Media;
+                  caption?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            enableMasonry?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGallery';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Paste the iframe embed code from Google Maps or other map providers.
+             */
+            mapData: string;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            widthType?: ('full' | 'wide') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'map';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            tabsList?:
+              | {
+                  tabLabel: string;
+                  tabContent?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'tabs';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * The name of the competitor or alternative you are comparing against.
+             */
+            competitorName: string;
+            features?:
+              | {
+                  featureName: string;
+                  ourProductHasFeature?: boolean | null;
+                  competitorHasFeature?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'comparisonTable';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            targetDate?: string | null;
+            /**
+             * Message to display when the countdown has finished.
+             */
+            expiredMessage?: string | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            themeColor?: ('primary' | 'secondary' | 'dark') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'countdownTimer';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Paste your form iframe or script tag here (e.g., Mailchimp, Hubspot).
+             */
+            htmlEmbedCode: string;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'formEmbed';
+          }
+        | {
+            /**
+             * The short message to display in the banner.
+             */
+            message: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            bannerType?: ('info' | 'success' | 'warning') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'noticeBanner';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            events?:
+              | {
+                  dateOrYear: string;
+                  title: string;
+                  description?: string | null;
+                  image?: (string | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            steps?:
+              | {
+                  stepNumberOrIcon: string;
+                  title: string;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            layoutStyle?: ('horizontal' | 'vertical') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'processSteps';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            portfolioItems?:
+              | {
+                  image?: (string | null) | Media;
+                  title: string;
+                  description?: string | null;
+                  /**
+                   * Optional URL for the portfolio piece.
+                   */
+                  link?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            itemsPerRow?: ('2' | '3' | '4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'portfolioGrid';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            beforeImage?: (string | null) | Media;
+            beforeLabel?: string | null;
+            afterImage?: (string | null) | Media;
+            afterLabel?: string | null;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'beforeAndAfter';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Enter the YouTube, Vimeo, or direct MP4 URL.
+             */
+            videoUrl: string;
+            /**
+             * Optional image to show before the video starts playing.
+             */
+            posterImage?: (string | null) | Media;
+            introLinks?:
+              | {
+                  label: string;
+                  type?: ('custom' | 'reference') | null;
+                  url?: string | null;
+                  reference?: (string | null) | Page;
+                  appearance?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            autoPlay?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'videoPlayer';
+          }
+        | {
+            /**
+             * The main quote text to highlight.
+             */
+            quote: string;
+            /**
+             * Optional author or source of the quote.
+             */
+            author?: string | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pullquote';
+          }
+        | {
+            introText?: {
+              subheading?: string | null;
+              heading?: string | null;
+              headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              description?: string | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            /**
+             * Message to show when the form is successfully submitted.
+             */
+            thankYouMessage?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Message to show if the form submission fails.
+             */
+            failureMessage?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            subject?: string | null;
+            /**
+             * Where should this form be sent?
+             */
+            recipientEmailAddress?: string | null;
+            displayContactInfo?: boolean | null;
+            contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
+              /**
+               * Check this to completely hide this component from the frontend
+               */
+              hideComponent?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactUs';
+          }
+        | {
+            settings?: {
+              backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
+              textAlign?: ('left' | 'center' | 'right') | null;
+              /**
+               * Add custom CSS classes here (space separated)
+               */
+              customClass?: string | null;
+              enableOverlay?: boolean | null;
               /**
                * Check this to completely hide this component from the frontend
                */
@@ -1901,6 +7150,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: string | Post;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: string | Author;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: string | Category;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1993,9 +7254,13 @@ export interface PagesSelect<T extends boolean = true> {
   pageType?: T;
   slug?: T;
   parent?: T;
-  listingTitle?: T;
-  listingDescription?: T;
-  listingImage?: T;
+  listingLayout?:
+    | T
+    | {
+        listingTitle?: T;
+        listingDescription?: T;
+        listingImage?: T;
+      };
   banner?:
     | T
     | {
@@ -2004,6 +7269,8 @@ export interface PagesSelect<T extends boolean = true> {
         displayBreadcrumb?: T;
         bannerBackground?: T;
         textAlign?: T;
+        displayOverlay?: T;
+        overlayOpacity?: T;
       };
   blogPageTitle?: T;
   mainImage?: T;
@@ -2022,24 +7289,30 @@ export interface PagesSelect<T extends boolean = true> {
         hero?:
           | T
           | {
-              introText?:
+              slides?:
                 | T
                 | {
-                    subheading?: T;
-                    heading?: T;
-                    headingSize?: T;
-                    description?: T;
-                    content?: T;
-                  };
-              backgroundImage?: T;
-              introLinks?:
-                | T
-                | {
-                    label?: T;
-                    type?: T;
-                    url?: T;
-                    reference?: T;
-                    appearance?: T;
+                    introText?:
+                      | T
+                      | {
+                          subheading?: T;
+                          heading?: T;
+                          headingSize?: T;
+                          description?: T;
+                          content?: T;
+                        };
+                    media?: T;
+                    videoAutoplay?: T;
+                    introLinks?:
+                      | T
+                      | {
+                          label?: T;
+                          type?: T;
+                          url?: T;
+                          reference?: T;
+                          appearance?: T;
+                          id?: T;
+                        };
                     id?: T;
                   };
               settings?:
@@ -2048,8 +7321,10 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
+              bannerWidth?: T;
               id?: T;
               blockName?: T;
             };
@@ -2081,6 +7356,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2114,8 +7390,10 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
+              contentWidth?: T;
               id?: T;
               blockName?: T;
             };
@@ -2149,9 +7427,11 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               backgroundImage?: T;
+              contentWidth?: T;
               id?: T;
               blockName?: T;
             };
@@ -2184,6 +7464,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               textPosition?: T;
@@ -2220,6 +7501,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               textPosition?: T;
@@ -2263,6 +7545,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               itemsPerRow?: T;
@@ -2313,10 +7596,12 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               introTextPosition?: T;
               itemsPerRow?: T;
+              iconMode?: T;
               id?: T;
               blockName?: T;
             };
@@ -2355,6 +7640,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2398,6 +7684,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               enableCarousel?: T;
@@ -2440,10 +7727,12 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
+              enableGridBorder?: T;
               id?: T;
               blockName?: T;
             };
@@ -2490,6 +7779,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2532,6 +7822,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               enableCarousel?: T;
@@ -2569,6 +7860,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2609,6 +7901,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               enableMasonry?: T;
@@ -2644,6 +7937,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               widthType?: T;
@@ -2685,6 +7979,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2727,6 +8022,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2762,6 +8058,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               themeColor?: T;
@@ -2797,6 +8094,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2822,6 +8120,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               bannerType?: T;
@@ -2865,6 +8164,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -2906,6 +8206,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               layoutStyle?: T;
@@ -2949,6 +8250,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               itemsPerRow?: T;
@@ -2987,6 +8289,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -3022,6 +8325,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               autoPlay?: T;
@@ -3039,6 +8343,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -3068,6 +8373,7 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -3082,6 +8388,3490 @@ export interface PagesSelect<T extends boolean = true> {
                     backgroundColor?: T;
                     textAlign?: T;
                     customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  navigation?:
+    | T
+    | {
+        navTitle?: T;
+        hideFromNavigation?: T;
+        hideFromSitemap?: T;
+        hideFromXMLSitemap?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  blogTitle?: T;
+  blogExcerpt?: T;
+  blogDetail?: T;
+  blogMainImage?: T;
+  author?: T;
+  category?: T;
+  tags?: T;
+  listingLayout?:
+    | T
+    | {
+        listingTitle?: T;
+        listingDescription?: T;
+        listingImage?: T;
+      };
+  banner?:
+    | T
+    | {
+        pageTitle?: T;
+        pageDescription?: T;
+        displayBreadcrumb?: T;
+        bannerBackground?: T;
+        textAlign?: T;
+        displayOverlay?: T;
+        overlayOpacity?: T;
+      };
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              slides?:
+                | T
+                | {
+                    introText?:
+                      | T
+                      | {
+                          subheading?: T;
+                          heading?: T;
+                          headingSize?: T;
+                          description?: T;
+                          content?: T;
+                        };
+                    media?: T;
+                    videoAutoplay?: T;
+                    introLinks?:
+                      | T
+                      | {
+                          label?: T;
+                          type?: T;
+                          url?: T;
+                          reference?: T;
+                          appearance?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              bannerWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              contentWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              image?: T;
+              imagePosition?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              backgroundImage?: T;
+              contentWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textWithImage?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              image?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              textPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textWithVideo?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              video?: T;
+              thumbnail?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              textPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        counter?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              counterItems?:
+                | T
+                | {
+                    image?: T;
+                    text?: T;
+                    description?: T;
+                    posttext?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pod?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              podItems?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    content?: T;
+                    link?:
+                      | T
+                      | {
+                          label?: T;
+                          type?: T;
+                          url?: T;
+                          reference?: T;
+                        };
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              introTextPosition?: T;
+              itemsPerRow?: T;
+              iconMode?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              faqs?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        testimonial?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              testimonials?:
+                | T
+                | {
+                    quote?: T;
+                    authorName?: T;
+                    role?: T;
+                    rating?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        logoGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              logos?:
+                | T
+                | {
+                    image?: T;
+                    linkText?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              enableGridBorder?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pricingTable?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              pricingPlans?:
+                | T
+                | {
+                    planName?: T;
+                    price?: T;
+                    description?: T;
+                    features?:
+                      | T
+                      | {
+                          feature?: T;
+                          id?: T;
+                        };
+                    isPopular?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        teamGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              teamMembers?:
+                | T
+                | {
+                    image?: T;
+                    name?: T;
+                    designation?: T;
+                    experienceOrJoiningDate?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        latestPosts?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              category?: T;
+              numberOfPosts?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        mediaGallery?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              mediaItems?:
+                | T
+                | {
+                    image?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableMasonry?: T;
+              id?: T;
+              blockName?: T;
+            };
+        map?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              mapData?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              widthType?: T;
+              id?: T;
+              blockName?: T;
+            };
+        tabs?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              tabsList?:
+                | T
+                | {
+                    tabLabel?: T;
+                    tabContent?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        comparisonTable?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              competitorName?: T;
+              features?:
+                | T
+                | {
+                    featureName?: T;
+                    ourProductHasFeature?: T;
+                    competitorHasFeature?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        countdownTimer?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              targetDate?: T;
+              expiredMessage?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              themeColor?: T;
+              id?: T;
+              blockName?: T;
+            };
+        formEmbed?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              htmlEmbedCode?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        noticeBanner?:
+          | T
+          | {
+              message?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              bannerType?: T;
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              events?:
+                | T
+                | {
+                    dateOrYear?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        processSteps?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              steps?:
+                | T
+                | {
+                    stepNumberOrIcon?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              layoutStyle?: T;
+              id?: T;
+              blockName?: T;
+            };
+        portfolioGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              portfolioItems?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    description?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        beforeAndAfter?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              beforeImage?: T;
+              beforeLabel?: T;
+              afterImage?: T;
+              afterLabel?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        videoPlayer?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              videoUrl?: T;
+              posterImage?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              autoPlay?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pullquote?:
+          | T
+          | {
+              quote?: T;
+              author?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        contactUs?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              thankYouMessage?: T;
+              failureMessage?: T;
+              subject?: T;
+              recipientEmailAddress?: T;
+              displayContactInfo?: T;
+              contactInfoPosition?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        sitemap?:
+          | T
+          | {
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  navigation?:
+    | T
+    | {
+        navTitle?: T;
+        hideFromNavigation?: T;
+        hideFromSitemap?: T;
+        hideFromXMLSitemap?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  authorName?: T;
+  authorDesignation?: T;
+  authorImage?: T;
+  authorSocialMedia?:
+    | T
+    | {
+        icon?: T;
+        url?: T;
+        id?: T;
+      };
+  listingLayout?:
+    | T
+    | {
+        listingTitle?: T;
+        listingDescription?: T;
+        listingImage?: T;
+      };
+  banner?:
+    | T
+    | {
+        pageTitle?: T;
+        pageDescription?: T;
+        displayBreadcrumb?: T;
+        bannerBackground?: T;
+        textAlign?: T;
+        displayOverlay?: T;
+        overlayOpacity?: T;
+      };
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              slides?:
+                | T
+                | {
+                    introText?:
+                      | T
+                      | {
+                          subheading?: T;
+                          heading?: T;
+                          headingSize?: T;
+                          description?: T;
+                          content?: T;
+                        };
+                    media?: T;
+                    videoAutoplay?: T;
+                    introLinks?:
+                      | T
+                      | {
+                          label?: T;
+                          type?: T;
+                          url?: T;
+                          reference?: T;
+                          appearance?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              bannerWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              contentWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              image?: T;
+              imagePosition?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              backgroundImage?: T;
+              contentWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textWithImage?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              image?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              textPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textWithVideo?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              video?: T;
+              thumbnail?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              textPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        counter?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              counterItems?:
+                | T
+                | {
+                    image?: T;
+                    text?: T;
+                    description?: T;
+                    posttext?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pod?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              podItems?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    content?: T;
+                    link?:
+                      | T
+                      | {
+                          label?: T;
+                          type?: T;
+                          url?: T;
+                          reference?: T;
+                        };
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              introTextPosition?: T;
+              itemsPerRow?: T;
+              iconMode?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              faqs?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        testimonial?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              testimonials?:
+                | T
+                | {
+                    quote?: T;
+                    authorName?: T;
+                    role?: T;
+                    rating?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        logoGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              logos?:
+                | T
+                | {
+                    image?: T;
+                    linkText?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              enableGridBorder?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pricingTable?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              pricingPlans?:
+                | T
+                | {
+                    planName?: T;
+                    price?: T;
+                    description?: T;
+                    features?:
+                      | T
+                      | {
+                          feature?: T;
+                          id?: T;
+                        };
+                    isPopular?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        teamGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              teamMembers?:
+                | T
+                | {
+                    image?: T;
+                    name?: T;
+                    designation?: T;
+                    experienceOrJoiningDate?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        latestPosts?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              category?: T;
+              numberOfPosts?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        mediaGallery?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              mediaItems?:
+                | T
+                | {
+                    image?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableMasonry?: T;
+              id?: T;
+              blockName?: T;
+            };
+        map?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              mapData?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              widthType?: T;
+              id?: T;
+              blockName?: T;
+            };
+        tabs?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              tabsList?:
+                | T
+                | {
+                    tabLabel?: T;
+                    tabContent?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        comparisonTable?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              competitorName?: T;
+              features?:
+                | T
+                | {
+                    featureName?: T;
+                    ourProductHasFeature?: T;
+                    competitorHasFeature?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        countdownTimer?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              targetDate?: T;
+              expiredMessage?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              themeColor?: T;
+              id?: T;
+              blockName?: T;
+            };
+        formEmbed?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              htmlEmbedCode?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        noticeBanner?:
+          | T
+          | {
+              message?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              bannerType?: T;
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              events?:
+                | T
+                | {
+                    dateOrYear?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        processSteps?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              steps?:
+                | T
+                | {
+                    stepNumberOrIcon?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              layoutStyle?: T;
+              id?: T;
+              blockName?: T;
+            };
+        portfolioGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              portfolioItems?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    description?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        beforeAndAfter?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              beforeImage?: T;
+              beforeLabel?: T;
+              afterImage?: T;
+              afterLabel?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        videoPlayer?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              videoUrl?: T;
+              posterImage?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              autoPlay?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pullquote?:
+          | T
+          | {
+              quote?: T;
+              author?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        contactUs?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              thankYouMessage?: T;
+              failureMessage?: T;
+              subject?: T;
+              recipientEmailAddress?: T;
+              displayContactInfo?: T;
+              contactInfoPosition?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        sitemap?:
+          | T
+          | {
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  navigation?:
+    | T
+    | {
+        navTitle?: T;
+        hideFromNavigation?: T;
+        hideFromSitemap?: T;
+        hideFromXMLSitemap?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  categoryName?: T;
+  listingLayout?:
+    | T
+    | {
+        listingTitle?: T;
+        listingDescription?: T;
+        listingImage?: T;
+      };
+  banner?:
+    | T
+    | {
+        pageTitle?: T;
+        pageDescription?: T;
+        displayBreadcrumb?: T;
+        bannerBackground?: T;
+        textAlign?: T;
+        displayOverlay?: T;
+        overlayOpacity?: T;
+      };
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              slides?:
+                | T
+                | {
+                    introText?:
+                      | T
+                      | {
+                          subheading?: T;
+                          heading?: T;
+                          headingSize?: T;
+                          description?: T;
+                          content?: T;
+                        };
+                    media?: T;
+                    videoAutoplay?: T;
+                    introLinks?:
+                      | T
+                      | {
+                          label?: T;
+                          type?: T;
+                          url?: T;
+                          reference?: T;
+                          appearance?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              bannerWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              contentWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              image?: T;
+              imagePosition?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              backgroundImage?: T;
+              contentWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textWithImage?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              image?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              textPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textWithVideo?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              video?: T;
+              thumbnail?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              textPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        counter?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              counterItems?:
+                | T
+                | {
+                    image?: T;
+                    text?: T;
+                    description?: T;
+                    posttext?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pod?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              podItems?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    content?: T;
+                    link?:
+                      | T
+                      | {
+                          label?: T;
+                          type?: T;
+                          url?: T;
+                          reference?: T;
+                        };
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              introTextPosition?: T;
+              itemsPerRow?: T;
+              iconMode?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              faqs?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        testimonial?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              testimonials?:
+                | T
+                | {
+                    quote?: T;
+                    authorName?: T;
+                    role?: T;
+                    rating?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        logoGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              logos?:
+                | T
+                | {
+                    image?: T;
+                    linkText?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              enableGridBorder?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pricingTable?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              pricingPlans?:
+                | T
+                | {
+                    planName?: T;
+                    price?: T;
+                    description?: T;
+                    features?:
+                      | T
+                      | {
+                          feature?: T;
+                          id?: T;
+                        };
+                    isPopular?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        teamGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              teamMembers?:
+                | T
+                | {
+                    image?: T;
+                    name?: T;
+                    designation?: T;
+                    experienceOrJoiningDate?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableCarousel?: T;
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        latestPosts?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              category?: T;
+              numberOfPosts?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        mediaGallery?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              mediaItems?:
+                | T
+                | {
+                    image?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              enableMasonry?: T;
+              id?: T;
+              blockName?: T;
+            };
+        map?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              mapData?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              widthType?: T;
+              id?: T;
+              blockName?: T;
+            };
+        tabs?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              tabsList?:
+                | T
+                | {
+                    tabLabel?: T;
+                    tabContent?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        comparisonTable?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              competitorName?: T;
+              features?:
+                | T
+                | {
+                    featureName?: T;
+                    ourProductHasFeature?: T;
+                    competitorHasFeature?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        countdownTimer?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              targetDate?: T;
+              expiredMessage?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              themeColor?: T;
+              id?: T;
+              blockName?: T;
+            };
+        formEmbed?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              htmlEmbedCode?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        noticeBanner?:
+          | T
+          | {
+              message?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              bannerType?: T;
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              events?:
+                | T
+                | {
+                    dateOrYear?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        processSteps?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              steps?:
+                | T
+                | {
+                    stepNumberOrIcon?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              layoutStyle?: T;
+              id?: T;
+              blockName?: T;
+            };
+        portfolioGrid?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              portfolioItems?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    description?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              itemsPerRow?: T;
+              id?: T;
+              blockName?: T;
+            };
+        beforeAndAfter?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              beforeImage?: T;
+              beforeLabel?: T;
+              afterImage?: T;
+              afterLabel?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        videoPlayer?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              videoUrl?: T;
+              posterImage?: T;
+              introLinks?:
+                | T
+                | {
+                    label?: T;
+                    type?: T;
+                    url?: T;
+                    reference?: T;
+                    appearance?: T;
+                    id?: T;
+                  };
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              autoPlay?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pullquote?:
+          | T
+          | {
+              quote?: T;
+              author?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        contactUs?:
+          | T
+          | {
+              introText?:
+                | T
+                | {
+                    subheading?: T;
+                    heading?: T;
+                    headingSize?: T;
+                    description?: T;
+                    content?: T;
+                  };
+              thankYouMessage?: T;
+              failureMessage?: T;
+              subject?: T;
+              recipientEmailAddress?: T;
+              displayContactInfo?: T;
+              contactInfoPosition?: T;
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
+                    hideComponent?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        sitemap?:
+          | T
+          | {
+              settings?:
+                | T
+                | {
+                    backgroundColor?: T;
+                    textAlign?: T;
+                    customClass?: T;
+                    enableOverlay?: T;
                     hideComponent?: T;
                   };
               id?: T;
@@ -3171,6 +11961,14 @@ export interface SiteSetting {
   siteFavicon?: (string | null) | Media;
   address?: string | null;
   email?: string | null;
+  /**
+   * The email address used to send the emails (e.g. no-reply@gelinst.com.au)
+   */
+  fromEmail?: string | null;
+  /**
+   * The email address that will receive the contact form submissions
+   */
+  adminEmail?: string | null;
   phone?: string | null;
   /**
    * Link to Google Maps or similar
@@ -3178,20 +11976,10 @@ export interface SiteSetting {
   addressUrl?: string | null;
   socialLinks?:
     | {
-        icon?:
-          | (
-              | 'FaFacebook'
-              | 'FaTwitter'
-              | 'FaInstagram'
-              | 'FaLinkedin'
-              | 'FaYoutube'
-              | 'FaGithub'
-              | 'FaTiktok'
-              | 'FaPinterest'
-              | 'FaDiscord'
-              | 'FaTwitch'
-            )
-          | null;
+        /**
+         * Enter the exact name of the React Icon (e.g., FaFacebook, FaInstagram, RiTwitterXFill)
+         */
+        icon?: string | null;
         title?: string | null;
         link?: string | null;
         id?: string | null;
@@ -3209,6 +11997,10 @@ export interface SiteSetting {
    * Default image shown when sharing the site on social media
    */
   ogImage?: (string | null) | Media;
+  /**
+   * Toggle this on to display the top header bar with contact information
+   */
+  displayTopHeader?: boolean | null;
   /**
    * Toggle this on to display a Call to Action button in the site header
    */
@@ -3304,9 +12096,53 @@ export interface Footer {
    */
   copyrightText?: string | null;
   /**
+   * Links to display in the bottom bar next to the copyright (e.g., Privacy Policy, Terms of Service)
+   */
+  footerBottomLinks?:
+    | {
+        label: string;
+        type?: ('custom' | 'reference') | null;
+        url?: string | null;
+        reference?: (string | null) | Page;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Enable to display the footer links in a four-column grid layout
    */
   enableFourColumnLayout?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-settings".
+ */
+export interface BlogSetting {
+  id: string;
+  blogItemsPerPage?: number | null;
+  blogListingLayout?: ('grid' | 'column') | null;
+  /**
+   * Content to display when there are no posts.
+   */
+  noPostContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  hideRecentPost?: boolean | null;
+  hideTabs?: boolean | null;
+  hideCategories?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3322,6 +12158,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   siteFavicon?: T;
   address?: T;
   email?: T;
+  fromEmail?: T;
+  adminEmail?: T;
   phone?: T;
   addressUrl?: T;
   socialLinks?:
@@ -3335,6 +12173,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   metaTitle?: T;
   metaDescription?: T;
   ogImage?: T;
+  displayTopHeader?: T;
   displayHeaderCTA?: T;
   headerCTA?:
     | T
@@ -3408,7 +12247,31 @@ export interface FooterSelect<T extends boolean = true> {
         id?: T;
       };
   copyrightText?: T;
+  footerBottomLinks?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        url?: T;
+        reference?: T;
+        id?: T;
+      };
   enableFourColumnLayout?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-settings_select".
+ */
+export interface BlogSettingsSelect<T extends boolean = true> {
+  blogItemsPerPage?: T;
+  blogListingLayout?: T;
+  noPostContent?: T;
+  hideRecentPost?: T;
+  hideTabs?: T;
+  hideCategories?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

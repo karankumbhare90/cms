@@ -1,64 +1,70 @@
-import { getPayload } from 'payload'
 import React from 'react'
-import config from '@/payload.config'
 import { notFound } from 'next/navigation'
 import { RenderBlocks } from '@/components/RenderBlocks'
+import { BlogListing } from '@/components/BlogListing'
+import { Banner } from '@/components/Banner'
 import { Metadata } from 'next'
+import { getPageBySlugCached, getSiteSettingsCached } from '@/utils/cachedData'
 
 type Props = {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'pages',
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-    limit: 1,
-  })
-  
-  const page = result.docs[0]
-  if (!page) return {}
-  
+  const page = await getPageBySlugCached(slug)
+  const siteSettings = await getSiteSettingsCached()
+  const fallbackDescription =
+    siteSettings?.metaDescription ||
+    siteSettings?.description ||
+    'Professional CMS and Web Development Solutions for modern digital experiences.'
+
+  if (!page) {
+    return {
+      description: fallbackDescription,
+    }
+  }
+
   return {
     title: page.seo?.metaTitle || page.title,
-    description: page.seo?.metaDescription || '',
+    description: page.seo?.metaDescription || page.banner?.pageDescription || fallbackDescription,
   }
 }
 
-export default async function DynamicPage({ params }: Props) {
+export default async function DynamicPage({ params, searchParams }: Props) {
   const { slug } = await params
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  
-  const result = await payload.find({
-    collection: 'pages',
-    where: {
-      slug: {
-        equals: slug,
-      },
-      pageType: {
-        not_equals: 'home', // 'home' is handled by the root page.tsx
-      },
-    },
-    limit: 1,
-  })
+  const searchParamsResolved = await searchParams
+  const page = await getPageBySlugCached(slug)
 
-  const page = result.docs[0]
-  
   if (!page) {
     return notFound()
   }
 
+
   return (
-    <div className="pt-20"> {/* Add padding for fixed header */}
-      {/* If it has a banner, we could render a Banner component here. For now, rely on layout blocks */}
-      <RenderBlocks blocks={page.layout as any[]} />
+    <div style={{ paddingTop: 'var(--header-height, 72px)' }}>
+      {page.banner?.pageTitle || page.banner?.bannerBackground ? (
+        <Banner
+          page={page}
+          pageTitle={page.banner.pageTitle || undefined}
+          pageDescription={page.banner.pageDescription || undefined}
+          displayBreadcrumb={page.banner.displayBreadcrumb ?? undefined}
+          bannerBackground={page.banner.bannerBackground || undefined}
+          textAlign={page.banner.textAlign || undefined}
+          displayOverlay={page.banner.displayOverlay ?? true}
+          overlayOpacity={page.banner.overlayOpacity ?? 50}
+        />
+      ) : null}
+
+      {page.pageType === 'blog-landing' ? (
+        <>
+          <BlogListing page={page} searchParams={searchParamsResolved} />
+          {page.layout && page.layout.length > 0 && <RenderBlocks blocks={page.layout as any[]} />}
+        </>
+      ) : (
+        <RenderBlocks blocks={page.layout as any[]} />
+      )}
     </div>
   )
 }

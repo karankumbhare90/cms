@@ -6,10 +6,17 @@ import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
 import { IntroLinks } from '@/blocks/Shared/_IntroLinks'
 
-export const CountdownTimer: React.FC<any> = ({ introText, targetDate, expiredMessage, introLinks, settings }) => {
+export const CountdownTimer: React.FC<any> = ({
+  introText,
+  targetDate,
+  expiredMessage,
+  introLinks,
+  settings,
+}) => {
   const themeClass = getThemeClass(settings)
   const textAlignment = getTextAlignment(settings)
   const themeColor = settings?.themeColor || 'primary'
+  const customClass = settings.customClass || ''
 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [isExpired, setIsExpired] = useState(false)
@@ -44,55 +51,51 @@ export const CountdownTimer: React.FC<any> = ({ introText, targetDate, expiredMe
     return () => clearInterval(interval)
   }, [targetDate])
 
-  let boxClass = 'bg-white/10 border-white/20'
-  let textClass = 'text-white'
-  if (themeColor === 'primary') {
-    boxClass = 'bg-blue-600 border-blue-500 shadow-blue-500/40 text-white'
-    textClass = 'text-blue-100'
-  } else if (themeColor === 'secondary') {
-    boxClass = 'bg-gray-800 border-gray-700 text-white'
-    textClass = 'text-gray-300'
-  } else if (themeColor === 'dark') {
-    boxClass = 'bg-black border-gray-800 text-white'
-    textClass = 'text-gray-400'
-  }
-
   return (
-    <section className={`py-16 md:py-24 ${themeClass} ${textAlignment}`}>
-      <div className="container mx-auto px-6 max-w-4xl text-center">
-        <div className="prose prose-lg md:prose-xl dark:prose-invert mx-auto mb-16 flex flex-col items-center">
-          <IntroText introText={introText} />
+    <section className={`countdown-timer ${themeClass} ${textAlignment} ${customClass}`}>
+      <div className="inner-wrap">
+        <div className="container">
+          <div className="w-full">
+            <IntroText introText={introText} />
+          </div>
+
+          {isMounted && targetDate && (
+            <div className="w-full content-wrap">
+              {isExpired ? (
+                <div className="text-xl md:text-2xl font-bold text-[var(--title-colour-light-bg)] bg-[var(--color-1)] p-6 md:p-8 rounded-[12px] shadow-sm border border-[#E0EFFE] text-center">
+                  {expiredMessage || 'The countdown has finished!'}
+                </div>
+              ) : (
+                <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+                  {[
+                    { label: 'Days', value: timeLeft.days },
+                    { label: 'Hours', value: timeLeft.hours },
+                    { label: 'Minutes', value: timeLeft.minutes },
+                    { label: 'Seconds', value: timeLeft.seconds },
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex flex-col items-center justify-center w-28 h-28 md:w-36 md:h-36 rounded-[12px] border border-[#E0EFFE] bg-[var(--color-1)] shadow-sm hover:shadow-md transition-shadow duration-300"
+                    >
+                      <span className="text-4xl md:text-5xl lg:text-6xl font-semibold text-[var(--title-colour-light-bg)]">
+                        {item.value.toString().padStart(2, '0')}
+                      </span>
+                      <span className="text-[13px] md:text-[15px] font-medium uppercase tracking-wider mt-1 md:mt-2 text-[var(--fonts-color-base)]">
+                        {item.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {introLinks && introLinks.length > 0 && (
+            <div className="w-full">
+              <IntroLinks introLinks={introLinks} />
+            </div>
+          )}
         </div>
-
-        {isMounted && targetDate && (
-          <div className="mb-16">
-            {isExpired ? (
-              <div className="text-3xl font-bold text-red-500 bg-red-100 dark:bg-red-900/30 dark:text-red-400 p-8 rounded-2xl shadow-lg border border-red-200 dark:border-red-800">
-                {expiredMessage || 'The countdown has finished!'}
-              </div>
-            ) : (
-              <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-                {[
-                  { label: 'Days', value: timeLeft.days },
-                  { label: 'Hours', value: timeLeft.hours },
-                  { label: 'Minutes', value: timeLeft.minutes },
-                  { label: 'Seconds', value: timeLeft.seconds },
-                ].map((item, idx) => (
-                  <div key={idx} className={`flex flex-col items-center justify-center w-28 h-28 md:w-36 md:h-36 rounded-3xl border shadow-xl backdrop-blur-md ${boxClass}`}>
-                    <span className="text-4xl md:text-6xl font-black">{item.value.toString().padStart(2, '0')}</span>
-                    <span className={`text-sm md:text-base font-bold uppercase tracking-wider mt-1 md:mt-2 ${textClass}`}>{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {introLinks && introLinks.length > 0 && (
-          <div className="flex justify-center">
-            <IntroLinks introLinks={introLinks} />
-          </div>
-        )}
       </div>
     </section>
   )

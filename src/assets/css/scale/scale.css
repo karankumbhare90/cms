@@ -1,0 +1,23 @@
+/* E.g., inside your scale.css */
+html {
+  /* Default for standard screens */
+  font-size: 16px;
+}
+@media (min-width: 1366px) and (max-width: 1599px) {
+  html {
+    /* Scales down all rem values to 80% */
+    font-size: 12.8px;
+  }
+}
+@media (min-width: 1600px) and (max-width: 1919px) {
+  html {
+    /* Scales down all rem values to 90% */
+    font-size: 14.4px;
+  }
+}
+@media (min-width: 1920px) {
+  html {
+    /* Full size */
+    font-size: 16px;
+  }
+}

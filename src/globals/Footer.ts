@@ -72,6 +72,44 @@ export const Footer: GlobalConfig = {
       }
     },
     {
+      name: 'footerBottomLinks',
+      type: 'array',
+      admin: {
+        description: 'Links to display in the bottom bar next to the copyright (e.g., Privacy Policy, Terms of Service)',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'type',
+          type: 'radio',
+          defaultValue: 'custom',
+          options: [
+            { label: 'Custom URL', value: 'custom' },
+            { label: 'Internal Reference', value: 'reference' },
+          ]
+        },
+        {
+          name: 'url',
+          type: 'text',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'custom',
+          },
+        },
+        {
+          name: 'reference',
+          type: 'relationship',
+          relationTo: 'pages',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'reference',
+          },
+        },
+      ],
+    },
+    {
       name: 'enableFourColumnLayout',
       type: 'checkbox',
       defaultValue: false,

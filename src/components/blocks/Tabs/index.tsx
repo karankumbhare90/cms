@@ -5,7 +5,7 @@ import { getThemeClass } from '@/utils/theme'
 import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
 import { IntroLinks } from '@/blocks/Shared/_IntroLinks'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { DynamicRichText } from '@/blocks/Shared/DynamicRichText'
 
 export const Tabs: React.FC<any> = ({ introText, tabsList, introLinks, settings }) => {
   const [activeTab, setActiveTab] = useState(0)
@@ -13,43 +13,54 @@ export const Tabs: React.FC<any> = ({ introText, tabsList, introLinks, settings 
   const textAlignment = getTextAlignment(settings)
 
   return (
-    <section className={`py-16 md:py-24 ${themeClass} ${textAlignment}`}>
-      <div className="container mx-auto px-6 max-w-5xl">
-        <div className="prose prose-lg md:prose-xl dark:prose-invert mx-auto mb-12 flex flex-col items-center text-center">
-          <IntroText introText={introText} />
-        </div>
+    <section className={`tabs ${themeClass} ${textAlignment}`}>
+      <div className="inner-wrap">
+        <div className="container">
+          <div className="w-full">
+            <IntroText introText={introText} />
+          </div>
 
-        {tabsList && tabsList.length > 0 && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl shadow-xl overflow-hidden backdrop-blur-sm">
-            <div className="flex overflow-x-auto border-b border-white/10 hide-scrollbar bg-black/10 dark:bg-white/5">
-              {tabsList.map((tab: any, idx: number) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTab(idx)}
-                  className={`px-8 py-5 font-bold text-lg whitespace-nowrap transition-colors focus:outline-none ${activeTab === idx ? 'text-blue-500 border-b-2 border-blue-500 bg-white/5' : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'}`}
-                >
-                  {tab.tabLabel}
-                </button>
-              ))}
-            </div>
-            
-            <div className="p-8 md:p-12 text-left">
-              {tabsList.map((tab: any, idx: number) => (
-                <div key={idx} className={activeTab === idx ? 'block animate-fade-in' : 'hidden'}>
-                  <div className="prose prose-lg dark:prose-invert max-w-none">
-                    {tab.tabContent && <RichText data={tab.tabContent} />}
+          {tabsList && tabsList.length > 0 && (
+            <div className="content-wrap rounded-[12px] border border-[#E0EFFE] bg-[var(--color-1)] overflow-hidden transition-colors duration-300">
+              <div className="flex overflow-x-auto border-b border-[#E0EFFE] hide-scrollbar">
+                {tabsList.map((tab: any, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveTab(idx)}
+                    className={`px-6 py-4 md:px-8 md:py-5 font-semibold text-[16px] md:text-[18px] whitespace-nowrap transition-colors focus:outline-none border-b-2 -mb-[1px] ${
+                      activeTab === idx
+                        ? 'text-[var(--color-6)] border-[var(--color-6)]'
+                        : 'text-[var(--fonts-color-base)] hover:text-[var(--title-colour-light-bg)] border-transparent'
+                    }`}
+                  >
+                    {tab.tabLabel}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-6 md:p-8 text-left text-[15px] text-[var(--fonts-color-base)] leading-[1.8]">
+                {tabsList.map((tab: any, idx: number) => (
+                  <div key={idx} className={activeTab === idx ? 'block animate-fade-in' : 'hidden'}>
+                    <div className="w-full">
+                      {tab.tabContent && (
+                        <DynamicRichText
+                          className="rich-text-content mt-0 !text-[15px] !leading-[1.8]"
+                          content={tab.tabContent}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {introLinks && introLinks.length > 0 && (
-          <div className="mt-16 flex justify-center">
-            <IntroLinks introLinks={introLinks} />
-          </div>
-        )}
+          {introLinks && introLinks.length > 0 && (
+            <div className="w-full">
+              <IntroLinks introLinks={introLinks} />
+            </div>
+          )}
+        </div>
       </div>
     </section>
   )

@@ -15,6 +15,8 @@ export const blockSettings: Field = {
         { label: 'Color 4', value: 'bg-c4' },
         { label: 'Color 5', value: 'bg-c5' },
         { label: 'Color 6', value: 'bg-c6' },
+        { label: 'Color 7', value: 'bg-c7' },
+        { label: 'Color 8', value: 'bg-c8' },
       ],
     },
     {
@@ -33,6 +35,12 @@ export const blockSettings: Field = {
       admin: {
         description: 'Add custom CSS classes here (space separated)',
       },
+    },
+    {
+      name: 'enableOverlay',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Enable Overlay (for backgrounds)',
     },
     {
       name: 'hideComponent',

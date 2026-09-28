@@ -10,18 +10,18 @@ export const TextWithVideo: React.FC<any> = ({
   thumbnail,
   introLinks,
   settings,
+  textPosition,
 }) => {
   const themeClass = getThemeClass(settings)
   const textAlignment = getTextAlignment(settings)
-  const textPosition = settings?.textPosition || 'left'
-
-  const isTextLeft = textPosition === 'left'
+  const actualTextPosition = textPosition || settings?.textPosition || 'left'
+  const isTextRight = actualTextPosition === 'right'
 
   return (
     <section className={`py-16 md:py-24 overflow-hidden ${themeClass} ${textAlignment}`}>
       <div className="container mx-auto px-6">
         <div
-          className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${isTextLeft ? '' : 'lg:flex-row-reverse'}`}
+          className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${isTextRight ? 'lg:flex-row-reverse' : ''}`}
         >
           {/* Text Content */}
           <div className="flex-1 w-full">
@@ -35,13 +35,13 @@ export const TextWithVideo: React.FC<any> = ({
           {/* Video */}
           <div className="flex-1 w-full">
             {video && video.url && (
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black/10 dark:bg-white/5">
+              <div className="relative w-full aspect-video lg:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl bg-black/10 dark:bg-white/5">
                 <video
                   controls
                   preload="metadata"
                   playsInline
                   poster={thumbnail?.url || undefined}
-                  className="w-full h-full"
+                  className="absolute inset-0 w-full h-full object-cover aspect-video lg:aspect-[4/3]"
                 >
                   <source src={video.url} type={video.mimeType || 'video/mp4'} />
                   Your browser does not support the video tag.
