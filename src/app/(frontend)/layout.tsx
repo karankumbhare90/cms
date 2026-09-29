@@ -78,6 +78,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {faviconUrl && (
           <>
             <link rel="icon" href={faviconUrl} type={faviconType || undefined} />

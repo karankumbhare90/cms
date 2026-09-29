@@ -66,6 +66,7 @@ export async function Header() {
                 height={40}
                 className="h-9 w-auto"
                 style={{ maxWidth: 220 }}
+                priority
               />
             ) : (
               <span className="text-2xl font-black tracking-tight text-white transition-colors">

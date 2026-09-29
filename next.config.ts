@@ -8,6 +8,8 @@ const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
   compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
@@ -18,6 +20,50 @@ const nextConfig: NextConfig = {
         pathname: '/api/media/file/**',
       },
     ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+        ],
+      },
+      {
+        source: '/(api/media/file/.*|.*\\.(?:jpg|jpeg|gif|png|svg|ico|webp|avif|woff2?|css|js))',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ]
   },
   experimental: {
     optimizePackageImports: [
