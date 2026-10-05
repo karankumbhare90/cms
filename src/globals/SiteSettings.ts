@@ -1,5 +1,5 @@
 import { GlobalConfig } from 'payload'
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { introLinks } from '../fields/introLinks'
 
 export const SiteSettings: GlobalConfig = {
@@ -12,8 +12,6 @@ export const SiteSettings: GlobalConfig = {
     afterChange: [
       () => {
         try {
-          revalidateTag('site-settings', { expire: 0 })
-          revalidateTag('globals', { expire: 0 })
           revalidatePath('/', 'layout')
         } catch {
           // Ignore when outside Next request context
