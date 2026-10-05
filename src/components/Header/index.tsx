@@ -12,7 +12,6 @@ export async function Header() {
   const siteSettings = await getSiteSettingsCached()
   const navigation = await getNavigationCached()
 
-
   // Extract top header info from siteSettings
   const email = siteSettings.email as string
   const phone = siteSettings.phone as string
@@ -64,8 +63,7 @@ export async function Header() {
                 alt={siteSettings.siteName}
                 width={220}
                 height={40}
-                className="h-9 w-auto"
-                style={{ maxWidth: 220 }}
+                className="h-10 w-auto"
                 priority
               />
             ) : (
