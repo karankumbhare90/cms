@@ -19,8 +19,16 @@ export async function Header() {
   const ctaLink = siteSettings.headerCTA as any[]
   const showCTA = siteSettings?.displayHeaderCTA
   const showTopHeader = siteSettings?.displayTopHeader ?? true
+  const siteIconData = siteSettings?.siteIcon
   const icon =
-    typeof siteSettings.siteIcon === 'string' ? siteSettings.siteIcon : siteSettings.siteIcon?.url
+    typeof siteIconData === 'object' && siteIconData?.url
+      ? siteIconData.url
+      : typeof siteIconData === 'string' &&
+          (siteIconData.startsWith('/') ||
+            siteIconData.startsWith('http://') ||
+            siteIconData.startsWith('https://'))
+        ? siteIconData
+        : null
 
   return (
     <>

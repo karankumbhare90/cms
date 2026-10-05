@@ -21,7 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const faviconUrl =
     typeof faviconMedia === 'object' && faviconMedia?.url
       ? faviconMedia.url
-      : typeof faviconMedia === 'string'
+      : typeof faviconMedia === 'string' &&
+          (faviconMedia.startsWith('/') ||
+            faviconMedia.startsWith('http://') ||
+            faviconMedia.startsWith('https://'))
         ? faviconMedia
         : undefined
 
@@ -68,7 +71,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const faviconUrl =
     typeof faviconMedia === 'object' && faviconMedia?.url
       ? faviconMedia.url
-      : typeof faviconMedia === 'string'
+      : typeof faviconMedia === 'string' &&
+          (faviconMedia.startsWith('/') ||
+            faviconMedia.startsWith('http://') ||
+            faviconMedia.startsWith('https://'))
         ? faviconMedia
         : undefined
 

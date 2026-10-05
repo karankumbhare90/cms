@@ -8,7 +8,7 @@ import config from '@/payload.config'
 export const getSiteSettingsCached = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
-    const siteSettings = await payload.findGlobal({ slug: 'site-settings' })
+    const siteSettings = await payload.findGlobal({ slug: 'site-settings', depth: 2 })
     return siteSettings
   },
   ['site-settings-global'],

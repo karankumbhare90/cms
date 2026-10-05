@@ -18,6 +18,7 @@ node_modules/
 next-env.d.ts
 
 # Payload CMS uploads & local database files
+/media/
 /uploads/
 *.db
 *.db-journal
