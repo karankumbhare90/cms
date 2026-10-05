@@ -19,8 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const faviconMedia = siteSettings?.siteFavicon || siteSettings?.siteIcon
   const faviconUrl =
-    typeof faviconMedia === 'object' && faviconMedia?.url
-      ? faviconMedia.url
+    typeof faviconMedia === 'object' && faviconMedia !== null
+      ? faviconMedia.url || (faviconMedia.filename ? `/api/media/file/${faviconMedia.filename}` : undefined)
       : typeof faviconMedia === 'string' &&
           (faviconMedia.startsWith('/') ||
             faviconMedia.startsWith('http://') ||
@@ -69,8 +69,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   const faviconMedia = siteSettings?.siteFavicon || siteSettings?.siteIcon
   const faviconUrl =
-    typeof faviconMedia === 'object' && faviconMedia?.url
-      ? faviconMedia.url
+    typeof faviconMedia === 'object' && faviconMedia !== null
+      ? faviconMedia.url || (faviconMedia.filename ? `/api/media/file/${faviconMedia.filename}` : undefined)
       : typeof faviconMedia === 'string' &&
           (faviconMedia.startsWith('/') ||
             faviconMedia.startsWith('http://') ||

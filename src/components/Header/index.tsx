@@ -19,16 +19,22 @@ export async function Header() {
   const ctaLink = siteSettings.headerCTA as any[]
   const showCTA = siteSettings?.displayHeaderCTA
   const showTopHeader = siteSettings?.displayTopHeader ?? true
-  const siteIconData = siteSettings?.siteIcon
-  const icon =
-    typeof siteIconData === 'object' && siteIconData?.url
-      ? siteIconData.url
-      : typeof siteIconData === 'string' &&
-          (siteIconData.startsWith('/') ||
-            siteIconData.startsWith('http://') ||
-            siteIconData.startsWith('https://'))
-        ? siteIconData
-        : null
+  const siteIconData = siteSettings?.siteIcon as any
+  let icon: string | null = null
+  if (typeof siteIconData === 'object' && siteIconData !== null) {
+    if (siteIconData.url) {
+      icon = siteIconData.url
+    } else if (siteIconData.filename) {
+      icon = `/api/media/file/${siteIconData.filename}`
+    }
+  } else if (
+    typeof siteIconData === 'string' &&
+    (siteIconData.startsWith('/') ||
+      siteIconData.startsWith('http://') ||
+      siteIconData.startsWith('https://'))
+  ) {
+    icon = siteIconData
+  }
 
   return (
     <>
@@ -68,11 +74,12 @@ export async function Header() {
             {icon ? (
               <Image
                 src={icon}
-                alt={siteSettings.siteName}
+                alt={siteSettings.siteName || 'Site Logo'}
                 width={220}
                 height={40}
-                className="h-10 w-auto"
+                className="h-10 w-auto object-contain"
                 priority
+                unoptimized={Boolean(icon && icon.includes('.svg'))}
               />
             ) : (
               <span className="text-2xl font-black tracking-tight text-white transition-colors">

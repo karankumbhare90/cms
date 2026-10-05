@@ -1,4 +1,5 @@
 import { GlobalConfig } from 'payload'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { introLinks } from '../fields/introLinks'
 
 export const SiteSettings: GlobalConfig = {
@@ -6,6 +7,19 @@ export const SiteSettings: GlobalConfig = {
   label: 'Site Settings',
   admin: {
     group: 'Settings', // This groups it nicely in the left sidebar
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        try {
+          revalidateTag('site-settings')
+          revalidateTag('globals')
+          revalidatePath('/', 'layout')
+        } catch {
+          // Ignore when outside Next request context
+        }
+      },
+    ],
   },
   fields: [
     {

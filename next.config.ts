@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: {
+    dangerouslyAllowSVG: true,
     qualities: [75, 80],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
