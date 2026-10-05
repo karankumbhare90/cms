@@ -12,8 +12,8 @@ export const SiteSettings: GlobalConfig = {
     afterChange: [
       () => {
         try {
-          revalidateTag('site-settings')
-          revalidateTag('globals')
+          revalidateTag('site-settings', { expire: 0 })
+          revalidateTag('globals', { expire: 0 })
           revalidatePath('/', 'layout')
         } catch {
           // Ignore when outside Next request context
@@ -179,7 +179,8 @@ export const SiteSettings: GlobalConfig = {
               type: 'checkbox',
               defaultValue: true,
               admin: {
-                description: 'Toggle this on to display the top header bar with contact information',
+                description:
+                  'Toggle this on to display the top header bar with contact information',
               },
             },
             {
