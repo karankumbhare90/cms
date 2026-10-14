@@ -139,3 +139,6 @@ export const Sitemap: React.FC<any> = async ({ settings }) => {
     </section>
   )
 }
+
+export { SitemapSkeleton } from '../skeletons'
+

@@ -104,3 +104,6 @@ export const ComparisonTable: React.FC<any> = ({
     </section>
   )
 }
+
+export { ComparisonTableSkeleton } from '../skeletons'
+

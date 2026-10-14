@@ -100,3 +100,6 @@ export const CountdownTimer: React.FC<any> = ({
     </section>
   )
 }
+
+export { CountdownTimerSkeleton } from '../skeletons'
+

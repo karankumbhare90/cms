@@ -95,3 +95,6 @@ export const CTA: React.FC<any> = ({
     </section>
   )
 }
+
+export { CTASkeleton } from '../skeletons'
+

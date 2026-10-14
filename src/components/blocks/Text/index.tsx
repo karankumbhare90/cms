@@ -46,3 +46,6 @@ export const Text: React.FC<any> = ({ introText, introLinks, settings, contentWi
     </section>
   )
 }
+
+export { TextSkeleton } from '../skeletons'
+

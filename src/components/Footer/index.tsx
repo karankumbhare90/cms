@@ -8,6 +8,7 @@ import { IoLocationOutline } from 'react-icons/io5'
 import { FaRegEnvelope } from 'react-icons/fa6'
 import { IoMdCall } from 'react-icons/io'
 import { getFooterCached, getSiteSettingsCached } from '@/utils/cachedData'
+export { FooterSkeleton } from './FooterSkeleton'
 
 export async function Footer() {
   const footer = await getFooterCached()

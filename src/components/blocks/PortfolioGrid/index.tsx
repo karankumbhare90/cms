@@ -107,3 +107,6 @@ export const PortfolioGrid: React.FC<any> = ({
     </section>
   )
 }
+
+export { PortfolioGridSkeleton } from '../skeletons'
+

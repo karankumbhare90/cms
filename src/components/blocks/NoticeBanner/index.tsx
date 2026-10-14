@@ -116,3 +116,6 @@ export const NoticeBanner: React.FC<any> = ({ message, introLinks, bannerType, s
     </div>
   )
 }
+
+export { NoticeBannerSkeleton } from '../skeletons'
+

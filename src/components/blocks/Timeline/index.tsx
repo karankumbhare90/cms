@@ -77,3 +77,6 @@ export const Timeline: React.FC<any> = ({ introText, introLinks, events, setting
     </section>
   )
 }
+
+export { TimelineSkeleton } from '../skeletons'
+

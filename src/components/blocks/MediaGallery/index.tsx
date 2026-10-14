@@ -245,3 +245,6 @@ export const MediaGallery: React.FC<any> = ({
     </section>
   )
 }
+
+export { MediaGallerySkeleton } from '../skeletons'
+

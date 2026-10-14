@@ -104,3 +104,6 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
     </div>
   )
 }
+
+export { BlogSidebarSkeleton } from './BlogSidebarSkeleton'
+

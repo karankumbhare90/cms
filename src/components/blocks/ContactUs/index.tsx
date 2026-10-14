@@ -20,3 +20,6 @@ export const ContactUs: React.FC<any> = async (props) => {
 
   return <ContactUsForm {...props} contactDetails={contactDetails} />
 }
+
+export { ContactUsSkeleton } from '../skeletons'
+

@@ -164,3 +164,6 @@ export const Pod: React.FC<any> = ({
     </section>
   )
 }
+
+export { PodSkeleton } from '../skeletons'
+

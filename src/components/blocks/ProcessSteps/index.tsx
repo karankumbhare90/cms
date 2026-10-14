@@ -78,3 +78,6 @@ export const ProcessSteps: React.FC<any> = ({
     </section>
   )
 }
+
+export { ProcessStepsSkeleton } from '../skeletons'
+

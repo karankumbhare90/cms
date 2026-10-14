@@ -36,3 +36,6 @@ export const Map: React.FC<any> = ({ introText, mapData, introLinks, settings, w
     </section>
   )
 }
+
+export { MapSkeleton } from '../skeletons'
+

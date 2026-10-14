@@ -7,6 +7,7 @@ import { MobileMenu } from './MobileMenu'
 import { HeaderHeightObserver } from './HeaderHeightObserver'
 import { DesktopNav } from './DesktopNav'
 import { getSiteSettingsCached, getNavigationCached } from '@/utils/cachedData'
+export { HeaderSkeleton } from './HeaderSkeleton'
 
 export async function Header() {
   const siteSettings = await getSiteSettingsCached()

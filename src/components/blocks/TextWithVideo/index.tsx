@@ -54,3 +54,6 @@ export const TextWithVideo: React.FC<any> = ({
     </section>
   )
 }
+
+export { TextWithVideoSkeleton } from '../skeletons'
+

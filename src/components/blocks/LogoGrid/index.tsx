@@ -211,3 +211,6 @@ export const LogoGrid: React.FC<any> = ({
     </section>
   )
 }
+
+export { LogoGridSkeleton } from '../skeletons'
+

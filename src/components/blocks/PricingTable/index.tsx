@@ -120,3 +120,6 @@ export const PricingTable: React.FC<any> = ({ introText, pricingPlans, introLink
     </section>
   )
 }
+
+export { PricingTableSkeleton } from '../skeletons'
+

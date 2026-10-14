@@ -42,3 +42,6 @@ export const TeamGrid: React.FC<any> = ({ introText, teamMembers, introLinks, se
     </section>
   )
 }
+
+export { TeamGridSkeleton } from '../skeletons'
+

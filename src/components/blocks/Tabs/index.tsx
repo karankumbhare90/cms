@@ -65,3 +65,6 @@ export const Tabs: React.FC<any> = ({ introText, tabsList, introLinks, settings 
     </section>
   )
 }
+
+export { TabsSkeleton } from '../skeletons'
+

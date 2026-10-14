@@ -72,3 +72,6 @@ export const FAQ: React.FC<any> = ({ introText, faqs, introLinks, settings }) =>
     </section>
   )
 }
+
+export { FAQSkeleton } from '../skeletons'
+

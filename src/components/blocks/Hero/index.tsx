@@ -208,3 +208,6 @@ export const Hero: React.FC<any> = ({ slides, settings, bannerWidth }) => {
     </section>
   )
 }
+
+export { HeroSkeleton } from '../skeletons'
+

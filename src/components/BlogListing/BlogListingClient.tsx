@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BlogSidebar } from '@/components/BlogSidebar'
+import { BlogCardSkeleton } from './BlogListingSkeleton'
 
 interface BlogListingClientProps {
   initialPosts: any[]
@@ -83,7 +84,11 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
                   transition={{ duration: 0.3 }}
                   className={`grid gap-8 ${isGrid ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}
                 >
-                  {posts.length > 0 ? (
+                  {isFetching ? (
+                    Array.from({ length: limit > 6 ? 6 : limit }).map((_, idx) => (
+                      <BlogCardSkeleton key={`skeleton-${idx}`} />
+                    ))
+                  ) : posts.length > 0 ? (
                     posts.map((post: any) => (
                       <motion.div
                         key={post.id}

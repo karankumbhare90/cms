@@ -29,14 +29,21 @@ export function Chatbot() {
     return ''
   }
 
+  const handleToggle = (nextOpen: boolean) => {
+    setIsOpen(nextOpen)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('chatbot:toggle', { detail: { isOpen: nextOpen } }))
+    }
+  }
+
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         <motion.button
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
-          onClick={() => setIsOpen(!isOpen)}
-          className="bg-[var(--color-7,#2563EB)] text-white rounded-full p-4 shadow-xl hover:opacity-90 transition-all flex items-center justify-center"
+          onClick={() => handleToggle(!isOpen)}
+          className="w-14 h-14 bg-[var(--color-7,#2563EB)] text-white rounded-full shadow-xl hover:opacity-95 transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
           aria-label="Toggle AI Chatbot"
         >
           {isOpen ? (
@@ -80,7 +87,7 @@ export function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="fixed bottom-20 right-4 w-80 sm:w-96 h-[500px] max-h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-100 overflow-hidden text-black"
+            className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 w-80 sm:w-96 h-[500px] max-h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-100 overflow-hidden text-black"
           >
             <div className="bg-[#0C1E33] text-white p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -88,7 +95,7 @@ export function Chatbot() {
                 <h3 className="font-semibold text-lg">AI Assistant</h3>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleToggle(false)}
                 className="text-white/80 hover:text-white text-sm w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
                 aria-label="Close Chatbot"
               >

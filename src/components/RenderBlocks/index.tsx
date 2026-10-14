@@ -87,3 +87,6 @@ export const RenderBlocks: React.FC<{ blocks: any[] }> = ({ blocks }) => {
     </div>
   )
 }
+
+export { RenderBlocksSkeleton } from '../blocks/skeletons'
+

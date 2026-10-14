@@ -58,3 +58,6 @@ export const TextWithImage: React.FC<any> = ({
     </section>
   )
 }
+
+export { TextWithImageSkeleton } from '../skeletons'
+

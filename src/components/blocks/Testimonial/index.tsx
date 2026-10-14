@@ -200,3 +200,6 @@ export const Testimonial: React.FC<any> = ({
     </section>
   )
 }
+
+export { TestimonialSkeleton } from '../skeletons'
+

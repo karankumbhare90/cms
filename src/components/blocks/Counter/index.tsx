@@ -116,3 +116,6 @@ export const Counter: React.FC<any> = ({
     </section>
   )
 }
+
+export { CounterSkeleton } from '../skeletons'
+
