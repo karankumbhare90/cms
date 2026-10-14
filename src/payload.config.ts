@@ -22,6 +22,15 @@ import { Footer } from './globals/Footer'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Enable Vercel Blob storage only in staging/production environments (or if explicitly enabled).
+// In local development (NODE_ENV !== 'production'), it falls back to local disk storage in ./media.
+const isBlobStorageEnabled =
+  Boolean(process.env.BLOB_READ_WRITE_TOKEN) &&
+  (process.env.NODE_ENV === 'production' ||
+    process.env.VERCEL_ENV === 'preview' ||
+    process.env.VERCEL_ENV === 'production' ||
+    process.env.ENABLE_BLOB_STORAGE === 'true')
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -42,7 +51,7 @@ export default buildConfig({
   sharp,
   plugins: [
     vercelBlobStorage({
-      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      enabled: isBlobStorageEnabled,
       collections: {
         media: true,
       },

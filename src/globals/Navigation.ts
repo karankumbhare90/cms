@@ -1,10 +1,18 @@
 import { GlobalConfig } from 'payload'
+import { revalidateGlobal } from '../utils/revalidate'
 
 export const Navigation: GlobalConfig = {
   slug: 'navigation',
   label: 'Navigation',
   admin: {
     group: 'Settings',
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        revalidateGlobal('navigation')
+      },
+    ],
   },
   fields: [
     {

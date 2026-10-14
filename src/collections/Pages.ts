@@ -1,11 +1,24 @@
 import type { CollectionConfig } from 'payload'
 import { bannerTab, listingLayoutTab, navigationTab, seoTab, widgetsTab } from '../fields/basePageTabs'
+import { revalidatePage } from '../utils/revalidate'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
+  },
+  hooks: {
+    afterChange: [
+      ({ doc, previousDoc }) => {
+        revalidatePage(doc, previousDoc)
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidatePage(doc)
+      },
+    ],
   },
   fields: [
     {

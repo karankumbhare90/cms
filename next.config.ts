@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     qualities: [75, 80],
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 31536000,
+    minimumCacheTTL: 60,
     deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     localPatterns: [
@@ -57,11 +57,22 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/(api/media/file/.*|.*\\.(?:jpg|jpeg|gif|png|svg|ico|webp|avif|woff2?|css|js))',
+        // Static fonts can be cached long-term and are immutable
+        source: '/(.*\\.(?:woff2?|ttf|otf|eot))',
         headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Media files uploaded via CMS: allow fast revalidation so updates reflect immediately
+        source: '/api/media/file/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=60, stale-while-revalidate=600',
           },
         ],
       },

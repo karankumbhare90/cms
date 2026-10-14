@@ -1,6 +1,6 @@
 import { GlobalConfig } from 'payload'
-import { revalidatePath, revalidateTag } from 'next/cache'
 import { introLinks } from '../fields/introLinks'
+import { revalidateGlobal } from '../utils/revalidate'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -11,13 +11,7 @@ export const SiteSettings: GlobalConfig = {
   hooks: {
     afterChange: [
       () => {
-        try {
-          revalidateTag('site-settings', { expire: 0 })
-          revalidateTag('globals', { expire: 0 })
-          revalidatePath('/', 'layout')
-        } catch {
-          // Ignore when outside Next request context
-        }
+        revalidateGlobal('site-settings')
       },
     ],
   },

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { bannerTab, listingLayoutTab, navigationTab, seoTab, widgetsTab } from '../fields/basePageTabs'
+import { revalidateCategory } from '../utils/revalidate'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
@@ -7,6 +8,18 @@ export const Categories: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     group: 'Blogs',
+  },
+  hooks: {
+    afterChange: [
+      ({ doc }) => {
+        revalidateCategory(doc)
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidateCategory(doc)
+      },
+    ],
   },
   fields: [
     {

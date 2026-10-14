@@ -1,10 +1,18 @@
 import { GlobalConfig } from 'payload'
+import { revalidateGlobal } from '../utils/revalidate'
 
 export const BlogSettings: GlobalConfig = {
   slug: 'blog-settings',
   label: 'Blog Settings',
   admin: {
     group: 'Blogs', // This will place it alongside Posts, Authors, Categories
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        revalidateGlobal('blog-settings')
+      },
+    ],
   },
   fields: [
     {

@@ -1,10 +1,18 @@
 import { GlobalConfig } from 'payload'
+import { revalidateGlobal } from '../utils/revalidate'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
   label: 'Footer',
   admin: {
     group: 'Settings',
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        revalidateGlobal('footer')
+      },
+    ],
   },
   fields: [
     {

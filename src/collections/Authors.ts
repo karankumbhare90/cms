@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { bannerTab, listingLayoutTab, navigationTab, seoTab, widgetsTab } from '../fields/basePageTabs'
+import { revalidateAuthor } from '../utils/revalidate'
 
 export const Authors: CollectionConfig = {
   slug: 'authors',
@@ -7,6 +8,18 @@ export const Authors: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     group: 'Blogs',
+  },
+  hooks: {
+    afterChange: [
+      ({ doc }) => {
+        revalidateAuthor(doc)
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidateAuthor(doc)
+      },
+    ],
   },
   fields: [
     {

@@ -13,7 +13,7 @@ export const getSiteSettingsCached = unstable_cache(
   },
   ['site-settings-global'],
   {
-    revalidate: 600, // Cache for 10 minutes
+    revalidate: 60, // Cache for 10 minutes
     tags: ['site-settings', 'globals'],
   },
 )
@@ -29,7 +29,7 @@ export const getFooterCached = unstable_cache(
   },
   ['footer-global'],
   {
-    revalidate: 600,
+    revalidate: 60,
     tags: ['footer', 'globals'],
   },
 )
@@ -98,7 +98,7 @@ export const getNavigationCached = unstable_cache(
   },
   ['navigation-global'],
   {
-    revalidate: 600, // Cache for 10 minutes
+    revalidate: 60, // Cache for 10 minutes
     tags: ['navigation', 'globals', 'pages'],
   },
 )
@@ -123,7 +123,7 @@ export const getHomePageCached = unstable_cache(
   },
   ['home-page-doc'],
   {
-    revalidate: 600,
+    revalidate: 60,
     tags: ['pages', 'home-page'],
   },
 )
@@ -153,7 +153,7 @@ export async function getPageBySlugCached(slug: string) {
     },
     [`page-doc-${slug}`],
     {
-      revalidate: 600,
+      revalidate: 60,
       tags: ['pages', `page-${slug}`],
     },
   )()
@@ -192,7 +192,7 @@ export async function getNestedPageCached(slugSegments: string[]) {
     },
     [cacheKey],
     {
-      revalidate: 600,
+      revalidate: 60,
       tags: ['pages', cacheKey],
     },
   )()
