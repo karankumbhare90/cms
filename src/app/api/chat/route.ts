@@ -46,10 +46,12 @@ export async function POST(req: Request) {
     })
 
     return result.toUIMessageStreamResponse()
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in chat route:', error)
+    const errorMessage =
+      error?.message || 'An error occurred while processing your request.'
     return NextResponse.json(
-      { error: 'An error occurred while processing your request.' },
+      { error: errorMessage },
       { status: 500, headers: SECURITY_HEADERS },
     )
   }

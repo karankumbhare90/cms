@@ -148,8 +148,8 @@ export function Chatbot() {
               {error && (
                 <div className="flex w-full justify-start mt-2">
                   <div className="max-w-[85%] p-3 rounded-2xl text-sm bg-red-50 text-red-700 border border-red-200">
-                    I'm sorry, I encountered an error while processing your request. Please try
-                    again.
+                    {error.message ||
+                      "I'm sorry, I encountered an error while processing your request. Please try again."}
                   </div>
                 </div>
               )}
