@@ -101,7 +101,7 @@ export function getAvailableCandidates(): AICandidate[] {
     process.env.GEMINI_API_KEYS,
     'GEMINI_API_KEY',
   )
-  const geminiModel = process.env.GEMINI_MODEL || 'gemini-3.8-flash'
+  const geminiModel = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
 
   geminiKeys.forEach((key, index) => {
     try {
