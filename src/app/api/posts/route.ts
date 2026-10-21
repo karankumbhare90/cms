@@ -17,8 +17,10 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get('page') || '1', 10)
-    const limit = parseInt(searchParams.get('limit') || '10', 10)
+    const rawPage = parseInt(searchParams.get('page') || '1', 10)
+    const rawLimit = parseInt(searchParams.get('limit') || '10', 10)
+    const page = isNaN(rawPage) || rawPage < 1 ? 1 : rawPage
+    const limit = isNaN(rawLimit) || rawLimit < 1 ? 10 : Math.min(rawLimit, 100)
     const category = searchParams.get('category')
     const search = searchParams.get('search')
 
@@ -51,16 +53,16 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         posts: postsResult.docs,
-        totalPages: postsResult.totalPages,
-        page: postsResult.page,
-        totalDocs: postsResult.totalDocs,
-        hasNextPage: postsResult.hasNextPage,
-        hasPrevPage: postsResult.hasPrevPage,
+        totalPages: postsResult.totalPages || 1,
+        page: postsResult.page || page,
+        totalDocs: postsResult.totalDocs || 0,
+        hasNextPage: postsResult.hasNextPage ?? false,
+        hasPrevPage: postsResult.hasPrevPage ?? false,
       },
       {
         headers: {
           ...SECURITY_HEADERS,
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
         },
       },
     )

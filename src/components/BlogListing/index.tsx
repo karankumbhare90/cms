@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { BlogListingClient } from './BlogListingClient'
+import { BlogListingSkeleton } from './BlogListingSkeleton'
 
 export const BlogListing = async ({
   page,
@@ -51,16 +52,25 @@ export const BlogListing = async ({
   const tags = Array.from(allTags)
 
   return (
-    <BlogListingClient
-      initialPosts={posts}
-      initialTotalPages={totalPages}
-      initialPage={currentPage}
-      limit={limit}
-      blogSettings={blogSettings}
-      categories={categories}
-      tags={tags}
-      parentSlug={page.slug}
-    />
+    <Suspense
+      fallback={
+        <BlogListingSkeleton
+          cardCount={limit}
+          isGrid={blogSettings?.blogListingLayout !== 'column'}
+        />
+      }
+    >
+      <BlogListingClient
+        initialPosts={posts}
+        initialTotalPages={totalPages}
+        initialPage={currentPage}
+        limit={limit}
+        blogSettings={blogSettings}
+        categories={categories}
+        tags={tags}
+        parentSlug={page.slug}
+      />
+    </Suspense>
   )
 }
 

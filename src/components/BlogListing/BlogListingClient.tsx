@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -27,6 +28,22 @@ async function fetchPosts({ page, limit }: { page: number; limit: number }) {
   return res.json()
 }
 
+function getPaginationItems(current: number, total: number): (number | 'ellipsis')[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, 'ellipsis', total]
+  }
+
+  if (current >= total - 3) {
+    return [1, 'ellipsis', total - 4, total - 3, total - 2, total - 1, total]
+  }
+
+  return [1, 'ellipsis', current - 1, current, current + 1, 'ellipsis', total]
+}
+
 export const BlogListingClient: React.FC<BlogListingClientProps> = ({
   initialPosts,
   initialTotalPages,
@@ -37,21 +54,61 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
   tags,
   parentSlug,
 }) => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
   const [currentPage, setCurrentPage] = useState(initialPage)
 
+  // Sync state if user navigates via browser back/forward buttons
+  useEffect(() => {
+    const pageParam = searchParams?.get('page')
+    const pageFromUrl = pageParam ? parseInt(pageParam, 10) : 1
+    if (!isNaN(pageFromUrl) && pageFromUrl >= 1 && pageFromUrl !== currentPage) {
+      setCurrentPage(pageFromUrl)
+    }
+  }, [searchParams, currentPage])
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage === currentPage || newPage < 1 || newPage > totalPages) return
+
+    setCurrentPage(newPage)
+
+    const params = new URLSearchParams(searchParams ? searchParams.toString() : '')
+    if (newPage === 1) {
+      params.delete('page')
+    } else {
+      params.set('page', String(newPage))
+    }
+    const queryString = params.toString()
+    const targetUrl = queryString ? `${pathname}?${queryString}` : pathname
+    router.push(targetUrl, { scroll: false })
+
+    // Smoothly scroll to the top of the blog listing
+    const el = document.getElementById('blog-listing-content') || document.querySelector('.blog-listing-page')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  // TanStack Query: only provide initialData when currentPage === initialPage
+  // so new pages trigger an actual fetch instead of reusing page 1's initialData
+  const isInitialPage = currentPage === initialPage
   const { data, isFetching } = useQuery({
     queryKey: ['blog-posts', currentPage, limit],
     queryFn: () => fetchPosts({ page: currentPage, limit }),
-    initialData: {
-      posts: initialPosts,
-      totalPages: initialTotalPages,
-      page: initialPage,
-    },
+    initialData: isInitialPage
+      ? {
+          posts: initialPosts,
+          totalPages: initialTotalPages,
+          page: initialPage,
+        }
+      : undefined,
     staleTime: 1000 * 60 * 5,
   })
 
-  const posts = data?.posts || initialPosts
-  const totalPages = data?.totalPages || initialTotalPages
+  const posts = data?.posts ?? (isInitialPage ? initialPosts : [])
+  const totalPages = data?.totalPages ?? initialTotalPages
 
   const hideRecentPost = blogSettings?.hideRecentPost || false
   const hideCategories = blogSettings?.hideCategories || false
@@ -61,15 +118,10 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
   const layoutStyle = blogSettings?.blogListingLayout || 'grid'
   const isGrid = layoutStyle === 'grid'
 
-  const pagesPerGroup = 5
-  const pageNumbers: number[] = []
-  const startPage = Math.max(1, Math.floor((currentPage - 1) / pagesPerGroup) * pagesPerGroup + 1)
-  for (let i = startPage; i < startPage + pagesPerGroup && i <= totalPages; i++) {
-    pageNumbers.push(i)
-  }
+  const paginationItems = getPaginationItems(currentPage, totalPages)
 
   return (
-    <section className="blog-listing-page">
+    <section className="blog-listing-page" id="blog-listing-content">
       <div className="inner-wrap">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -141,49 +193,70 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
                 </motion.div>
               </AnimatePresence>
 
-              {/* Pagination Controls using React Query */}
+              {/* Pagination Controls */}
               {totalPages > 1 && (
-                <nav id="pagination" className="text-center mt-10">
-                  <ul className="flex justify-center items-center gap-2">
-                    {currentPage > 1 && (
-                      <li>
-                        <button
-                          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                          disabled={isFetching}
-                          className="flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-xl border border-gray-200 text-gray-700 hover:border-blue-600 hover:text-blue-600 text-sm font-semibold transition-colors disabled:opacity-50"
-                        >
-                          Previous
-                        </button>
-                      </li>
-                    )}
+                <nav id="pagination" aria-label="Blog pagination" className="text-center mt-12">
+                  <ul className="inline-flex justify-center items-center gap-1.5 sm:gap-2 flex-wrap">
+                    {/* Previous Page Button */}
+                    <li>
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage <= 1 || isFetching}
+                        aria-label="Previous page"
+                        className="flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-xl border border-gray-200 text-gray-700 hover:border-blue-600 hover:text-blue-600 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 bg-white shadow-sm"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                        <span className="hidden sm:inline">Previous</span>
+                      </button>
+                    </li>
 
-                    {pageNumbers.map((num) => (
-                      <li key={num}>
-                        <button
-                          onClick={() => setCurrentPage(num)}
-                          disabled={isFetching}
-                          className={`w-10 h-10 rounded-xl border text-sm font-semibold transition-all ${
-                            num === currentPage
-                              ? 'bg-blue-600 border-blue-600 text-white shadow-md'
-                              : 'border-gray-200 text-gray-700 hover:border-blue-600 hover:text-blue-600'
-                          }`}
-                        >
-                          {num}
-                        </button>
-                      </li>
-                    ))}
+                    {/* Page Numbers & Ellipsis */}
+                    {paginationItems.map((item, idx) => {
+                      if (item === 'ellipsis') {
+                        return (
+                          <li key={`ellipsis-${idx}`} className="px-2 text-gray-400 select-none">
+                            &hellip;
+                          </li>
+                        )
+                      }
 
-                    {currentPage < totalPages && (
-                      <li>
-                        <button
-                          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                          disabled={isFetching}
-                          className="flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-xl border border-gray-200 text-gray-700 hover:border-blue-600 hover:text-blue-600 text-sm font-semibold transition-colors disabled:opacity-50"
-                        >
-                          Next
-                        </button>
-                      </li>
-                    )}
+                      const isCurrent = item === currentPage
+
+                      return (
+                        <li key={item}>
+                          <button
+                            onClick={() => handlePageChange(item)}
+                            disabled={isFetching}
+                            aria-label={`Page ${item}`}
+                            aria-current={isCurrent ? 'page' : undefined}
+                            className={`w-10 h-10 rounded-xl border text-sm font-semibold transition-all ${
+                              isCurrent
+                                ? 'bg-blue-600 border-blue-600 text-white shadow-md'
+                                : 'border-gray-200 text-gray-700 hover:border-blue-600 hover:text-blue-600 bg-white hover:shadow-sm'
+                            } disabled:opacity-70`}
+                          >
+                            {item}
+                          </button>
+                        </li>
+                      )
+                    })}
+
+                    {/* Next Page Button */}
+                    <li>
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage >= totalPages || isFetching}
+                        aria-label="Next page"
+                        className="flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-xl border border-gray-200 text-gray-700 hover:border-blue-600 hover:text-blue-600 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-700 bg-white shadow-sm"
+                      >
+                        <span className="hidden sm:inline">Next</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </li>
                   </ul>
                 </nav>
               )}
@@ -192,7 +265,7 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
             {/* Right Side: Sidebar */}
             <BlogSidebar
               blogSettings={blogSettings}
-              posts={posts}
+              posts={initialPosts}
               categories={categories}
               tags={tags}
               parentSlug={parentSlug}
