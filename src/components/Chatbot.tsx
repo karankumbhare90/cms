@@ -148,13 +148,17 @@ export function Chatbot() {
               {error && (
                 <div className="flex w-full justify-start mt-2">
                   <div className="max-w-[85%] p-3 rounded-2xl text-sm bg-red-50 text-red-700 border border-red-200">
-                    I'm sorry, I encountered an error while processing your request. Please try again.
+                    I'm sorry, I encountered an error while processing your request. Please try
+                    again.
                   </div>
                 </div>
               )}
             </div>
 
-            <form onSubmit={onSubmit} className="p-3 border-t border-gray-100 bg-gray-50 flex gap-2">
+            <form
+              onSubmit={onSubmit}
+              className="p-3 border-t border-gray-100 bg-gray-50 flex gap-2"
+            >
               <input
                 className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-black transition-all"
                 value={inputValue}

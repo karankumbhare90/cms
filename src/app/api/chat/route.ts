@@ -1,10 +1,10 @@
-import { google } from '@ai-sdk/google'
 import { streamText } from 'ai'
 import { NextResponse } from 'next/server'
 import { sanitizeString, SECURITY_HEADERS } from '@/utils/security'
 import { checkRateLimit, getClientIP } from '@/utils/rateLimit'
+import { fallbackModel } from '@/utils/aiProvider'
 
-export const maxDuration = 30
+export const maxDuration = 45
 
 export async function POST(req: Request) {
   // Rate limiting (15 requests per minute per IP)
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       : []
 
     const result = await streamText({
-      model: google('gemini-3.8-flash'),
+      model: fallbackModel,
       messages: sanitizedMessages,
       system:
         'You are an AI assistant exclusively for this website. You must only answer questions that are directly related to this project and its content. If a user asks a question about anything outside the scope of this project, you must politely refuse to answer and state that you are only programmed to discuss topics related to this project.',
