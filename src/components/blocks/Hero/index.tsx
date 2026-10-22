@@ -140,10 +140,7 @@ export const Hero: React.FC<any> = ({ slides, settings, bannerWidth }) => {
               transform: fading ? 'translate3d(0, 8px, 0)' : 'translate3d(0, 0, 0)',
             }}
           >
-            <div
-              className="hero-content-wrapper"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
+            <div className="hero-content-wrapper" style={{ fontFamily: 'Inter, sans-serif' }}>
               {/* Text */}
               <div className="text-[46px] md:text-[60px] font-extrabold text-white leading-[1.1] mb-6 tracking-tight drop-shadow-lg [&>h1]:text-[46px] [&>h1]:md:text-[60px] [&>h1]:font-extrabold [&>h2]:text-[46px] [&>h2]:md:text-[60px] [&>h2]:font-extrabold">
                 <IntroText introText={slide.introText} />
@@ -165,7 +162,7 @@ export const Hero: React.FC<any> = ({ slides, settings, bannerWidth }) => {
                     key={i}
                     onClick={() => goTo(i)}
                     aria-label={`Slide ${i + 1}`}
-                    className="flex items-center justify-center p-2 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[44px] min-h-[44px]"
+                    className="flex items-center justify-center p-2 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-1 min-h-2"
                   >
                     <span
                       className="block rounded-full origin-left transition-[transform,background-color] duration-300"
@@ -211,4 +208,3 @@ export const Hero: React.FC<any> = ({ slides, settings, bannerWidth }) => {
 }
 
 export { HeroSkeleton } from '../skeletons'
-

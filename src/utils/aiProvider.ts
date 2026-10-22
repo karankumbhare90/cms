@@ -39,7 +39,11 @@ export function isRateLimitOrQuotaError(error: unknown): boolean {
     err.statusCode === 429 ||
     err.status === 429 ||
     err.statusCode === 503 ||
-    err.status === 503
+    err.status === 503 ||
+    err.statusCode === 402 ||
+    err.status === 402 ||
+    err.statusCode === 404 ||
+    err.status === 404
   ) {
     return true
   }
@@ -47,8 +51,14 @@ export function isRateLimitOrQuotaError(error: unknown): boolean {
   const message = (err.message || String(error)).toLowerCase()
   return (
     message.includes('429') ||
+    message.includes('503') ||
+    message.includes('402') ||
     message.includes('rate limit') ||
     message.includes('quota') ||
+    message.includes('insufficient balance') ||
+    message.includes('balance') ||
+    message.includes('no longer available') ||
+    message.includes('high demand') ||
     message.includes('resource_exhausted') ||
     message.includes('resource has been exhausted') ||
     message.includes('too many requests') ||
@@ -95,25 +105,31 @@ function parseKeyList(singleKey?: string, commaSeparated?: string, prefix?: stri
 export function getAvailableCandidates(): AICandidate[] {
   const candidates: AICandidate[] = []
 
-  // 1. Google Gemini
+  // 1. Google Gemini (defaults to active, available models: gemini-flash-latest, gemini-3.5-flash)
   const geminiKeys = parseKeyList(
     process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY,
     process.env.GEMINI_API_KEYS,
     'GEMINI_API_KEY',
   )
-  const geminiModel = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
+  const defaultGeminiModels = ['gemini-flash-latest', 'gemini-3.5-flash']
+  const geminiModelEnv = process.env.GEMINI_MODEL
+  const geminiModels = geminiModelEnv
+    ? [geminiModelEnv, ...defaultGeminiModels.filter((m) => m !== geminiModelEnv)]
+    : defaultGeminiModels
 
-  geminiKeys.forEach((key, index) => {
+  geminiKeys.forEach((key, keyIndex) => {
     try {
       const googleProvider = createGoogle({ apiKey: key })
-      candidates.push({
-        id: `gemini-key-${index + 1}`,
-        name: `Google Gemini (${geminiModel}) [Key ${index + 1}]`,
-        provider: 'gemini',
-        model: googleProvider(geminiModel),
+      geminiModels.forEach((modelName) => {
+        candidates.push({
+          id: `gemini-key-${keyIndex + 1}-${modelName}`,
+          name: `Google Gemini (${modelName}) [Key ${keyIndex + 1}]`,
+          provider: 'gemini',
+          model: googleProvider(modelName),
+        })
       })
     } catch (err) {
-      console.error(`[AI Provider] Failed to initialize Gemini candidate ${index + 1}:`, err)
+      console.error(`[AI Provider] Failed to initialize Gemini candidate ${keyIndex + 1}:`, err)
     }
   })
 
@@ -126,6 +142,11 @@ export function getAvailableCandidates(): AICandidate[] {
   const openaiModel = process.env.OPENAI_MODEL || 'gpt-4o-mini'
 
   openaiKeys.forEach((key, index) => {
+    // Avoid attempting known invalid / dummy keys
+    if (!key.startsWith('sk-') && !key.startsWith('sk-proj-')) {
+      console.warn(`[AI Provider] Skipping OpenAI key ${index + 1}: invalid key prefix`)
+      return
+    }
     try {
       const openaiProvider = createOpenAI({ apiKey: key })
       candidates.push({

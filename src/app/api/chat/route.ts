@@ -30,12 +30,23 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json()
 
-    // Sanitize message content to prevent prompt injection / XSS payloads
+    // Extract and sanitize message text from UI messages (which may contain `parts` instead of `content`)
     const sanitizedMessages = Array.isArray(messages)
-      ? messages.map((m: any) => ({
-          ...m,
-          content: typeof m.content === 'string' ? sanitizeString(m.content) : m.content,
-        }))
+      ? messages.map((m: any) => {
+          let text = ''
+          if (typeof m.content === 'string') {
+            text = m.content
+          } else if (Array.isArray(m.parts)) {
+            text = m.parts
+              .map((p: any) => (typeof p === 'string' ? p : p.text || p.content || ''))
+              .join('')
+          }
+
+          return {
+            role: m.role || 'user',
+            content: sanitizeString(text),
+          }
+        })
       : []
 
     const result = await streamText({
