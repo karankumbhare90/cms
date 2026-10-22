@@ -270,7 +270,7 @@ export function MobileMenu({
   return (
     <>
       <button
-        className="text-white p-2.5 min-w-1 min-h-2 flex items-center justify-center focus:outline-none"
+        className="text-white p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center focus:outline-none"
         onClick={() => {
           setIsOpen((o) => !o)
           setExpandedItem(null)

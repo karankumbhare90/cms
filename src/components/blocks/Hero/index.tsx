@@ -155,21 +155,20 @@ export const Hero: React.FC<any> = ({ slides, settings, bannerWidth }) => {
 
           {/* Bottom controls: Slider dots & Video play/pause */}
           <div className="flex items-center justify-between mt-10">
-            <div className="flex items-center">
+            <div className="flex items-center gap-1">
               {totalSlides > 1 &&
                 slides.map((_: any, i: number) => (
                   <button
                     key={i}
                     onClick={() => goTo(i)}
                     aria-label={`Slide ${i + 1}`}
-                    className="flex items-center justify-center p-2 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-1 min-h-2"
+                    className="flex items-center justify-center p-2 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <span
-                      className="block rounded-full origin-left transition-[transform,background-color] duration-300"
+                      className="block rounded-full transition-all duration-300 ease-out"
                       style={{
-                        width: 32,
+                        width: i === active ? 32 : 10,
                         height: 10,
-                        transform: i === active ? 'scaleX(1)' : 'scaleX(0.3125)',
                         background: i === active ? '#2563EB' : 'rgba(255,255,255,0.35)',
                       }}
                     />
