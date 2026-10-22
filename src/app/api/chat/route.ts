@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { sanitizeString, SECURITY_HEADERS } from '@/utils/security'
 import { checkRateLimit, getClientIP } from '@/utils/rateLimit'
 import { fallbackModel } from '@/utils/aiProvider'
+import { getChatSiteContextCached, buildChatSystemPrompt } from '@/utils/chatContext'
 
 export const maxDuration = 45
 
@@ -49,11 +50,14 @@ export async function POST(req: Request) {
         })
       : []
 
+    // Fetch live, cached site context (blogs, services, pages) to provide accurate answers
+    const siteContext = await getChatSiteContextCached()
+    const systemPrompt = buildChatSystemPrompt(siteContext)
+
     const result = await streamText({
       model: fallbackModel,
       messages: sanitizedMessages,
-      system:
-        'You are an AI assistant exclusively for this website. You must only answer questions that are directly related to this project and its content. If a user asks a question about anything outside the scope of this project, you must politely refuse to answer and state that you are only programmed to discuss topics related to this project.',
+      system: systemPrompt,
     })
 
     return result.toUIMessageStreamResponse()
