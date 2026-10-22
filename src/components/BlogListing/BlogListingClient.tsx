@@ -16,12 +16,30 @@ interface BlogListingClientProps {
   limit: number
   blogSettings: any
   categories: any[]
+  recentPosts?: any[]
   tags: string[]
   parentSlug: string
+  categorySlug?: string
+  currentCategoryName?: string
 }
 
-async function fetchPosts({ page, limit }: { page: number; limit: number }) {
-  const res = await fetch(`/api/posts?page=${page}&limit=${limit}`)
+async function fetchPosts({
+  page,
+  limit,
+  categorySlug,
+}: {
+  page: number
+  limit: number
+  categorySlug?: string
+}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  })
+  if (categorySlug) {
+    params.set('category', categorySlug)
+  }
+  const res = await fetch(`/api/posts?${params.toString()}`)
   if (!res.ok) {
     throw new Error('Failed to fetch posts')
   }
@@ -51,8 +69,11 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
   limit,
   blogSettings,
   categories,
+  recentPosts,
   tags,
   parentSlug,
+  categorySlug,
+  currentCategoryName,
 }) => {
   const router = useRouter()
   const pathname = usePathname()
@@ -95,8 +116,8 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
   // so new pages trigger an actual fetch instead of reusing page 1's initialData
   const isInitialPage = currentPage === initialPage
   const { data, isFetching } = useQuery({
-    queryKey: ['blog-posts', currentPage, limit],
-    queryFn: () => fetchPosts({ page: currentPage, limit }),
+    queryKey: ['blog-posts', currentPage, limit, categorySlug || 'all'],
+    queryFn: () => fetchPosts({ page: currentPage, limit, categorySlug }),
     initialData: isInitialPage
       ? {
           posts: initialPosts,
@@ -188,7 +209,35 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
                       </motion.div>
                     ))
                   ) : (
-                    <div className="text-gray-500 py-8">No posts found.</div>
+                    <div className="col-span-full bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
+                      <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                          />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-[#0C1E33] mb-2">
+                        {currentCategoryName
+                          ? `No articles in ${currentCategoryName} yet`
+                          : 'No articles found'}
+                      </h3>
+                      <p className="text-gray-500 text-sm max-w-md mx-auto mb-6">
+                        We haven&apos;t published any articles in this category yet. Check back soon or explore our other topics.
+                      </p>
+                      <Link
+                        href={`/${parentSlug}`}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl text-sm hover:bg-blue-700 transition shadow-sm hover:shadow"
+                      >
+                        <span>Browse All Articles</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      </Link>
+                    </div>
                   )}
                 </motion.div>
               </AnimatePresence>
@@ -265,10 +314,11 @@ export const BlogListingClient: React.FC<BlogListingClientProps> = ({
             {/* Right Side: Sidebar */}
             <BlogSidebar
               blogSettings={blogSettings}
-              posts={initialPosts}
+              posts={recentPosts && recentPosts.length > 0 ? recentPosts : initialPosts}
               categories={categories}
               tags={tags}
               parentSlug={parentSlug}
+              activeCategorySlug={categorySlug}
             />
           </div>
         </div>

@@ -2,13 +2,15 @@ import React from 'react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
-import Link from 'next/link'
+import { Banner } from '@/components/Banner'
+import { BlogListing } from '@/components/BlogListing'
+import { RenderBlocks } from '@/components/RenderBlocks'
 import { getSiteSettingsCached } from '@/utils/cachedData'
 import type { Metadata } from 'next'
 
 type Props = {
   params: Promise<{ categorySlug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -40,19 +42,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const name = category.categoryName || category.title || 'Category'
+  const title = category.seo?.metaTitle || `${name} | Category`
+  const description =
+    category.seo?.metaDescription ||
+    category.banner?.pageDescription ||
+    `Explore all latest posts, guides, and articles in ${name}. ${fallbackDescription}`
 
   return {
-    title: `${name} | Category`,
-    description: `Explore all latest posts and articles in ${name}. ${fallbackDescription}`,
+    title,
+    description,
   }
 }
 
-export default async function CategoryDetailPage({ params }: Props) {
+export default async function CategoryDetailPage({ params, searchParams }: Props) {
   const { categorySlug } = await params
+  const searchParamsResolved = await searchParams
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
 
-  // Fetch Category
+  // 1. Fetch Category
   const categoryResult = await payload.find({
     collection: 'categories',
     limit: 1,
@@ -66,74 +74,58 @@ export default async function CategoryDetailPage({ params }: Props) {
   const category = categoryResult.docs[0]
   if (!category) return notFound()
 
-  // Fetch Category's Posts
-  const postsResult = await payload.find({
-    collection: 'posts',
-    limit: 20,
+  // 2. Fetch Blog Landing Page to get the base blog slug (e.g. 'blogs')
+  const pagesResult = await payload.find({
+    collection: 'pages',
+    limit: 10,
     where: {
-      category: {
-        equals: category.id,
+      pageType: {
+        equals: 'blog-landing',
       },
     },
-    sort: '-createdAt',
   })
-  const posts = postsResult.docs
+  const blogLandingPage = pagesResult.docs[0]
+  const blogPrefix = blogLandingPage?.slug || 'blogs'
+
+  const categoryName = category.categoryName || category.title
+
+  // Breadcrumbs: Home -> Blogs -> [Category Name]
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: blogLandingPage?.title || 'Blogs', href: `/${blogPrefix}` },
+    { label: categoryName, href: `/categories/${category.slug}` },
+  ]
+
+  const bannerTitle = category.banner?.pageTitle || categoryName
+  const bannerDescription =
+    category.banner?.pageDescription ||
+    `Browse all guides, tutorials, and insights in ${categoryName}.`
 
   return (
-    <div
-      className="container mx-auto px-4 py-24 max-w-5xl"
-      style={{ paddingTop: 'calc(var(--header-height, 72px) + 3rem)' }}
-    >
-      {/* Category Header */}
-      <div className="bg-white rounded-2xl p-8 shadow-sm border mb-16 text-center">
-        <span className="text-sm font-bold tracking-wider uppercase text-blue-600 mb-2 block">
-          Category
-        </span>
-        <h1 className="text-4xl font-bold">{category.categoryName || category.title}</h1>
-      </div>
+    <div style={{ paddingTop: 'var(--header-height, 72px)' }}>
+      <Banner
+        pageTitle={bannerTitle}
+        pageDescription={bannerDescription}
+        displayBreadcrumb={category.banner?.displayBreadcrumb ?? true}
+        bannerBackground={
+          category.banner?.bannerBackground || blogLandingPage?.banner?.bannerBackground
+        }
+        textAlign={category.banner?.textAlign || 'left'}
+        displayOverlay={category.banner?.displayOverlay ?? true}
+        overlayOpacity={category.banner?.overlayOpacity ?? 50}
+        breadcrumbs={breadcrumbs}
+      />
 
-      {/* Category's Posts */}
-      <h2 className="text-2xl font-bold mb-8 border-b pb-4">
-        Latest in {category.categoryName || category.title}
-      </h2>
+      <BlogListing
+        page={blogLandingPage || { slug: blogPrefix }}
+        searchParams={searchParamsResolved}
+        categorySlug={category.slug}
+        categoryId={category.id}
+        currentCategoryName={categoryName}
+      />
 
-      {posts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <div
-              key={post.id}
-              className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white flex flex-col"
-            >
-              {post.blogMainImage &&
-                typeof post.blogMainImage === 'object' &&
-                post.blogMainImage.url && (
-                  <div className="relative w-full h-48">
-                    <Image
-                      src={post.blogMainImage.url}
-                      alt={post.blogTitle || 'Blog image'}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-              <div className="p-6 flex-1 flex flex-col">
-                <Link href={`/blog/post/${post.slug}`}>
-                  <h3 className="text-xl font-bold mb-3 hover:text-blue-600 transition">
-                    {post.blogTitle || post.title}
-                  </h3>
-                </Link>
-                <p className="text-gray-600 text-sm mb-4 flex-1 line-clamp-3">{post.blogExcerpt}</p>
-                <div className="text-xs text-gray-400 mt-auto">
-                  {new Date(post.createdAt).toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-gray-500 py-12 text-center bg-gray-50 rounded-xl border">
-          No posts have been published in this category yet.
-        </div>
+      {category.layout && category.layout.length > 0 && (
+        <RenderBlocks blocks={category.layout as any[]} />
       )}
     </div>
   )

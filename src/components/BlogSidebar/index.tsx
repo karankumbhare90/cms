@@ -8,6 +8,7 @@ type BlogSidebarProps = {
   categories: any[]
   tags: string[]
   parentSlug: string
+  activeCategorySlug?: string
 }
 
 export const BlogSidebar: React.FC<BlogSidebarProps> = ({
@@ -16,6 +17,7 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
   categories,
   tags,
   parentSlug,
+  activeCategorySlug,
 }) => {
   const hideRecentPost = blogSettings?.hideRecentPost || false
   const hideCategories = blogSettings?.hideCategories || false
@@ -66,17 +68,39 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
       {!hideCategories && (
         <div className="bg-gray-50 p-6 rounded-lg border">
           <h3 className="text-xl font-bold mb-4 border-b pb-2">Categories</h3>
-          <ul className="space-y-2">
-            {categories.map((category: any) => (
-              <li key={category.id}>
-                <Link
-                  href={`/categories/${category.slug}`}
-                  className="text-gray-600 hover:text-blue-600 transition text-sm"
-                >
-                  {category.categoryName || category.title}
-                </Link>
-              </li>
-            ))}
+          <ul className="space-y-1.5">
+            <li>
+              <Link
+                href={`/${parentSlug}`}
+                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition font-medium ${
+                  !activeCategorySlug
+                    ? 'bg-blue-50 text-blue-600 font-semibold border-l-2 border-blue-600'
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-white'
+                }`}
+              >
+                <span>All Articles</span>
+              </Link>
+            </li>
+            {categories.map((category: any) => {
+              const isActive = activeCategorySlug === category.slug
+              return (
+                <li key={category.id}>
+                  <Link
+                    href={`/categories/${category.slug}`}
+                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition font-medium ${
+                      isActive
+                        ? 'bg-blue-50 text-blue-600 font-semibold border-l-2 border-blue-600'
+                        : 'text-gray-600 hover:text-blue-600 hover:bg-white'
+                    }`}
+                  >
+                    <span>{category.categoryName || category.title}</span>
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                    )}
+                  </Link>
+                </li>
+              )
+            })}
             {categories.length === 0 && (
               <li className="text-gray-500 text-sm">No categories found</li>
             )}

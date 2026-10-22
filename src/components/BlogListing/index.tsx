@@ -8,9 +8,15 @@ import { BlogListingSkeleton } from './BlogListingSkeleton'
 export const BlogListing = async ({
   page,
   searchParams,
+  categorySlug,
+  categoryId,
+  currentCategoryName,
 }: {
-  page: any
+  page?: any
   searchParams?: { [key: string]: string | string[] | undefined }
+  categorySlug?: string
+  categoryId?: string
+  currentCategoryName?: string
 }) => {
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
@@ -23,8 +29,18 @@ export const BlogListing = async ({
   })
 
   const limit = blogSettings?.blogItemsPerPage || 10
+
+  // Filter by category if categorySlug or categoryId is provided
+  const whereClause: Record<string, any> = {}
+  if (categorySlug) {
+    whereClause['category.slug'] = { equals: categorySlug }
+  } else if (categoryId) {
+    whereClause['category'] = { equals: categoryId }
+  }
+
   const postsResult = await payload.find({
     collection: 'posts',
+    where: Object.keys(whereClause).length ? whereClause : undefined,
     limit,
     page: currentPage,
     sort: '-createdAt',
@@ -33,16 +49,25 @@ export const BlogListing = async ({
   const posts = postsResult.docs
   const totalPages = postsResult.totalPages || 1
 
-  // Fetch Categories
+  // Fetch Categories for Sidebar
   const categoriesResult = await payload.find({
     collection: 'categories',
     limit: 100,
   })
   const categories = categoriesResult.docs
 
-  // Extract Tags from Posts
+  // Fetch Recent Posts for Sidebar so it's always populated even if category has 0 posts
+  const recentPostsResult = await payload.find({
+    collection: 'posts',
+    limit: 5,
+    sort: '-createdAt',
+  })
+  const recentPosts = recentPostsResult.docs
+
+  // Extract Tags from Posts & Recent Posts
   const allTags = new Set<string>()
-  posts.forEach((post) => {
+  const tagSource = posts.length > 0 ? posts : recentPosts
+  tagSource.forEach((post) => {
     if (post.tags && typeof post.tags === 'string') {
       const splitTags = post.tags.split(',').map((tag) => tag.trim())
       splitTags.forEach((t) => {
@@ -51,6 +76,8 @@ export const BlogListing = async ({
     }
   })
   const tags = Array.from(allTags)
+
+  const parentSlug = page?.slug || 'blogs'
 
   return (
     <Suspense
@@ -69,8 +96,11 @@ export const BlogListing = async ({
           limit={limit}
           blogSettings={blogSettings}
           categories={categories}
+          recentPosts={recentPosts}
           tags={tags}
-          parentSlug={page.slug}
+          parentSlug={parentSlug}
+          categorySlug={categorySlug}
+          currentCategoryName={currentCategoryName}
         />
       </QueryProvider>
     </Suspense>
