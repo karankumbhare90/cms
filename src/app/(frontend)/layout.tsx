@@ -5,6 +5,7 @@ import './styles.css'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { DynamicChatbot } from '@/components/DynamicChatbot'
+import { QueryProvider } from '@/providers/QueryProvider'
 import { getSiteSettingsCached } from '@/utils/cachedData'
 import { SITE_NAME } from '@/config/site'
 
@@ -94,10 +95,12 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         <link rel="ai-catalog" href="/.well-known/ai-catalog.json" type="application/ai-catalog+json" />
       </head>
       <body suppressHydrationWarning>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <DynamicChatbot siteName={siteSettings?.siteName || SITE_NAME} />
+        <QueryProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+          <DynamicChatbot siteName={siteSettings?.siteName || SITE_NAME} />
+        </QueryProvider>
       </body>
     </html>
   )

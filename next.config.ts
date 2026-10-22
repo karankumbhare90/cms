@@ -128,6 +128,10 @@ const nextConfig: NextConfig = {
         source: '/.well-known/ai-catalog',
         destination: '/ai-catalog.json',
       },
+      {
+        source: '/contact',
+        destination: '/contact-us',
+      },
     ]
   },
   experimental: {

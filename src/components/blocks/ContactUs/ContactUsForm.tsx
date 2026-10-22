@@ -5,6 +5,7 @@ import { getThemeClass } from '@/utils/theme'
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { useMutation } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
+import { QueryProvider } from '@/providers/QueryProvider'
 
 const inputBase = [
   'w-full px-4 py-3 rounded-[6px]',
@@ -507,11 +508,13 @@ export const ContactUsFormContent: React.FC<any> = ({ settings, contactDetails }
 
 export const ContactUsForm: React.FC<any> = (props) => {
   return (
-    <GoogleReCaptchaProvider
-      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || 'YOUR_RECAPTCHA_SITE_KEY'}
-      scriptProps={{ async: true, defer: true, appendTo: 'body' }}
-    >
-      <ContactUsFormContent {...props} />
-    </GoogleReCaptchaProvider>
+    <QueryProvider>
+      <GoogleReCaptchaProvider
+        reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || 'YOUR_RECAPTCHA_SITE_KEY'}
+        scriptProps={{ async: true, defer: true, appendTo: 'body' }}
+      >
+        <ContactUsFormContent {...props} />
+      </GoogleReCaptchaProvider>
+    </QueryProvider>
   )
 }

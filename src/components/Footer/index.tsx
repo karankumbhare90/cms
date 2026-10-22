@@ -34,7 +34,7 @@ export async function Footer() {
         url = `/${pageObj}`
       }
     }
-    return url === '/contact-us' ? '/contact' : url
+    return url
   }
 
   return (

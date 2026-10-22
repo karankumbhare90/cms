@@ -94,9 +94,7 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
                     }`}
                   >
                     <span>{category.categoryName || category.title}</span>
-                    {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-                    )}
+                    {isActive && <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
                   </Link>
                 </li>
               )
@@ -130,4 +128,3 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
 }
 
 export { BlogSidebarSkeleton } from './BlogSidebarSkeleton'
-
