@@ -25,8 +25,7 @@ function FormattedMessage({ text, isUser }: { text: string; isUser: boolean }) {
     // 8: text
     // 9: *text* (italic)
     // 10: text
-    const regex =
-      /(\*\*\[(.*?)\]\((.*?)\)\*\*|\[(.*?)\]\((.*?)\)|\*\*(.*?)\*\*|\*(.*?)\*)/g
+    const regex = /(\*\*\[(.*?)\]\((.*?)\)\*\*|\[(.*?)\]\((.*?)\)|\*\*(.*?)\*\*|\*(.*?)\*)/g
 
     let lastIndex = 0
     let match: RegExpExecArray | null
@@ -315,7 +314,7 @@ export function Chatbot({ initialOpen = false }: { initialOpen?: boolean } = {})
             <div className="bg-[#0C1E33] text-white px-4 py-3.5 flex items-center justify-between border-b border-white/10">
               <div className="flex flex-col items-start gap-2.5">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold textx-base leading-tight">WebNexa Assistant</h3>
+                  <h3 className="font-semibold text-base leading-tight">WebNexa Assistant</h3>
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                 </div>
                 <p className="text-[11px] text-white/60 mt-0">Fast answers & project guidance</p>
