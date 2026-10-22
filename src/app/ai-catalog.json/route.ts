@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 export const dynamic = 'force-static'
 
 const catalogManifest = {
-  $schema: 'https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ai-catalog.schema.json',
   specVersion: '1.0',
   host: {
     displayName: 'WebNexa CMS',

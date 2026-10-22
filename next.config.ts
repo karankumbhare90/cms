@@ -56,6 +56,10 @@ const nextConfig: NextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
+          {
+            key: 'Link',
+            value: '</.well-known/ai-catalog.json>; rel="ai-catalog"',
+          },
         ],
       },
       {

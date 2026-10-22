@@ -90,6 +90,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             <link rel="apple-touch-icon" href={faviconUrl} />
           </>
         )}
+        <link rel="ai-catalog" href="/.well-known/ai-catalog.json" type="application/ai-catalog+json" />
       </head>
       <body suppressHydrationWarning>
         <Header />
