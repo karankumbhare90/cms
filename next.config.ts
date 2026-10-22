@@ -118,11 +118,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/.well-known/ai-catalog.json',
-        destination: '/api/ai-catalog',
+        destination: '/ai-catalog.json',
       },
       {
-        source: '/ai-catalog.json',
-        destination: '/api/ai-catalog',
+        source: '/.well-known/ai-catalog',
+        destination: '/ai-catalog.json',
       },
     ]
   },

@@ -42,7 +42,7 @@ const catalogManifest = {
 }
 
 export async function GET() {
-  return NextResponse.json(catalogManifest, {
+  return new NextResponse(JSON.stringify(catalogManifest, null, 2), {
     status: 200,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
