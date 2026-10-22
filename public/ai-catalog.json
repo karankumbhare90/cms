@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "WebNexa CMS",
+  "version": "1.0.0",
+  "description": "WebNexa CMS platform APIs and catalog",
+  "services": [
+    {
+      "name": "Chatbot API",
+      "endpoint": "/api/chat",
+      "method": "POST",
+      "description": "AI-powered assistant endpoint for user inquiries."
+    },
+    {
+      "name": "Contact Form API",
+      "endpoint": "/api/contact",
+      "method": "POST",
+      "description": "Endpoint for submitting contact form messages."
+    }
+  ]
+}

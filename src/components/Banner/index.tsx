@@ -56,8 +56,10 @@ export const Banner: React.FC<BannerProps> = ({
             src={bannerBackground.url}
             alt={bannerBackground.alt || 'Banner background'}
             fill
+            sizes="100vw"
             className="object-cover"
             priority
+            unoptimized={Boolean(bannerBackground.url?.toLowerCase().includes('.svg'))}
           />
         </div>
       )}

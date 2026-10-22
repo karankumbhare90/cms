@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { QueryProvider } from '@/providers/QueryProvider'
 import { BlogListingClient } from './BlogListingClient'
 import { BlogListingSkeleton } from './BlogListingSkeleton'
 
@@ -60,16 +61,18 @@ export const BlogListing = async ({
         />
       }
     >
-      <BlogListingClient
-        initialPosts={posts}
-        initialTotalPages={totalPages}
-        initialPage={currentPage}
-        limit={limit}
-        blogSettings={blogSettings}
-        categories={categories}
-        tags={tags}
-        parentSlug={page.slug}
-      />
+      <QueryProvider>
+        <BlogListingClient
+          initialPosts={posts}
+          initialTotalPages={totalPages}
+          initialPage={currentPage}
+          limit={limit}
+          blogSettings={blogSettings}
+          categories={categories}
+          tags={tags}
+          parentSlug={page.slug}
+        />
+      </QueryProvider>
     </Suspense>
   )
 }

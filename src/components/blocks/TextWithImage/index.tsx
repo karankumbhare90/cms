@@ -47,6 +47,7 @@ export const TextWithImage: React.FC<any> = ({
                     sizes="(max-width: 768px) 100vw, 50vw"
                     quality={75}
                     loading="lazy"
+                    unoptimized={Boolean(image.url?.toLowerCase().includes('.svg'))}
                     className="object-cover"
                   />
                 </div>

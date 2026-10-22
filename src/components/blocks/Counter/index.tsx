@@ -57,6 +57,7 @@ const CounterItem = ({ item }: { item: any }) => {
           height={64}
           quality={80}
           loading="lazy"
+          unoptimized={Boolean(item.image.url?.toLowerCase().includes('.svg'))}
           className="w-16 h-16 mb-4 object-contain drop-shadow-md"
         />
       )}
@@ -118,4 +119,3 @@ export const Counter: React.FC<any> = ({
 }
 
 export { CounterSkeleton } from '../skeletons'
-

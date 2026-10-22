@@ -12,9 +12,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     qualities: [75, 80],
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 31536000,
     deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     localPatterns: [
@@ -67,12 +69,12 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Media files uploaded via CMS: allow fast revalidation so updates reflect immediately
+        // Media files uploaded via CMS: cache efficiently with stale-while-revalidate
         source: '/api/media/file/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=60, stale-while-revalidate=600',
+            value: 'public, max-age=86400, stale-while-revalidate=604800',
           },
         ],
       },

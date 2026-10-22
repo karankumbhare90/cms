@@ -67,6 +67,7 @@ export const CTA: React.FC<any> = ({
               sizes="(max-width: 1024px) 100vw, 50vw"
               quality={75}
               loading="lazy"
+              unoptimized={Boolean(imgUrl?.toLowerCase().includes('.svg'))}
               className="absolute inset-0 w-full h-full object-cover"
             />
           </div>

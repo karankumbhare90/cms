@@ -4,9 +4,9 @@ import { useChat } from '@ai-sdk/react'
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export function Chatbot() {
+export function Chatbot({ initialOpen = false }: { initialOpen?: boolean } = {}) {
   const { messages, sendMessage, status, error, clearError } = useChat()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(initialOpen)
   const [inputValue, setInputValue] = useState('')
 
   const isLoading = status === 'submitted' || status === 'streaming'

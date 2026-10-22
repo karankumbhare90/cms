@@ -45,6 +45,7 @@ export const PortfolioGrid: React.FC<any> = ({
                         sizes="(max-width: 768px) 100vw, 33vw"
                         quality={75}
                         loading="lazy"
+                        unoptimized={Boolean(item.image.url?.toLowerCase().includes('.svg'))}
                         className="w-full h-auto transition-transform duration-700 group-hover:scale-105 object-cover"
                       />
                       {item.link && (

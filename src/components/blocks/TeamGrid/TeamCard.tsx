@@ -21,6 +21,10 @@ export const TeamCard: React.FC<TeamCardProps> = ({ member, enableCarousel }) =>
             src={member.image.url}
             alt={member?.name || 'Team Member'}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={75}
+            loading="lazy"
+            unoptimized={Boolean(member?.image?.url?.toLowerCase().includes('.svg'))}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
           />
         ) : (

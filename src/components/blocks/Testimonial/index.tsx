@@ -6,6 +6,8 @@ import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
 import { IntroLinks } from '@/blocks/Shared/_IntroLinks'
 import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 import { motion } from 'framer-motion'
 
 const SlickArrow = (props: any) => {

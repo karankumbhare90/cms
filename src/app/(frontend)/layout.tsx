@@ -5,7 +5,6 @@ import './styles.css'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { DynamicChatbot } from '@/components/DynamicChatbot'
-import { QueryProvider } from '@/providers/QueryProvider'
 import { getSiteSettingsCached } from '@/utils/cachedData'
 
 const inter = Inter({
@@ -84,8 +83,6 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {faviconUrl && (
           <>
             <link rel="icon" href={faviconUrl} type={faviconType || undefined} />
@@ -95,12 +92,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         )}
       </head>
       <body suppressHydrationWarning>
-        <QueryProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <DynamicChatbot />
-        </QueryProvider>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+        <DynamicChatbot />
       </body>
     </html>
   )

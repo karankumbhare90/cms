@@ -19,20 +19,20 @@ export async function Footer() {
 
   const getLinkUrl = (link: any): string => {
     if (!link) return '#'
-    if (link.type === 'custom') return link.url || '#'
-    if (link.type === 'reference' && link.reference) {
+    let url = '#'
+    if (link.type === 'custom') url = link.url || '#'
+    else if (link.type === 'reference' && link.reference) {
       const pageObj =
         typeof link.reference === 'object' && link.reference !== null && 'value' in link.reference
           ? link.reference.value
           : link.reference
       if (typeof pageObj === 'object' && pageObj !== null) {
-        return buildPagePath(pageObj)
-      }
-      if (typeof pageObj === 'string' && pageObj) {
-        return `/${pageObj}`
+        url = buildPagePath(pageObj)
+      } else if (typeof pageObj === 'string' && pageObj) {
+        url = `/${pageObj}`
       }
     }
-    return '#'
+    return url === '/contact-us' ? '/contact' : url
   }
 
   return (
@@ -48,7 +48,7 @@ export async function Footer() {
               {footer.footerLogo &&
               typeof footer.footerLogo === 'object' &&
               footer.footerLogo.url ? (
-                <Link href="/">
+                <Link href="/" prefetch={false}>
                   <Image
                     src={footer.footerLogo.url}
                     alt={footer.footerLogo.alt || siteSettings.siteName}
@@ -56,6 +56,7 @@ export async function Footer() {
                     height={32}
                     quality={80}
                     loading="lazy"
+                    unoptimized={Boolean(footer.footerLogo.url?.toLowerCase().includes('.svg'))}
                     className="w-auto mb-5 h-8"
                   />
                 </Link>
@@ -83,6 +84,7 @@ export async function Footer() {
                       <li key={lIndex}>
                         <Link
                           href={url || '#'}
+                          prefetch={false}
                           className="text-[14px] text-white/75 hover:text-white transition-colors font-[var(--font-family-base)]"
                         >
                           {link.label}

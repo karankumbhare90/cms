@@ -38,6 +38,7 @@ export function DesktopNav({ links }: { links: any[] }) {
           <div key={index} className="gel-nav-parent relative group">
             <Link
               href={url || '#'}
+              prefetch={false}
               className="flex items-center gap-1 px-3 py-2 rounded-[6px] text-[14px] font-medium transition-colors"
               style={{
                 color: active ? 'white' : 'rgba(255,255,255,0.7)',
@@ -82,6 +83,7 @@ export function DesktopNav({ links }: { links: any[] }) {
                       <Link
                         key={subIdx}
                         href={subUrl || '#'}
+                        prefetch={false}
                         className="block px-4 py-2.5 text-[14px] transition-colors"
                         style={{
                           color: childActive ? 'white' : 'rgba(255,255,255,0.72)',

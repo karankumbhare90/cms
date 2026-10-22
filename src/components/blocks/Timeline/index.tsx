@@ -55,6 +55,7 @@ export const Timeline: React.FC<any> = ({ introText, introLinks, events, setting
                               sizes="(max-width: 768px) 100vw, 50vw"
                               quality={75}
                               loading="lazy"
+                              unoptimized={Boolean(event.image.url?.toLowerCase().includes('.svg'))}
                               className="w-full h-auto object-cover"
                             />
                           </div>

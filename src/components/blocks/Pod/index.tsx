@@ -91,6 +91,7 @@ export const Pod: React.FC<any> = ({
                             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             quality={75}
                             loading="lazy"
+                            unoptimized={Boolean(item.image.url?.toLowerCase().includes('.svg'))}
                             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
                           />
                         </div>
@@ -111,8 +112,8 @@ export const Pod: React.FC<any> = ({
                               alt={item.image.alt || item.title || ''}
                               width={32}
                               height={32}
-                              quality={80}
                               loading="lazy"
+                              unoptimized={Boolean(item.image.url?.toLowerCase().includes('.svg'))}
                               style={{
                                 width: 32,
                                 height: 32,

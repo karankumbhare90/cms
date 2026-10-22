@@ -7,6 +7,8 @@ import { getTextAlignment } from '@/utils/textAlign'
 import { IntroText } from '@/blocks/Shared/_IntroText'
 import { IntroLinks } from '@/blocks/Shared/_IntroLinks'
 import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 
 export const LogoGrid: React.FC<any> = ({
   introText,
@@ -100,7 +102,7 @@ export const LogoGrid: React.FC<any> = ({
                             width={160}
                             height={60}
                             loading="lazy"
-                            quality={80}
+                            unoptimized={Boolean(logo.image?.url?.toLowerCase().includes('.svg'))}
                             className="max-w-full max-h-full h-auto object-contain grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-300 mx-auto"
                           />
                         )}
@@ -169,7 +171,7 @@ export const LogoGrid: React.FC<any> = ({
                             width={160}
                             height={60}
                             loading="lazy"
-                            quality={80}
+                            unoptimized={Boolean(logo.image?.url?.toLowerCase().includes('.svg'))}
                             className="max-w-full max-h-full h-auto object-contain grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-300"
                           />
                         )}

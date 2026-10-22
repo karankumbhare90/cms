@@ -74,6 +74,7 @@ export const MediaGallery: React.FC<any> = ({
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           quality={75}
                           loading="lazy"
+                          unoptimized={Boolean(item.image.url?.toLowerCase().includes('.svg'))}
                           className="w-full h-auto block opacity-90 transition-transform duration-500 group-hover:scale-105"
                         />
                         {item.caption && (
@@ -104,6 +105,7 @@ export const MediaGallery: React.FC<any> = ({
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         quality={75}
                         loading="lazy"
+                        unoptimized={Boolean(item.image.url?.toLowerCase().includes('.svg'))}
                         className="w-full h-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105 aspect-square"
                       />
                       {item.caption && (
