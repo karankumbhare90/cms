@@ -1,20 +1,53 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "name": "WebNexa CMS",
-  "version": "1.0.0",
-  "description": "WebNexa CMS platform APIs and catalog",
-  "services": [
+  "$schema": "https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ai-catalog.schema.json",
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "WebNexa CMS",
+    "identifier": "urn:air:webnexacms.vercel.app",
+    "documentationUrl": "https://webnexacms.vercel.app/llms.txt"
+  },
+  "entries": [
     {
-      "name": "Chatbot API",
-      "endpoint": "/api/chat",
-      "method": "POST",
-      "description": "AI-powered assistant endpoint for user inquiries."
+      "identifier": "urn:air:webnexacms.vercel.app:api:chat",
+      "displayName": "WebNexa AI Assistant",
+      "type": "application/json",
+      "url": "https://webnexacms.vercel.app/api/chat",
+      "description": "Interactive AI assistant capable of answering questions about WebNexa CMS, technical capabilities, and digital services.",
+      "tags": [
+        "ai-assistant",
+        "customer-support",
+        "chatbot"
+      ],
+      "capabilities": [
+        "Chatbot",
+        "Assistant",
+        "QuestionAnswering"
+      ],
+      "representativeQueries": [
+        "What services does WebNexa provide?",
+        "How do I contact WebNexa for a web project?",
+        "Tell me about WebNexa CMS features"
+      ]
     },
     {
-      "name": "Contact Form API",
-      "endpoint": "/api/contact",
-      "method": "POST",
-      "description": "Endpoint for submitting contact form messages."
+      "identifier": "urn:air:webnexacms.vercel.app:api:contact",
+      "displayName": "WebNexa Contact Inquiries API",
+      "type": "application/json",
+      "url": "https://webnexacms.vercel.app/api/contact",
+      "description": "Inquiry and lead submission API for prospective clients and partners.",
+      "tags": [
+        "inquiry",
+        "contact",
+        "leads"
+      ],
+      "capabilities": [
+        "ContactForm",
+        "LeadSubmission"
+      ],
+      "representativeQueries": [
+        "Submit a project inquiry to WebNexa",
+        "Request a quote for digital development services"
+      ]
     }
   ]
 }

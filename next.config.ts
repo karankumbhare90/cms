@@ -78,6 +78,52 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/.well-known/ai-catalog.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json; charset=utf-8',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400, s-maxage=86400',
+          },
+        ],
+      },
+      {
+        source: '/ai-catalog.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json; charset=utf-8',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400, s-maxage=86400',
+          },
+        ],
+      },
+    ]
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/.well-known/ai-catalog.json',
+        destination: '/api/ai-catalog',
+      },
+      {
+        source: '/ai-catalog.json',
+        destination: '/api/ai-catalog',
+      },
     ]
   },
   experimental: {
