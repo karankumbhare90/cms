@@ -8,11 +8,11 @@ const ChatbotComponent = dynamic(
   { ssr: false }
 )
 
-export const DynamicChatbot: React.FC = () => {
+export const DynamicChatbot: React.FC<{ siteName?: string }> = ({ siteName }) => {
   const [activated, setActivated] = useState(false)
 
   if (activated) {
-    return <ChatbotComponent initialOpen={true} />
+    return <ChatbotComponent initialOpen={true} siteName={siteName} />
   }
 
   return (

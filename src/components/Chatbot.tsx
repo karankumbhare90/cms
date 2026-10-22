@@ -4,6 +4,7 @@ import { useChat } from '@ai-sdk/react'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { SITE_NAME } from '@/config/site'
 
 /**
  * Lightweight, safe markdown formatter for chat responses:
@@ -208,7 +209,14 @@ const STARTER_PROMPTS = [
   'How do I get a free quote?',
 ]
 
-export function Chatbot({ initialOpen = false }: { initialOpen?: boolean } = {}) {
+export function Chatbot({
+  initialOpen = false,
+  siteName,
+}: {
+  initialOpen?: boolean
+  siteName?: string
+} = {}) {
+  const brandName = siteName || SITE_NAME
   const { messages, sendMessage, status, error, clearError, setMessages } = useChat()
   const [isOpen, setIsOpen] = useState(initialOpen)
   const [inputValue, setInputValue] = useState('')
@@ -314,7 +322,7 @@ export function Chatbot({ initialOpen = false }: { initialOpen?: boolean } = {})
             <div className="bg-[#0C1E33] text-white px-4 py-3.5 flex items-center justify-between border-b border-white/10">
               <div className="flex flex-col items-start gap-2.5">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-base leading-tight">WebNexa Assistant</h3>
+                  <h3 className="font-semibold text-base leading-tight">{brandName} Assistant</h3>
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                 </div>
                 <p className="text-[11px] text-white/60 mt-0">Fast answers & project guidance</p>
@@ -350,9 +358,9 @@ export function Chatbot({ initialOpen = false }: { initialOpen?: boolean } = {})
                     💬
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 text-base">Welcome to WebNexa!</h4>
+                    <h4 className="font-semibold text-gray-900 text-base">Welcome to {brandName}!</h4>
                     <p className="text-sm text-gray-500 mt-1 max-w-[260px] leading-relaxed">
-                      Ask about our digital design & development services, browse our 9 blog
+                      Ask about our digital design & development services, browse our published blog
                       articles, or get a custom project quote.
                     </p>
                   </div>

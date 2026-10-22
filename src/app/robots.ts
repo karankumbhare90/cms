@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next'
+import { SITE_URL } from '@/config/site'
 
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL && !process.env.NEXT_PUBLIC_SERVER_URL.includes('localhost')
     ? process.env.NEXT_PUBLIC_SERVER_URL
-    : 'https://webnexacms.vercel.app'
+    : SITE_URL
 
   return {
     rules: [

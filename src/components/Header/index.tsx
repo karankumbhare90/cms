@@ -7,6 +7,7 @@ import { MobileMenu } from './MobileMenu'
 import { HeaderHeightObserver } from './HeaderHeightObserver'
 import { DesktopNav } from './DesktopNav'
 import { getSiteSettingsCached, getNavigationCached } from '@/utils/cachedData'
+import { SITE_NAME } from '@/config/site'
 export { HeaderSkeleton } from './HeaderSkeleton'
 
 export async function Header() {
@@ -75,7 +76,7 @@ export async function Header() {
             {icon ? (
               <Image
                 src={icon}
-                alt={siteSettings.siteName || 'Site Logo'}
+                alt={siteSettings.siteName || SITE_NAME}
                 width={220}
                 height={40}
                 className="h-10 w-auto object-contain"
@@ -84,7 +85,7 @@ export async function Header() {
               />
             ) : (
               <span className="text-2xl font-black tracking-tight text-white transition-colors">
-                {siteSettings.siteName}
+                {siteSettings.siteName || SITE_NAME}
               </span>
             )}
           </Link>

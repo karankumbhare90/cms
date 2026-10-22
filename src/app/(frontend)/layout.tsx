@@ -6,6 +6,7 @@ import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { DynamicChatbot } from '@/components/DynamicChatbot'
 import { getSiteSettingsCached } from '@/utils/cachedData'
+import { SITE_NAME } from '@/config/site'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -30,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const faviconType =
     typeof faviconMedia === 'object' && faviconMedia?.mimeType ? faviconMedia.mimeType : undefined
 
-  const title = siteSettings?.metaTitle || siteSettings?.siteName || 'CMS'
+  const title = siteSettings?.metaTitle || siteSettings?.siteName || SITE_NAME
   const description =
     siteSettings?.metaDescription ||
     siteSettings?.description ||
@@ -96,7 +97,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         <Header />
         <main>{children}</main>
         <Footer />
-        <DynamicChatbot />
+        <DynamicChatbot siteName={siteSettings?.siteName || SITE_NAME} />
       </body>
     </html>
   )

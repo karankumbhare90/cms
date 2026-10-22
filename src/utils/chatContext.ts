@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { SITE_NAME } from '@/config/site'
 
 export interface DynamicFAQ {
   question: string
@@ -121,7 +122,7 @@ export const getChatSiteContextCached = unstable_cache(
       const payload = await getPayload({ config: payloadConfig })
 
       // 1. Fetch SiteSettings Global
-      let siteName = 'WebNexa'
+      let siteName = SITE_NAME
       let siteDescription = ''
       let contactEmail = ''
       let contactPhone = ''
@@ -263,7 +264,7 @@ export const getChatSiteContextCached = unstable_cache(
         siteName,
         siteDescription:
           siteDescription ||
-          'WebNexa is a modern digital agency specializing in website design, development, CMS solutions, and SEO optimization.',
+          `${siteName} is a modern digital agency specializing in website design, development, CMS solutions, and SEO optimization.`,
         contact: {
           email: contactEmail || undefined,
           phone: contactPhone || undefined,
@@ -278,9 +279,9 @@ export const getChatSiteContextCached = unstable_cache(
     } catch (error) {
       console.error('[ChatContext] Error loading dynamic CMS info:', error)
       return {
-        siteName: 'WebNexa',
+        siteName: SITE_NAME,
         siteDescription:
-          'WebNexa is a digital agency creating fast, user-friendly, and SEO-friendly websites.',
+          `${SITE_NAME} is a digital agency creating fast, user-friendly, and SEO-friendly websites.`,
         contact: {},
         navigation: [],
         pages: [],
@@ -387,7 +388,7 @@ ${postsList}
    - Never say you don't have access to the database or post counts.
 
 2. **Services & Navigation Queries**:
-   - Use the dynamic navigation menu and published pages to present WebNexa's actual services and pages.
+   - Use the dynamic navigation menu and published pages to present ${ctx.siteName}'s actual services and pages.
    - For services or custom projects, recommend visiting the [Contact page](/contact-us) or requesting a free quote.
 
 3. **Tone & Formatting**:

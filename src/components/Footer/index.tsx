@@ -8,11 +8,13 @@ import { IoLocationOutline } from 'react-icons/io5'
 import { FaRegEnvelope } from 'react-icons/fa6'
 import { IoMdCall } from 'react-icons/io'
 import { getFooterCached, getSiteSettingsCached } from '@/utils/cachedData'
+import { SITE_NAME } from '@/config/site'
 export { FooterSkeleton } from './FooterSkeleton'
 
 export async function Footer() {
   const footer = await getFooterCached()
   const siteSettings = await getSiteSettingsCached()
+  const resolvedSiteName = siteSettings.siteName || SITE_NAME
 
   const isFourColumn = footer.enableFourColumnLayout
   const groups = (footer.footerLinkGroups as any[]) || []
@@ -51,7 +53,7 @@ export async function Footer() {
                 <Link href="/" prefetch={false}>
                   <Image
                     src={footer.footerLogo.url}
-                    alt={footer.footerLogo.alt || siteSettings.siteName}
+                    alt={footer.footerLogo.alt || resolvedSiteName}
                     width={160}
                     height={32}
                     quality={80}
@@ -62,7 +64,7 @@ export async function Footer() {
                 </Link>
               ) : (
                 <h3 className="text-2xl font-black text-white tracking-tight mb-5">
-                  {siteSettings.siteName}
+                  {resolvedSiteName}
                 </h3>
               )}
               <p className="text-[14px] text-white/75 leading-[1.65] mb-5 !mt-0 font-[var(--font-family-base)]">
@@ -170,7 +172,7 @@ export async function Footer() {
             <div className="w-full md:w-1/2 lg:w-1/3 sm:-mx-4 mb-4 flex flex-1 justify-center md:justify-start">
               <p className="text-[13px] text-white/70 text-center md:text-left !m-0 sm:px-4 sm:whitespace-nowrap font-[var(--font-family-base)]">
                 {footer.copyrightText ||
-                  `© ${new Date().getFullYear()} ${siteSettings.siteName} All rights reserved.`}
+                  `© ${new Date().getFullYear()} ${resolvedSiteName} All rights reserved.`}
               </p>
             </div>
             {/* Centre: Sitemap + Support / Footer Bottom Links */}
