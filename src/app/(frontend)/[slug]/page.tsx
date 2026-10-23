@@ -27,9 +27,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  const title = page.seo?.metaTitle || page.title
+  const description = page.seo?.metaDescription || page.banner?.pageDescription || fallbackDescription
+
+  const ogMedia = (page.seo?.ogImage || page.banner?.bannerBackground) as any
+  const ogImageUrl =
+    typeof ogMedia === 'object' && ogMedia !== null
+      ? ogMedia.url || (ogMedia.filename ? `/api/media/file/${ogMedia.filename}` : undefined)
+      : undefined
+
   return {
-    title: page.seo?.metaTitle || page.title,
-    description: page.seo?.metaDescription || page.banner?.pageDescription || fallbackDescription,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImageUrl ? [{ url: ogImageUrl }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : undefined,
+    },
   }
 }
 

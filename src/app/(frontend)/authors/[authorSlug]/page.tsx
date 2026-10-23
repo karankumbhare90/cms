@@ -42,10 +42,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const name = author.authorName || author.title || 'Author'
+  const title = author.seo?.metaTitle || `${name} | Author Profile`
+  const description =
+    author.seo?.metaDescription || `Read published articles and insights by ${name}. ${fallbackDescription}`
+
+  const ogMedia = (author.seo?.ogImage || author.authorImage) as any
+  const ogImageUrl =
+    typeof ogMedia === 'object' && ogMedia !== null
+      ? ogMedia.url || (ogMedia.filename ? `/api/media/file/${ogMedia.filename}` : undefined)
+      : undefined
 
   return {
-    title: `${name} | Author Profile`,
-    description: `Read published articles and insights by ${name}. ${fallbackDescription}`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImageUrl ? [{ url: ogImageUrl }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : undefined,
+    },
   }
 }
 

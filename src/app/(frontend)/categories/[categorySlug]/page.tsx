@@ -49,9 +49,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     category.banner?.pageDescription ||
     `Explore all latest posts, guides, and articles in ${name}. ${fallbackDescription}`
 
+  const ogMedia = (category.seo?.ogImage || category.banner?.bannerBackground) as any
+  const ogImageUrl =
+    typeof ogMedia === 'object' && ogMedia !== null
+      ? ogMedia.url || (ogMedia.filename ? `/api/media/file/${ogMedia.filename}` : undefined)
+      : undefined
+
   return {
     title,
     description,
+    openGraph: {
+      title,
+      description,
+      images: ogImageUrl ? [{ url: ogImageUrl }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : undefined,
+    },
   }
 }
 

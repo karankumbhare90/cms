@@ -45,10 +45,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  const title = post.seo?.metaTitle || post.blogTitle || post.title
+  const description =
+    post.seo?.metaDescription || post.blogExcerpt || post.banner?.pageDescription || fallbackDescription
+
+  const ogMedia = (post.seo?.ogImage || (post as any).blogMainImage || post.banner?.bannerBackground) as any
+  const ogImageUrl =
+    typeof ogMedia === 'object' && ogMedia !== null
+      ? ogMedia.url || (ogMedia.filename ? `/api/media/file/${ogMedia.filename}` : undefined)
+      : undefined
+
   return {
-    title: post.seo?.metaTitle || post.blogTitle || post.title,
-    description:
-      post.seo?.metaDescription || post.blogExcerpt || post.banner?.pageDescription || fallbackDescription,
+    title,
+    description,
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      publishedTime: post.createdAt,
+      modifiedTime: post.updatedAt,
+      images: ogImageUrl ? [{ url: ogImageUrl }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : undefined,
+    },
   }
 }
 
@@ -128,8 +151,37 @@ export default async function PostDetailPage({ params }: Props) {
   const hideTabs = blogSettings?.hideTabs || false
   const hideSidebar = hideRecentPost && hideCategories && hideTabs
 
+  const postFeaturedImage = ((post as any).blogMainImage || post.banner?.bannerBackground) as any
+  const postImageUrl =
+    typeof postFeaturedImage === 'object' && postFeaturedImage !== null
+      ? postFeaturedImage.url || (postFeaturedImage.filename ? `/api/media/file/${postFeaturedImage.filename}` : undefined)
+      : undefined
+
+  const authorName =
+    typeof post.author === 'object' && post.author !== null
+      ? (post.author as any).authorName || (post.author as any).title || 'WebNexa Team'
+      : 'WebNexa Team'
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.blogTitle || post.title,
+    description: post.seo?.metaDescription || post.blogExcerpt,
+    ...(postImageUrl ? { image: postImageUrl } : {}),
+    datePublished: post.createdAt,
+    dateModified: post.updatedAt,
+    author: {
+      '@type': 'Person',
+      name: authorName,
+    },
+  }
+
   return (
     <div style={{ paddingTop: 'var(--header-height, 72px)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <PageScripts scripts={post.scripts} />
       {post.banner?.pageTitle || post.banner?.bannerBackground ? (
         <Banner
