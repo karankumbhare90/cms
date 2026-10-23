@@ -7,6 +7,9 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
+    components: {
+      beforeListTable: ['@/components/admin/PagesTreeListView#PagesTreeListView'],
+    },
   },
   hooks: {
     afterChange: [
@@ -55,6 +58,17 @@ export const Pages: CollectionConfig = {
       relationTo: 'pages',
       admin: {
         position: 'sidebar',
+      },
+      defaultValue: ({ req }: any) => {
+        try {
+          if (req?.url) {
+            const url = new URL(req.url, 'http://localhost')
+            return url.searchParams.get('parent') || undefined
+          }
+        } catch {
+          // ignore
+        }
+        return undefined
       },
       filterOptions: ({ id, data }) => {
         const filters: any[] = []

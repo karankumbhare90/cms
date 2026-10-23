@@ -37,6 +37,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      beforeNavLinks: ['@/components/admin/SidebarPageTree#SidebarPageTree'],
+    },
   },
   collections: [Users, Media, Pages, Posts, Authors, Categories],
   globals: [SiteSettings, Navigation, Footer, BlogSettings],
