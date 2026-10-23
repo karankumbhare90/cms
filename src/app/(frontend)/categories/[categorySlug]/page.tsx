@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { Banner } from '@/components/Banner'
 import { BlogListing } from '@/components/BlogListing'
 import { RenderBlocks } from '@/components/RenderBlocks'
+import { PageScripts } from '@/components/Scripts'
 import { getSiteSettingsCached } from '@/utils/cachedData'
 import type { Metadata } from 'next'
 
@@ -103,6 +104,7 @@ export default async function CategoryDetailPage({ params, searchParams }: Props
 
   return (
     <div style={{ paddingTop: 'var(--header-height, 72px)' }}>
+      <PageScripts scripts={category.scripts} />
       <Banner
         pageTitle={bannerTitle}
         pageDescription={bannerDescription}

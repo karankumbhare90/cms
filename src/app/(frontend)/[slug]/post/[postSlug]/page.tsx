@@ -8,6 +8,7 @@ import { Banner } from '@/components/Banner'
 import { BlogSidebar } from '@/components/BlogSidebar'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { RenderBlocks } from '@/components/RenderBlocks'
+import { PageScripts } from '@/components/Scripts'
 import { buildPostBreadcrumbs } from '@/utils/pageUtils'
 import { getSiteSettingsCached } from '@/utils/cachedData'
 import type { Metadata } from 'next'
@@ -129,6 +130,7 @@ export default async function PostDetailPage({ params }: Props) {
 
   return (
     <div style={{ paddingTop: 'var(--header-height, 72px)' }}>
+      <PageScripts scripts={post.scripts} />
       {post.banner?.pageTitle || post.banner?.bannerBackground ? (
         <Banner
           pageTitle={post.banner?.pageTitle ?? undefined}

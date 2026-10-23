@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { bannerTab, listingLayoutTab, navigationTab, seoTab, widgetsTab } from '../fields/basePageTabs'
+import { bannerTab, listingLayoutTab, navigationTab, scriptsTab, seoTab, widgetsTab } from '../fields/basePageTabs'
 import { revalidateAuthor } from '../utils/revalidate'
 
 export const Authors: CollectionConfig = {
@@ -84,6 +84,7 @@ export const Authors: CollectionConfig = {
         widgetsTab,
         seoTab,
         navigationTab,
+        scriptsTab,
       ],
     },
   ],

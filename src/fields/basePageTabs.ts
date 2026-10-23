@@ -215,3 +215,31 @@ export const listingLayoutTab: Tab = {
     },
   ],
 }
+
+export const scriptsTab: Tab = {
+  label: 'Scripts',
+  name: 'scripts',
+  fields: [
+    {
+      name: 'headScript',
+      label: 'Head Script',
+      type: 'textarea',
+      admin: {
+        description:
+          'Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).',
+        rows: 6,
+      },
+    },
+    {
+      name: 'bodyScript',
+      label: 'Body Script',
+      type: 'textarea',
+      admin: {
+        description:
+          'Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).',
+        rows: 6,
+      },
+    },
+  ],
+}
+

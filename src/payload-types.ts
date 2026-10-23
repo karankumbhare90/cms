@@ -1930,6 +1930,16 @@ export interface Page {
     hideFromSitemap?: boolean | null;
     hideFromXMLSitemap?: boolean | null;
   };
+  scripts?: {
+    /**
+     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     */
+    headScript?: string | null;
+    /**
+     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     */
+    bodyScript?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3663,6 +3673,16 @@ export interface Post {
     hideFromNavigation?: boolean | null;
     hideFromSitemap?: boolean | null;
     hideFromXMLSitemap?: boolean | null;
+  };
+  scripts?: {
+    /**
+     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     */
+    headScript?: string | null;
+    /**
+     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     */
+    bodyScript?: string | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -5401,6 +5421,16 @@ export interface Author {
     hideFromSitemap?: boolean | null;
     hideFromXMLSitemap?: boolean | null;
   };
+  scripts?: {
+    /**
+     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     */
+    headScript?: string | null;
+    /**
+     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     */
+    bodyScript?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -7112,6 +7142,16 @@ export interface Category {
     hideFromSitemap?: boolean | null;
     hideFromXMLSitemap?: boolean | null;
   };
+  scripts?: {
+    /**
+     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     */
+    headScript?: string | null;
+    /**
+     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     */
+    bodyScript?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -8410,6 +8450,12 @@ export interface PagesSelect<T extends boolean = true> {
         hideFromSitemap?: T;
         hideFromXMLSitemap?: T;
       };
+  scripts?:
+    | T
+    | {
+        headScript?: T;
+        bodyScript?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -9571,6 +9617,12 @@ export interface PostsSelect<T extends boolean = true> {
         hideFromNavigation?: T;
         hideFromSitemap?: T;
         hideFromXMLSitemap?: T;
+      };
+  scripts?:
+    | T
+    | {
+        headScript?: T;
+        bodyScript?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -10737,6 +10789,12 @@ export interface AuthorsSelect<T extends boolean = true> {
         hideFromSitemap?: T;
         hideFromXMLSitemap?: T;
       };
+  scripts?:
+    | T
+    | {
+        headScript?: T;
+        bodyScript?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -11893,6 +11951,12 @@ export interface CategoriesSelect<T extends boolean = true> {
         hideFromSitemap?: T;
         hideFromXMLSitemap?: T;
       };
+  scripts?:
+    | T
+    | {
+        headScript?: T;
+        bodyScript?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -12015,6 +12079,16 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  scripts?: {
+    /**
+     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     */
+    headScript?: string | null;
+    /**
+     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     */
+    bodyScript?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -12184,6 +12258,12 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         reference?: T;
         appearance?: T;
         id?: T;
+      };
+  scripts?:
+    | T
+    | {
+        headScript?: T;
+        bodyScript?: T;
       };
   updatedAt?: T;
   createdAt?: T;

@@ -6,6 +6,7 @@ import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { DynamicChatbot } from '@/components/DynamicChatbot'
 import { QueryProvider } from '@/providers/QueryProvider'
+import { SiteHeadScript, SiteBodyScript } from '@/components/Scripts'
 import { getSiteSettingsCached } from '@/utils/cachedData'
 import { SITE_NAME } from '@/config/site'
 
@@ -93,8 +94,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
           </>
         )}
         <link rel="ai-catalog" href="/.well-known/ai-catalog.json" type="application/ai-catalog+json" />
+        <SiteHeadScript script={siteSettings?.scripts?.headScript} />
       </head>
       <body suppressHydrationWarning>
+        <SiteBodyScript script={siteSettings?.scripts?.bodyScript} />
         <QueryProvider>
           <Header />
           <main>{children}</main>

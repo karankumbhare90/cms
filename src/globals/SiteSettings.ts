@@ -1,6 +1,7 @@
 import { GlobalConfig } from 'payload'
 import { introLinks } from '../fields/introLinks'
 import { revalidateGlobal } from '../utils/revalidate'
+import { scriptsTab } from '../fields/basePageTabs'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -194,6 +195,7 @@ export const SiteSettings: GlobalConfig = {
             } as any,
           ],
         },
+        scriptsTab,
       ],
     },
   ],

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { PageScripts } from '@/components/Scripts'
 import { getSiteSettingsCached } from '@/utils/cachedData'
 import type { Metadata } from 'next'
 
@@ -85,6 +86,7 @@ export default async function AuthorDetailPage({ params }: Props) {
       className="container mx-auto px-4 py-24 max-w-5xl"
       style={{ paddingTop: 'calc(var(--header-height, 72px) + 3rem)' }}
     >
+      <PageScripts scripts={author.scripts} />
       {/* Author Profile Header */}
       <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm border flex flex-col md:flex-row items-center md:items-start gap-8 mb-16">
         {author.authorImage && typeof author.authorImage === 'object' && author.authorImage.url ? (

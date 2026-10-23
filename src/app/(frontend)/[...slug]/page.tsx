@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { RenderBlocks } from '@/components/RenderBlocks'
 import { BlogListing } from '@/components/BlogListing'
 import { Banner } from '@/components/Banner'
+import { PageScripts } from '@/components/Scripts'
 import { Metadata } from 'next'
 import { getNestedPageCached, getSiteSettingsCached } from '@/utils/cachedData'
 
@@ -46,6 +47,7 @@ export default async function NestedDynamicPage({ params, searchParams }: Props)
 
   return (
     <div style={{ paddingTop: 'var(--header-height, 72px)' }}>
+      <PageScripts scripts={page.scripts} />
       {page.banner?.pageTitle || page.banner?.bannerBackground ? (
         <Banner
           page={page}

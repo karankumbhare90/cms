@@ -1,5 +1,6 @@
 import React from 'react'
 import { RenderBlocks } from '@/components/RenderBlocks'
+import { PageScripts } from '@/components/Scripts'
 import { getHomePageCached, getSiteSettingsCached } from '@/utils/cachedData'
 import type { Metadata } from 'next'
 
@@ -30,6 +31,7 @@ export default async function HomePage() {
 
   return (
     <div style={{ paddingTop: 'var(--header-height, 73px)' }}>
+      <PageScripts scripts={page.scripts} />
       {/* Add padding for fixed header */}
       <RenderBlocks blocks={page.layout as any[]} />
     </div>

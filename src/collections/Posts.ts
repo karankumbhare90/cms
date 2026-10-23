@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { bannerTab, listingLayoutTab, navigationTab, seoTab, widgetsTab } from '../fields/basePageTabs'
+import { bannerTab, listingLayoutTab, navigationTab, scriptsTab, seoTab, widgetsTab } from '../fields/basePageTabs'
 import { revalidatePost } from '../utils/revalidate'
 
 export const Posts: CollectionConfig = {
@@ -89,6 +89,7 @@ export const Posts: CollectionConfig = {
         widgetsTab,
         seoTab,
         navigationTab,
+        scriptsTab,
       ],
     },
   ],
