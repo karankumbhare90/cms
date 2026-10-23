@@ -538,10 +538,15 @@ export const ContactUsFormContent: React.FC<any> = ({ settings, contactDetails }
 }
 
 export const ContactUsForm: React.FC<any> = (props) => {
+  const siteKey =
+    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
+    process.env.NEXT_PUBLIC_RECAPTCHA_KEY ||
+    ''
+
   return (
     <QueryProvider>
       <GoogleReCaptchaProvider
-        reCaptchaKey={process.env.RECAPTCHA_SITE_KEY || 'YOUR_RECAPTCHA_SITE_KEY'}
+        reCaptchaKey={siteKey}
         scriptProps={{ async: true, defer: true, appendTo: 'body' }}
       >
         <ContactUsFormContent {...props} />
