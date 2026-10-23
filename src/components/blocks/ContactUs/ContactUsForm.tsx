@@ -101,6 +101,15 @@ export const ContactUsFormContent: React.FC<any> = ({ settings, contactDetails }
     onSuccess: () => {
       setGlobalError('')
       setSubmitted(true)
+
+      if (typeof window !== 'undefined') {
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({
+          event: 'generate_lead',
+          lead_type: 'contact_form',
+          form_name: 'contact_us_form',
+        })
+      }
     },
     onError: (err: any) => {
       setGlobalError(err.message || 'Verification or sending failed. Please try again.')
