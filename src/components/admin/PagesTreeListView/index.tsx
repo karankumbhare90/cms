@@ -15,7 +15,6 @@ interface PageTreeNode {
 }
 
 export const PagesTreeListView: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'tree' | 'table'>('tree')
   const [tree, setTree] = useState<PageTreeNode[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -51,26 +50,25 @@ export const PagesTreeListView: React.FC = () => {
     fetchTree()
   }, [])
 
-  // Toggle hiding the standard flat table when in tree mode
+  // Hide the default flat table and native table controls
   useEffect(() => {
-    const tableContainer = document.querySelector('.collection-list__table') as HTMLElement ||
-                           document.querySelector('.table') as HTMLElement ||
-                           document.querySelector('table')?.closest('div') as HTMLElement
+    const tableContainer =
+      (document.querySelector('.collection-list__table') as HTMLElement) ||
+      (document.querySelector('.table') as HTMLElement) ||
+      (document.querySelector('table')?.closest('div') as HTMLElement)
 
-    if (tableContainer) {
-      if (viewMode === 'tree') {
-        tableContainer.style.display = 'none'
-      } else {
-        tableContainer.style.display = ''
-      }
-    }
+    const listControls =
+      (document.querySelector('.collection-list__controls') as HTMLElement) ||
+      (document.querySelector('.list-controls') as HTMLElement)
+
+    if (tableContainer) tableContainer.style.display = 'none'
+    if (listControls) listControls.style.display = 'none'
 
     return () => {
-      if (tableContainer) {
-        tableContainer.style.display = ''
-      }
+      if (tableContainer) tableContainer.style.display = ''
+      if (listControls) listControls.style.display = ''
     }
-  }, [viewMode])
+  }, [])
 
   const toggleExpand = (id: string) => {
     setExpandedNodes((prev) => ({ ...prev, [id]: !prev[id] }))
@@ -102,8 +100,7 @@ export const PagesTreeListView: React.FC = () => {
       return nodes
         .map((node) => {
           const matchSelf =
-            node.title.toLowerCase().includes(q) ||
-            node.slug.toLowerCase().includes(q)
+            node.title.toLowerCase().includes(q) || node.slug.toLowerCase().includes(q)
           const filteredChildren = filterNodes(node.children || [])
 
           if (matchSelf || filteredChildren.length > 0) {
@@ -129,7 +126,11 @@ export const PagesTreeListView: React.FC = () => {
       case 'blog-detail':
         return { label: 'Blog Detail', bg: '#059669', color: '#fff' }
       default:
-        return { label: 'Page', bg: 'var(--theme-elevation-200, #334155)', color: 'var(--theme-elevation-800, #cbd5e1)' }
+        return {
+          label: 'Page',
+          bg: 'var(--theme-elevation-200, #334155)',
+          color: 'var(--theme-elevation-800, #cbd5e1)',
+        }
     }
   }
 
@@ -186,7 +187,16 @@ export const PagesTreeListView: React.FC = () => {
                   }}
                   title={isExpanded ? 'Collapse' : 'Expand'}
                 >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
                 </button>
@@ -196,7 +206,15 @@ export const PagesTreeListView: React.FC = () => {
             </div>
 
             {/* Icon + Title (Click to Edit) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: '1 1 280px', minWidth: 0 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                flex: '1 1 280px',
+                minWidth: 0,
+              }}
+            >
               <div
                 style={{
                   width: '30px',
@@ -211,16 +229,37 @@ export const PagesTreeListView: React.FC = () => {
                 }}
               >
                 {node.pageType === 'home' ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                     <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
                 ) : hasChildren ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
                   </svg>
                 ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
                     <polyline points="14 2 14 8 20 8" />
                   </svg>
@@ -241,7 +280,13 @@ export const PagesTreeListView: React.FC = () => {
                   }}
                   className="payload-tree-title-link"
                 >
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span
+                    style={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {node.title}
                   </span>
                   {hasChildren && (
@@ -259,7 +304,14 @@ export const PagesTreeListView: React.FC = () => {
                     </span>
                   )}
                 </Link>
-                <div style={{ fontSize: '12px', color: 'var(--theme-elevation-500, #64748b)', marginTop: '2px', fontFamily: 'monospace' }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--theme-elevation-500, #64748b)',
+                    marginTop: '2px',
+                    fontFamily: 'monospace',
+                  }}
+                >
                   {fullPath}
                 </div>
               </div>
@@ -282,7 +334,15 @@ export const PagesTreeListView: React.FC = () => {
             </div>
 
             {/* Actions Column */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto', flexShrink: 0 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginLeft: 'auto',
+                flexShrink: 0,
+              }}
+            >
               <Link
                 href={`/admin/collections/pages/create?parent=${node.id}`}
                 title={`Add child page under "${node.title}"`}
@@ -302,7 +362,14 @@ export const PagesTreeListView: React.FC = () => {
                 }}
                 className="payload-tree-btn"
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
@@ -325,7 +392,14 @@ export const PagesTreeListView: React.FC = () => {
                   backgroundColor: '#2563EB',
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                 </svg>
                 Edit
@@ -348,7 +422,14 @@ export const PagesTreeListView: React.FC = () => {
                 }}
                 className="payload-tree-btn"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                   <polyline points="15 3 21 3 21 9" />
                   <line x1="10" y1="14" x2="21" y2="3" />
@@ -367,6 +448,13 @@ export const PagesTreeListView: React.FC = () => {
   return (
     <div style={{ marginBottom: '24px' }}>
       <style>{`
+        /* Permanently hide Payload default flat table and search filter inputs */
+        .collection-list__table,
+        .table,
+        .collection-list__controls,
+        .list-controls {
+          display: none !important;
+        }
         .payload-tree-row:hover {
           background-color: var(--theme-elevation-100, rgba(255, 255, 255, 0.04)) !important;
         }
@@ -379,7 +467,7 @@ export const PagesTreeListView: React.FC = () => {
         }
       `}</style>
 
-      {/* Top View Switcher & Toolbar */}
+      {/* Toolbar without table view option */}
       <div
         style={{
           display: 'flex',
@@ -394,175 +482,208 @@ export const PagesTreeListView: React.FC = () => {
           borderRadius: '8px',
         }}
       >
-        {/* View Toggle Tabs */}
-        <div style={{ display: 'inline-flex', borderRadius: '6px', backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.06))', padding: '3px' }}>
-          <button
-            type="button"
-            onClick={() => setViewMode('tree')}
+        {/* Left: Title Badge & Page Count */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span
             style={{
-              padding: '6px 14px',
-              borderRadius: '5px',
               fontSize: '13px',
-              fontWeight: 600,
-              display: 'inline-flex',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              color: '#2563EB',
+              display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              border: 'none',
-              cursor: 'pointer',
-              backgroundColor: viewMode === 'tree' ? '#2563EB' : 'transparent',
-              color: viewMode === 'tree' ? '#fff' : 'inherit',
-              transition: 'all 0.15s ease',
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <path d="M21 12H3m6 6H3m18-12H3" />
               <polyline points="7 6 10 12 7 18" />
             </svg>
-            Tree View (Hierarchical)
+            HIERARCHICAL PAGE TREE
+          </span>
+
+          <span
+            style={{
+              fontSize: '11px',
+              fontWeight: 600,
+              padding: '2px 8px',
+              borderRadius: '12px',
+              backgroundColor: 'var(--theme-elevation-150, rgba(255, 255, 255, 0.08))',
+              color: 'var(--theme-elevation-600, #94a3b8)',
+            }}
+          >
+            {tree.length} Root Sections
+          </span>
+        </div>
+
+        {/* Right: Search + Expand/Collapse Controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {/* Search Input */}
+          <div style={{ position: 'relative' }}>
+            <input
+              type="text"
+              placeholder="Search pages in tree..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                padding: '6px 10px 6px 30px',
+                borderRadius: '5px',
+                border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.12))',
+                backgroundColor: 'var(--theme-elevation-100, rgba(0, 0, 0, 0.2))',
+                color: 'inherit',
+                fontSize: '13px',
+                width: '210px',
+              }}
+            />
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              style={{
+                position: 'absolute',
+                left: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                opacity: 0.5,
+              }}
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </div>
+
+          <button
+            type="button"
+            onClick={expandAll}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '5px',
+              fontSize: '12px',
+              fontWeight: 500,
+              backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.06))',
+              border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
+              color: 'inherit',
+              cursor: 'pointer',
+            }}
+          >
+            Expand All
           </button>
 
           <button
             type="button"
-            onClick={() => setViewMode('table')}
+            onClick={collapseAll}
             style={{
-              padding: '6px 14px',
+              padding: '6px 10px',
               borderRadius: '5px',
-              fontSize: '13px',
-              fontWeight: 600,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              border: 'none',
+              fontSize: '12px',
+              fontWeight: 500,
+              backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.06))',
+              border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
+              color: 'inherit',
               cursor: 'pointer',
-              backgroundColor: viewMode === 'table' ? '#2563EB' : 'transparent',
-              color: viewMode === 'table' ? '#fff' : 'inherit',
-              transition: 'all 0.15s ease',
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect width="18" height="18" x="3" y="3" rx="2" />
-              <path d="M3 9h18M3 15h18M9 3v18" />
-            </svg>
-            Table View (Flat)
+            Collapse All
           </button>
+
+          <Link
+            href="/admin/collections/pages/create"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '6px 12px',
+              borderRadius: '5px',
+              fontSize: '12px',
+              fontWeight: 600,
+              backgroundColor: '#2563EB',
+              color: '#fff',
+              textDecoration: 'none',
+            }}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Create New Page
+          </Link>
         </div>
-
-        {/* Tree controls when Tree View is active */}
-        {viewMode === 'tree' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            {/* Search Input */}
-            <div style={{ position: 'relative' }}>
-              <input
-                type="text"
-                placeholder="Search pages in tree..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  padding: '6px 10px 6px 30px',
-                  borderRadius: '5px',
-                  border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.12))',
-                  backgroundColor: 'var(--theme-elevation-100, rgba(0, 0, 0, 0.2))',
-                  color: 'inherit',
-                  fontSize: '13px',
-                  width: '200px',
-                }}
-              />
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </div>
-
-            <button
-              type="button"
-              onClick={expandAll}
-              style={{
-                padding: '6px 10px',
-                borderRadius: '5px',
-                fontSize: '12px',
-                fontWeight: 500,
-                backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.06))',
-                border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
-                color: 'inherit',
-                cursor: 'pointer',
-              }}
-            >
-              Expand All
-            </button>
-
-            <button
-              type="button"
-              onClick={collapseAll}
-              style={{
-                padding: '6px 10px',
-                borderRadius: '5px',
-                fontSize: '12px',
-                fontWeight: 500,
-                backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.06))',
-                border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
-                color: 'inherit',
-                cursor: 'pointer',
-              }}
-            >
-              Collapse All
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Hierarchical Tree Container */}
-      {viewMode === 'tree' && (
+      <div
+        style={{
+          border: '1px solid var(--theme-elevation-150, rgba(255, 255, 255, 0.1))',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          backgroundColor: 'var(--theme-elevation-50, rgba(255, 255, 255, 0.02))',
+        }}
+      >
+        {/* Table Header */}
         <div
           style={{
-            border: '1px solid var(--theme-elevation-150, rgba(255, 255, 255, 0.1))',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            backgroundColor: 'var(--theme-elevation-50, rgba(255, 255, 255, 0.02))',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '10px 16px',
+            backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.05))',
+            borderBottom: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: 'var(--theme-elevation-500, #94a3b8)',
           }}
         >
-          {/* Table Header */}
+          <span style={{ minWidth: '40px' }} />
+          <span style={{ flex: '1 1 280px' }}>PAGE HIERARCHY & TITLE</span>
+          <span style={{ minWidth: '100px' }}>TYPE</span>
+          <span style={{ marginLeft: 'auto' }}>ACTIONS</span>
+        </div>
+
+        {/* Tree Rows */}
+        {loading ? (
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '10px 16px',
-              backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.05))',
-              borderBottom: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: 'var(--theme-elevation-500, #94a3b8)',
+              padding: '36px',
+              textAlign: 'center',
+              color: 'var(--theme-elevation-400, #94a3b8)',
+              fontSize: '14px',
             }}
           >
-            <span style={{ minWidth: '40px' }} />
-            <span style={{ flex: '1 1 280px' }}>PAGE HIERARCHY & TITLE</span>
-            <span style={{ minWidth: '100px' }}>TYPE</span>
-            <span style={{ marginLeft: 'auto' }}>ACTIONS</span>
+            Loading hierarchical page tree...
           </div>
-
-          {/* Tree Rows */}
-          {loading ? (
-            <div style={{ padding: '36px', textAlign: 'center', color: 'var(--theme-elevation-400, #94a3b8)', fontSize: '14px' }}>
-              Loading hierarchical page tree...
-            </div>
-          ) : filteredTree.length === 0 ? (
-            <div style={{ padding: '36px', textAlign: 'center', color: 'var(--theme-elevation-400, #94a3b8)', fontSize: '14px' }}>
-              {searchQuery ? `No pages found matching "${searchQuery}".` : 'No pages created yet.'}
-            </div>
-          ) : (
-            renderTreeRows(filteredTree)
-          )}
-        </div>
-      )}
+        ) : filteredTree.length === 0 ? (
+          <div
+            style={{
+              padding: '36px',
+              textAlign: 'center',
+              color: 'var(--theme-elevation-400, #94a3b8)',
+              fontSize: '14px',
+            }}
+          >
+            {searchQuery ? `No pages found matching "${searchQuery}".` : 'No pages created yet.'}
+          </div>
+        ) : (
+          renderTreeRows(filteredTree)
+        )}
+      </div>
     </div>
   )
 }
