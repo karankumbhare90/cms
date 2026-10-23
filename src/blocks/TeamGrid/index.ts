@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const TeamGrid: Block = {
   slug: 'teamGrid',
   labels: {
-    singular: 'Team Grid',
-    plural: 'Team Grids'
+    singular: 'Team Members & Staff Grid',
+    plural: 'Team Grids',
   },
   fields: [
     {

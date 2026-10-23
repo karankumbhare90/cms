@@ -10,6 +10,22 @@ export const Pages: CollectionConfig = {
     components: {
       beforeListTable: ['@/components/admin/PagesTreeListView#PagesTreeListView'],
     },
+    livePreview: {
+      url: ({ data }) => {
+        const baseUrl = (
+          process.env.NEXT_PUBLIC_SERVER_URL || 'https://webnexacms.vercel.app'
+        ).replace(/\/+$/, '')
+        if (data?.pageType === 'home' || data?.slug === '/' || data?.slug === 'home') {
+          return baseUrl
+        }
+        return `${baseUrl}/${data?.slug || ''}`
+      },
+      breakpoints: [
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
+      ],
+    },
   },
   hooks: {
     afterChange: [
@@ -26,38 +42,48 @@ export const Pages: CollectionConfig = {
   fields: [
     {
       name: 'title',
+      label: 'Page Title',
       type: 'text',
       required: true,
+      admin: {
+        description: 'The main name of this page (e.g. About Us, Web Design, Commercial Services).',
+      },
     },
     {
       name: 'pageType',
+      label: 'Page Purpose',
       type: 'select',
       defaultValue: 'page',
       options: [
         { label: 'Home Page', value: 'home' },
-        { label: 'Page', value: 'page' },
+        { label: 'Standard Page', value: 'page' },
         { label: 'Blog Landing Page', value: 'blog-landing' },
         { label: 'Blog Detail Page', value: 'blog-detail' },
       ],
       admin: {
         position: 'sidebar',
+        description: 'Choose whether this is the Homepage, a Standard Page, or Blog Landing.',
       },
     },
 
     {
       name: 'slug',
+      label: 'Web Address (URL Slug)',
       type: 'text',
       required: true,
       admin: {
         position: 'sidebar',
+        description: 'The link after your domain (e.g. "about-us" becomes yoursite.com/about-us). Use lowercase letters and hyphens.',
       },
     },
     {
       name: 'parent',
+      label: 'Parent Section (Subpage of)',
       type: 'relationship',
       relationTo: 'pages',
       admin: {
         position: 'sidebar',
+        description: 'Place this page under a parent in your site tree (e.g. place under Our Services).',
       },
       defaultValue: ({ req }: any) => {
         try {

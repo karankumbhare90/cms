@@ -470,6 +470,49 @@ export const SidebarPageTree: React.FC = () => {
         }
       `}</style>
 
+      {/* ── 0. VIEW LIVE WEBSITE QUICK LINK ─────────────────────────── */}
+      <div style={{ marginBottom: '14px', padding: '0 4px' }}>
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '8px 12px',
+            borderRadius: '6px',
+            backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.05))',
+            border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.12))',
+            color: 'var(--theme-elevation-900, #fff)',
+            textDecoration: 'none',
+            fontSize: '12px',
+            fontWeight: 600,
+            transition: 'background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#2563EB'
+            e.currentTarget.style.borderColor = '#2563EB'
+            e.currentTarget.style.color = '#fff'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--theme-elevation-100, rgba(255, 255, 255, 0.05))'
+            e.currentTarget.style.borderColor = 'var(--theme-elevation-200, rgba(255, 255, 255, 0.12))'
+            e.currentTarget.style.color = 'var(--theme-elevation-900, #fff)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '14px' }}>🌐</span>
+            <span>View Live Website</span>
+          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+        </a>
+      </div>
+
       {/* ── SECTION 1: CONTENT TREE (PAGES HIERARCHY) ───────────────── */}
       <div style={{ marginBottom: '16px' }}>
         <div

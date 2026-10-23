@@ -6,8 +6,8 @@ import { blockSettings } from '../../fields/blockSettings'
 export const Hero: Block = {
   slug: 'hero',
   labels: {
-    singular: 'Hero',
-    plural: 'Heroes',
+    singular: 'Hero Banner (Top Headline & Background Slider)',
+    plural: 'Hero Banners',
   },
   fields: [
     {

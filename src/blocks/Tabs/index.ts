@@ -7,8 +7,8 @@ import { Content } from "../Content";
 export const Tabs: Block = {
   slug: 'tabs',
   labels: {
-    singular: 'Tabs',
-    plural: 'Tabs'
+    singular: 'Tabbed Content Section',
+    plural: 'Tabbed Sections',
   },
   fields: [
     {

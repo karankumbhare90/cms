@@ -6,8 +6,8 @@ import { blockSettings } from '../../fields/blockSettings'
 export const FAQ: Block = {
   slug: 'faq',
   labels: {
-    singular: 'FAQ',
-    plural: 'FAQs',
+    singular: 'FAQ Accordion (Questions & Answers)',
+    plural: 'FAQ Accordions',
   },
   fields: [
     {

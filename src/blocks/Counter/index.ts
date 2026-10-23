@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const Counter: Block = {
   slug: 'counter',
   labels: {
-    singular: 'Counter',
-    plural: 'Counters'
+    singular: 'Animated Number Counters (Stats)',
+    plural: 'Counter Sections',
   },
   fields: [
     {

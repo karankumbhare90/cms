@@ -25,80 +25,100 @@ export const SiteSettings: GlobalConfig = {
           fields: [
             {
               name: 'siteName',
+              label: 'Business / Website Name',
               type: 'text',
               required: true,
+              admin: {
+                description: 'The official name of your business (e.g. "WebNexa Digital").',
+              },
             },
             {
               name: 'homePage',
+              label: 'Designated Homepage',
               type: 'relationship',
               relationTo: 'pages',
               admin: {
-                description: 'Select the page to serve as the Home page of the site.',
+                description: 'Select which page from your Content Tree serves as the main homepage (/).',
               },
             },
             {
               name: 'description',
+              label: 'Company Tagline / Mission',
               type: 'textarea',
               admin: {
-                description: 'Short description about the site',
+                description: 'A short sentence summarizing your company or value proposition.',
               },
             },
             {
               name: 'siteIcon',
+              label: 'Primary Business Logo',
               type: 'upload',
               relationTo: 'media',
               admin: {
-                description: 'Used for main site logos',
+                description: 'Main logo shown in the website header. Recommended: Transparent SVG or PNG under 1MB.',
               },
             },
             {
               name: 'siteFavicon',
+              label: 'Browser Tab Icon (Favicon)',
               type: 'upload',
               relationTo: 'media',
               admin: {
-                description: 'Used for the browser tab icon (.ico or .png)',
+                description: 'Small square icon shown on the browser tab (Recommended: 32 × 32px PNG or ICO).',
               },
             },
           ],
         },
         {
-          label: 'Contact',
+          label: 'Contact Information',
           fields: [
             {
               name: 'address',
+              label: 'Physical Street Address',
               type: 'textarea',
+              admin: {
+                description: 'Displayed in the website footer, contact section, and Google Local SEO.',
+              },
             },
             {
               name: 'email',
+              label: 'Public Contact Email',
               type: 'text',
+              admin: {
+                description: 'The general customer support or contact email displayed on the site.',
+              },
             },
             {
               name: 'fromEmail',
-              label: 'From Email (SMTP User)',
+              label: 'From Email (SMTP Sender)',
               type: 'text',
               admin: {
                 description:
-                  'The email address used to send the emails (e.g. no-reply@gelinst.com.au)',
+                  'The sender email address configured with your email server (e.g. no-reply@yoursite.com).',
               },
             },
             {
               name: 'adminEmail',
-              label: 'Admin Email (Lead Receiver)',
+              label: 'Lead Notification Email(s)',
               type: 'text',
               admin: {
-                description: 'The email address that will receive the contact form submissions',
+                description: 'Where website form inquiries and leads are delivered (separate multiple emails with commas).',
               },
             },
             {
               name: 'phone',
+              label: 'Main Phone Number',
               type: 'text',
+              admin: {
+                description: 'Click-to-call phone number displayed in header and footer (e.g. "+1 (555) 000-1234").',
+              },
             },
             {
               name: 'addressUrl',
-              label: 'Address URL',
+              label: 'Google Maps Directions Link',
               type: 'text',
               admin: {
-                description: 'Link to Google Maps or similar',
+                description: 'Direct link to Google Maps for directions (e.g. https://maps.google.com/...).',
               },
             },
           ],

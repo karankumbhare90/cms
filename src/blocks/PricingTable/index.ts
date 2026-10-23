@@ -6,7 +6,7 @@ import { introLinks } from '../../fields/introLinks'
 export const PricingTable: Block = {
   slug: 'pricingTable',
   labels: {
-    singular: 'Pricing Table',
+    singular: 'Pricing Plans & Packages Table',
     plural: 'Pricing Tables',
   },
   fields: [

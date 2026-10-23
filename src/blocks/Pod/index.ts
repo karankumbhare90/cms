@@ -6,8 +6,8 @@ import { introLinks } from '../../fields/introLinks'
 export const Pod: Block = {
   slug: 'pod',
   labels: {
-    singular: 'Pod',
-    plural: 'Pods',
+    singular: 'Feature Cards / Services Grid (Pod)',
+    plural: 'Feature Card Grids',
   },
   fields: [
     {

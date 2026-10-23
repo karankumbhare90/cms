@@ -39,6 +39,7 @@ export default buildConfig({
     },
     components: {
       beforeNavLinks: ['@/components/admin/SidebarPageTree#SidebarPageTree'],
+      beforeDashboard: ['@/components/admin/DashboardWelcome#DashboardWelcome'],
     },
   },
   collections: [Users, Media, Pages, Posts, Authors, Categories],

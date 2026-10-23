@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const Testimonial: Block = {
   slug: 'testimonial',
   labels: {
-    singular: 'Testimonial',
-    plural: 'Testimonials'
+    singular: 'Customer Reviews / Testimonials',
+    plural: 'Testimonials',
   },
   fields: [
     {

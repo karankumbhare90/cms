@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const MediaGallery: Block = {
   slug: 'mediaGallery',
   labels: {
-    singular: 'Media Gallery',
-    plural: 'Media Galleries'
+    singular: 'Photo / Image Gallery Grid',
+    plural: 'Media Galleries',
   },
   fields: [
     {

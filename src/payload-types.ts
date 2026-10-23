@@ -161,11 +161,16 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Upload and manage images, PDFs, and media assets. Recommended dimensions: Hero banners (1920 × 1080px), Cards/Services (800 × 600px), Icons/Logos (SVG or transparent PNG). Keep images under 2MB for fast loading.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: string;
+  /**
+   * Describe this image in a few words for Google SEO ranking and visually impaired visitors (e.g. "Modern corporate office building in Melbourne").
+   */
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -185,12 +190,30 @@ export interface Media {
  */
 export interface Page {
   id: string;
+  /**
+   * The main name of this page (e.g. About Us, Web Design, Commercial Services).
+   */
   title: string;
+  /**
+   * Choose whether this is the Homepage, a Standard Page, or Blog Landing.
+   */
   pageType?: ('home' | 'page' | 'blog-landing' | 'blog-detail') | null;
+  /**
+   * The link after your domain (e.g. "about-us" becomes yoursite.com/about-us). Use lowercase letters and hyphens.
+   */
   slug: string;
+  /**
+   * Place this page under a parent in your site tree (e.g. place under Our Services).
+   */
   parent?: (string | null) | Page;
   listingLayout?: {
+    /**
+     * Title shown when this page is displayed inside service grids or card lists (defaults to Page Title).
+     */
     listingTitle?: string | null;
+    /**
+     * Brief 1-2 sentence description shown on teaser cards.
+     */
     listingDescription?: {
       root: {
         type: string;
@@ -206,20 +229,32 @@ export interface Page {
       };
       [k: string]: unknown;
     } | null;
+    /**
+     * Recommended: 800 × 600px (JPG/WebP, under 1MB).
+     */
     listingImage?: (string | null) | Media;
   };
   banner?: {
+    /**
+     * Main headline displayed on top of the page banner (leave blank to use the Page Title).
+     */
     pageTitle?: string | null;
+    /**
+     * Brief introductory sentence shown below the banner headline.
+     */
     pageDescription?: string | null;
     displayBreadcrumb?: boolean | null;
+    /**
+     * Recommended size: 1920 × 600px (or 1920 × 1080px). JPG or WebP under 2MB.
+     */
     bannerBackground?: (string | null) | Media;
     textAlign?: ('left' | 'center' | 'right') | null;
     /**
-     * Show a dark overlay over the banner background image to improve text readability.
+     * Show a dark tint over the background image to make white text crisp and easy to read.
      */
     displayOverlay?: boolean | null;
     /**
-     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     * Controls how dark the tint is (50% is standard; 100% is solid black).
      */
     overlayOpacity?: number | null;
   };
@@ -265,16 +300,34 @@ export interface Page {
   hideTagSidebar?: boolean | null;
   hideRecentPostSidebar?: boolean | null;
   hideCategorySidebar?: boolean | null;
+  /**
+   * Assemble your page section by section. Click "Add Block" below to insert banners, feature cards, testimonials, FAQ accordions, contact forms, and drag-and-drop to reorder them.
+   */
   layout?:
     | (
         | {
             slides?:
               | {
                   introText?: {
+                    /**
+                     * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+                     */
                     subheading?: string | null;
+                    /**
+                     * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+                     */
                     heading?: string | null;
+                    /**
+                     * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+                     */
                     headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    /**
+                     * A 1-2 sentence introductory paragraph shown right below the heading.
+                     */
                     description?: string | null;
+                    /**
+                     * Optional extra paragraphs, formatted text, bullet points, or links.
+                     */
                     content?: {
                       root: {
                         type: string;
@@ -295,9 +348,18 @@ export interface Page {
                   videoAutoplay?: boolean | null;
                   introLinks?:
                     | {
+                        /**
+                         * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                         */
                         label: string;
                         type?: ('custom' | 'reference') | null;
+                        /**
+                         * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                         */
                         url?: string | null;
+                        /**
+                         * Pick an existing page from your website to link to.
+                         */
                         reference?: (string | null) | Page;
                         appearance?: ('primary' | 'secondary' | 'outline') | null;
                         id?: string | null;
@@ -307,17 +369,20 @@ export interface Page {
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerWidth?: ('half' | 'wide' | 'full') | null;
             id?: string | null;
@@ -326,10 +391,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -348,26 +428,38 @@ export interface Page {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -375,10 +467,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -397,26 +504,38 @@ export interface Page {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Controls the width of the text content block
@@ -428,10 +547,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -450,9 +584,18 @@ export interface Page {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
@@ -461,17 +604,20 @@ export interface Page {
             image?: (string | null) | Media;
             imagePosition?: ('left' | 'right') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             backgroundImage?: (string | null) | Media;
             /**
@@ -484,10 +630,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -507,26 +668,38 @@ export interface Page {
             image?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -535,10 +708,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -562,26 +750,38 @@ export interface Page {
             thumbnail?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -590,10 +790,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -621,26 +836,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
             id?: string | null;
@@ -649,10 +876,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -688,26 +930,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Position of the Intro Text relative to the pod items
@@ -724,10 +978,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -767,26 +1036,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -794,10 +1075,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -826,26 +1122,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('1' | '2' | '3' | '4') | null;
@@ -855,10 +1163,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -887,26 +1210,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
@@ -917,10 +1252,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -954,26 +1304,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -981,10 +1343,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1012,26 +1389,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4') | null;
@@ -1041,10 +1430,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1068,26 +1472,38 @@ export interface Page {
             numberOfPosts?: number | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1095,10 +1511,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1124,26 +1555,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableMasonry?: boolean | null;
             id?: string | null;
@@ -1152,10 +1595,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1178,26 +1636,38 @@ export interface Page {
             mapData: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             widthType?: ('full' | 'wide') | null;
             id?: string | null;
@@ -1206,10 +1676,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1249,26 +1734,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1276,10 +1773,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1310,26 +1822,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1337,10 +1861,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1364,26 +1903,38 @@ export interface Page {
             expiredMessage?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             themeColor?: ('primary' | 'secondary' | 'dark') | null;
             id?: string | null;
@@ -1392,10 +1943,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1418,26 +1984,38 @@ export interface Page {
             htmlEmbedCode: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1464,26 +2042,38 @@ export interface Page {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerType?: ('info' | 'success' | 'warning') | null;
             id?: string | null;
@@ -1492,10 +2082,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1523,26 +2128,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1550,10 +2167,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1580,26 +2212,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             layoutStyle?: ('horizontal' | 'vertical') | null;
             id?: string | null;
@@ -1608,10 +2252,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1642,26 +2301,38 @@ export interface Page {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('2' | '3' | '4') | null;
             id?: string | null;
@@ -1670,10 +2341,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1696,26 +2382,38 @@ export interface Page {
             afterLabel?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1723,10 +2421,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1753,26 +2466,38 @@ export interface Page {
             posterImage?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             autoPlay?: boolean | null;
             id?: string | null;
@@ -1789,17 +2514,20 @@ export interface Page {
              */
             author?: string | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1807,10 +2535,25 @@ export interface Page {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -1871,17 +2614,20 @@ export interface Page {
             displayContactInfo?: boolean | null;
             contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1889,17 +2635,20 @@ export interface Page {
           }
         | {
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -1909,21 +2658,21 @@ export interface Page {
     | null;
   seo?: {
     /**
-     * Title for search engines
+     * Recommended: 50–60 characters. Appears as the clickable blue headline in Google search results.
      */
     metaTitle?: string | null;
     /**
-     * Description for search engines
+     * Recommended: 120–160 characters. The preview summary paragraph shown below your headline in search results.
      */
     metaDescription?: string | null;
     /**
-     * Image for social sharing
+     * Recommended: 1200 × 630px. Image displayed when this page link is shared on WhatsApp, LinkedIn, or Facebook.
      */
     ogImage?: (string | null) | Media;
   };
   navigation?: {
     /**
-     * Used for menu links (defaults to page title)
+     * Short label used for menu links (leave blank to use the Page Title).
      */
     navTitle?: string | null;
     hideFromNavigation?: boolean | null;
@@ -1932,11 +2681,11 @@ export interface Page {
   };
   scripts?: {
     /**
-     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     * Custom code injected into <head> (e.g. Google Analytics, Tag Manager, or verification meta tags).
      */
     headScript?: string | null;
     /**
-     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     * Custom code injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
      */
     bodyScript?: string | null;
   };
@@ -1949,10 +2698,25 @@ export interface Page {
  */
 export interface Post {
   id: string;
+  /**
+   * Internal reference title shown in the CMS list (e.g. "10 Best Web Design Practices 2026").
+   */
   title: string;
+  /**
+   * The link for this article (e.g. "web-design-practices" becomes yoursite.com/blog/post/web-design-practices).
+   */
   slug: string;
+  /**
+   * The main prominent headline visitors see at the top of the article.
+   */
   blogTitle?: string | null;
+  /**
+   * A 1-2 sentence preview displayed on blog cards and search engine listings.
+   */
   blogExcerpt?: string | null;
+  /**
+   * Write your full story here. You can add formatting, headings, bullet lists, links, and quotes.
+   */
   blogDetail?: {
     root: {
       type: string;
@@ -1968,15 +2732,30 @@ export interface Post {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Main image displayed at the top of the post and in social previews. Recommended: 1200 × 630px (JPG/WebP, under 2MB).
+   */
   blogMainImage?: (string | null) | Media;
+  /**
+   * Choose the team member or writer who wrote this article.
+   */
   author?: (string | null) | Author;
+  /**
+   * Select which blog category or topic this article belongs to.
+   */
   category?: (string | null) | Category;
   /**
-   * Comma separated values
+   * Comma separated keywords to help visitors search (e.g. "business, website, tips").
    */
   tags?: string | null;
   listingLayout?: {
+    /**
+     * Title shown when this page is displayed inside service grids or card lists (defaults to Page Title).
+     */
     listingTitle?: string | null;
+    /**
+     * Brief 1-2 sentence description shown on teaser cards.
+     */
     listingDescription?: {
       root: {
         type: string;
@@ -1992,33 +2771,63 @@ export interface Post {
       };
       [k: string]: unknown;
     } | null;
+    /**
+     * Recommended: 800 × 600px (JPG/WebP, under 1MB).
+     */
     listingImage?: (string | null) | Media;
   };
   banner?: {
+    /**
+     * Main headline displayed on top of the page banner (leave blank to use the Page Title).
+     */
     pageTitle?: string | null;
+    /**
+     * Brief introductory sentence shown below the banner headline.
+     */
     pageDescription?: string | null;
     displayBreadcrumb?: boolean | null;
+    /**
+     * Recommended size: 1920 × 600px (or 1920 × 1080px). JPG or WebP under 2MB.
+     */
     bannerBackground?: (string | null) | Media;
     textAlign?: ('left' | 'center' | 'right') | null;
     /**
-     * Show a dark overlay over the banner background image to improve text readability.
+     * Show a dark tint over the background image to make white text crisp and easy to read.
      */
     displayOverlay?: boolean | null;
     /**
-     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     * Controls how dark the tint is (50% is standard; 100% is solid black).
      */
     overlayOpacity?: number | null;
   };
+  /**
+   * Assemble your page section by section. Click "Add Block" below to insert banners, feature cards, testimonials, FAQ accordions, contact forms, and drag-and-drop to reorder them.
+   */
   layout?:
     | (
         | {
             slides?:
               | {
                   introText?: {
+                    /**
+                     * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+                     */
                     subheading?: string | null;
+                    /**
+                     * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+                     */
                     heading?: string | null;
+                    /**
+                     * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+                     */
                     headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    /**
+                     * A 1-2 sentence introductory paragraph shown right below the heading.
+                     */
                     description?: string | null;
+                    /**
+                     * Optional extra paragraphs, formatted text, bullet points, or links.
+                     */
                     content?: {
                       root: {
                         type: string;
@@ -2039,9 +2848,18 @@ export interface Post {
                   videoAutoplay?: boolean | null;
                   introLinks?:
                     | {
+                        /**
+                         * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                         */
                         label: string;
                         type?: ('custom' | 'reference') | null;
+                        /**
+                         * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                         */
                         url?: string | null;
+                        /**
+                         * Pick an existing page from your website to link to.
+                         */
                         reference?: (string | null) | Page;
                         appearance?: ('primary' | 'secondary' | 'outline') | null;
                         id?: string | null;
@@ -2051,17 +2869,20 @@ export interface Post {
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerWidth?: ('half' | 'wide' | 'full') | null;
             id?: string | null;
@@ -2070,10 +2891,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2092,26 +2928,38 @@ export interface Post {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -2119,10 +2967,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2141,26 +3004,38 @@ export interface Post {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Controls the width of the text content block
@@ -2172,10 +3047,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2194,9 +3084,18 @@ export interface Post {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
@@ -2205,17 +3104,20 @@ export interface Post {
             image?: (string | null) | Media;
             imagePosition?: ('left' | 'right') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             backgroundImage?: (string | null) | Media;
             /**
@@ -2228,10 +3130,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2251,26 +3168,38 @@ export interface Post {
             image?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -2279,10 +3208,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2306,26 +3250,38 @@ export interface Post {
             thumbnail?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -2334,10 +3290,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2365,26 +3336,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
             id?: string | null;
@@ -2393,10 +3376,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2432,26 +3430,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Position of the Intro Text relative to the pod items
@@ -2468,10 +3478,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2511,26 +3536,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -2538,10 +3575,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2570,26 +3622,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('1' | '2' | '3' | '4') | null;
@@ -2599,10 +3663,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2631,26 +3710,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
@@ -2661,10 +3752,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2698,26 +3804,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -2725,10 +3843,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2756,26 +3889,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4') | null;
@@ -2785,10 +3930,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2812,26 +3972,38 @@ export interface Post {
             numberOfPosts?: number | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -2839,10 +4011,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2868,26 +4055,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableMasonry?: boolean | null;
             id?: string | null;
@@ -2896,10 +4095,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2922,26 +4136,38 @@ export interface Post {
             mapData: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             widthType?: ('full' | 'wide') | null;
             id?: string | null;
@@ -2950,10 +4176,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -2993,26 +4234,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3020,10 +4273,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3054,26 +4322,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3081,10 +4361,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3108,26 +4403,38 @@ export interface Post {
             expiredMessage?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             themeColor?: ('primary' | 'secondary' | 'dark') | null;
             id?: string | null;
@@ -3136,10 +4443,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3162,26 +4484,38 @@ export interface Post {
             htmlEmbedCode: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3208,26 +4542,38 @@ export interface Post {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerType?: ('info' | 'success' | 'warning') | null;
             id?: string | null;
@@ -3236,10 +4582,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3267,26 +4628,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3294,10 +4667,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3324,26 +4712,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             layoutStyle?: ('horizontal' | 'vertical') | null;
             id?: string | null;
@@ -3352,10 +4752,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3386,26 +4801,38 @@ export interface Post {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('2' | '3' | '4') | null;
             id?: string | null;
@@ -3414,10 +4841,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3440,26 +4882,38 @@ export interface Post {
             afterLabel?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3467,10 +4921,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3497,26 +4966,38 @@ export interface Post {
             posterImage?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             autoPlay?: boolean | null;
             id?: string | null;
@@ -3533,17 +5014,20 @@ export interface Post {
              */
             author?: string | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3551,10 +5035,25 @@ export interface Post {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3615,17 +5114,20 @@ export interface Post {
             displayContactInfo?: boolean | null;
             contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3633,17 +5135,20 @@ export interface Post {
           }
         | {
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3653,21 +5158,21 @@ export interface Post {
     | null;
   seo?: {
     /**
-     * Title for search engines
+     * Recommended: 50–60 characters. Appears as the clickable blue headline in Google search results.
      */
     metaTitle?: string | null;
     /**
-     * Description for search engines
+     * Recommended: 120–160 characters. The preview summary paragraph shown below your headline in search results.
      */
     metaDescription?: string | null;
     /**
-     * Image for social sharing
+     * Recommended: 1200 × 630px. Image displayed when this page link is shared on WhatsApp, LinkedIn, or Facebook.
      */
     ogImage?: (string | null) | Media;
   };
   navigation?: {
     /**
-     * Used for menu links (defaults to page title)
+     * Short label used for menu links (leave blank to use the Page Title).
      */
     navTitle?: string | null;
     hideFromNavigation?: boolean | null;
@@ -3676,11 +5181,11 @@ export interface Post {
   };
   scripts?: {
     /**
-     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     * Custom code injected into <head> (e.g. Google Analytics, Tag Manager, or verification meta tags).
      */
     headScript?: string | null;
     /**
-     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     * Custom code injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
      */
     bodyScript?: string | null;
   };
@@ -3723,7 +5228,13 @@ export interface Author {
       }[]
     | null;
   listingLayout?: {
+    /**
+     * Title shown when this page is displayed inside service grids or card lists (defaults to Page Title).
+     */
     listingTitle?: string | null;
+    /**
+     * Brief 1-2 sentence description shown on teaser cards.
+     */
     listingDescription?: {
       root: {
         type: string;
@@ -3739,33 +5250,63 @@ export interface Author {
       };
       [k: string]: unknown;
     } | null;
+    /**
+     * Recommended: 800 × 600px (JPG/WebP, under 1MB).
+     */
     listingImage?: (string | null) | Media;
   };
   banner?: {
+    /**
+     * Main headline displayed on top of the page banner (leave blank to use the Page Title).
+     */
     pageTitle?: string | null;
+    /**
+     * Brief introductory sentence shown below the banner headline.
+     */
     pageDescription?: string | null;
     displayBreadcrumb?: boolean | null;
+    /**
+     * Recommended size: 1920 × 600px (or 1920 × 1080px). JPG or WebP under 2MB.
+     */
     bannerBackground?: (string | null) | Media;
     textAlign?: ('left' | 'center' | 'right') | null;
     /**
-     * Show a dark overlay over the banner background image to improve text readability.
+     * Show a dark tint over the background image to make white text crisp and easy to read.
      */
     displayOverlay?: boolean | null;
     /**
-     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     * Controls how dark the tint is (50% is standard; 100% is solid black).
      */
     overlayOpacity?: number | null;
   };
+  /**
+   * Assemble your page section by section. Click "Add Block" below to insert banners, feature cards, testimonials, FAQ accordions, contact forms, and drag-and-drop to reorder them.
+   */
   layout?:
     | (
         | {
             slides?:
               | {
                   introText?: {
+                    /**
+                     * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+                     */
                     subheading?: string | null;
+                    /**
+                     * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+                     */
                     heading?: string | null;
+                    /**
+                     * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+                     */
                     headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    /**
+                     * A 1-2 sentence introductory paragraph shown right below the heading.
+                     */
                     description?: string | null;
+                    /**
+                     * Optional extra paragraphs, formatted text, bullet points, or links.
+                     */
                     content?: {
                       root: {
                         type: string;
@@ -3786,9 +5327,18 @@ export interface Author {
                   videoAutoplay?: boolean | null;
                   introLinks?:
                     | {
+                        /**
+                         * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                         */
                         label: string;
                         type?: ('custom' | 'reference') | null;
+                        /**
+                         * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                         */
                         url?: string | null;
+                        /**
+                         * Pick an existing page from your website to link to.
+                         */
                         reference?: (string | null) | Page;
                         appearance?: ('primary' | 'secondary' | 'outline') | null;
                         id?: string | null;
@@ -3798,17 +5348,20 @@ export interface Author {
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerWidth?: ('half' | 'wide' | 'full') | null;
             id?: string | null;
@@ -3817,10 +5370,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3839,26 +5407,38 @@ export interface Author {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -3866,10 +5446,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3888,26 +5483,38 @@ export interface Author {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Controls the width of the text content block
@@ -3919,10 +5526,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3941,9 +5563,18 @@ export interface Author {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
@@ -3952,17 +5583,20 @@ export interface Author {
             image?: (string | null) | Media;
             imagePosition?: ('left' | 'right') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             backgroundImage?: (string | null) | Media;
             /**
@@ -3975,10 +5609,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -3998,26 +5647,38 @@ export interface Author {
             image?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -4026,10 +5687,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4053,26 +5729,38 @@ export interface Author {
             thumbnail?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -4081,10 +5769,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4112,26 +5815,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
             id?: string | null;
@@ -4140,10 +5855,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4179,26 +5909,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Position of the Intro Text relative to the pod items
@@ -4215,10 +5957,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4258,26 +6015,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -4285,10 +6054,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4317,26 +6101,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('1' | '2' | '3' | '4') | null;
@@ -4346,10 +6142,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4378,26 +6189,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
@@ -4408,10 +6231,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4445,26 +6283,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -4472,10 +6322,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4503,26 +6368,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4') | null;
@@ -4532,10 +6409,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4559,26 +6451,38 @@ export interface Author {
             numberOfPosts?: number | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -4586,10 +6490,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4615,26 +6534,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableMasonry?: boolean | null;
             id?: string | null;
@@ -4643,10 +6574,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4669,26 +6615,38 @@ export interface Author {
             mapData: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             widthType?: ('full' | 'wide') | null;
             id?: string | null;
@@ -4697,10 +6655,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4740,26 +6713,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -4767,10 +6752,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4801,26 +6801,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -4828,10 +6840,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4855,26 +6882,38 @@ export interface Author {
             expiredMessage?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             themeColor?: ('primary' | 'secondary' | 'dark') | null;
             id?: string | null;
@@ -4883,10 +6922,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -4909,26 +6963,38 @@ export interface Author {
             htmlEmbedCode: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -4955,26 +7021,38 @@ export interface Author {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerType?: ('info' | 'success' | 'warning') | null;
             id?: string | null;
@@ -4983,10 +7061,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5014,26 +7107,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -5041,10 +7146,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5071,26 +7191,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             layoutStyle?: ('horizontal' | 'vertical') | null;
             id?: string | null;
@@ -5099,10 +7231,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5133,26 +7280,38 @@ export interface Author {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('2' | '3' | '4') | null;
             id?: string | null;
@@ -5161,10 +7320,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5187,26 +7361,38 @@ export interface Author {
             afterLabel?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -5214,10 +7400,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5244,26 +7445,38 @@ export interface Author {
             posterImage?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             autoPlay?: boolean | null;
             id?: string | null;
@@ -5280,17 +7493,20 @@ export interface Author {
              */
             author?: string | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -5298,10 +7514,25 @@ export interface Author {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5362,17 +7593,20 @@ export interface Author {
             displayContactInfo?: boolean | null;
             contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -5380,17 +7614,20 @@ export interface Author {
           }
         | {
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -5400,21 +7637,21 @@ export interface Author {
     | null;
   seo?: {
     /**
-     * Title for search engines
+     * Recommended: 50–60 characters. Appears as the clickable blue headline in Google search results.
      */
     metaTitle?: string | null;
     /**
-     * Description for search engines
+     * Recommended: 120–160 characters. The preview summary paragraph shown below your headline in search results.
      */
     metaDescription?: string | null;
     /**
-     * Image for social sharing
+     * Recommended: 1200 × 630px. Image displayed when this page link is shared on WhatsApp, LinkedIn, or Facebook.
      */
     ogImage?: (string | null) | Media;
   };
   navigation?: {
     /**
-     * Used for menu links (defaults to page title)
+     * Short label used for menu links (leave blank to use the Page Title).
      */
     navTitle?: string | null;
     hideFromNavigation?: boolean | null;
@@ -5423,11 +7660,11 @@ export interface Author {
   };
   scripts?: {
     /**
-     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     * Custom code injected into <head> (e.g. Google Analytics, Tag Manager, or verification meta tags).
      */
     headScript?: string | null;
     /**
-     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     * Custom code injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
      */
     bodyScript?: string | null;
   };
@@ -5444,7 +7681,13 @@ export interface Category {
   slug: string;
   categoryName?: string | null;
   listingLayout?: {
+    /**
+     * Title shown when this page is displayed inside service grids or card lists (defaults to Page Title).
+     */
     listingTitle?: string | null;
+    /**
+     * Brief 1-2 sentence description shown on teaser cards.
+     */
     listingDescription?: {
       root: {
         type: string;
@@ -5460,33 +7703,63 @@ export interface Category {
       };
       [k: string]: unknown;
     } | null;
+    /**
+     * Recommended: 800 × 600px (JPG/WebP, under 1MB).
+     */
     listingImage?: (string | null) | Media;
   };
   banner?: {
+    /**
+     * Main headline displayed on top of the page banner (leave blank to use the Page Title).
+     */
     pageTitle?: string | null;
+    /**
+     * Brief introductory sentence shown below the banner headline.
+     */
     pageDescription?: string | null;
     displayBreadcrumb?: boolean | null;
+    /**
+     * Recommended size: 1920 × 600px (or 1920 × 1080px). JPG or WebP under 2MB.
+     */
     bannerBackground?: (string | null) | Media;
     textAlign?: ('left' | 'center' | 'right') | null;
     /**
-     * Show a dark overlay over the banner background image to improve text readability.
+     * Show a dark tint over the background image to make white text crisp and easy to read.
      */
     displayOverlay?: boolean | null;
     /**
-     * Controls how dark the overlay is (0 = transparent, 100 = fully opaque).
+     * Controls how dark the tint is (50% is standard; 100% is solid black).
      */
     overlayOpacity?: number | null;
   };
+  /**
+   * Assemble your page section by section. Click "Add Block" below to insert banners, feature cards, testimonials, FAQ accordions, contact forms, and drag-and-drop to reorder them.
+   */
   layout?:
     | (
         | {
             slides?:
               | {
                   introText?: {
+                    /**
+                     * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+                     */
                     subheading?: string | null;
+                    /**
+                     * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+                     */
                     heading?: string | null;
+                    /**
+                     * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+                     */
                     headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+                    /**
+                     * A 1-2 sentence introductory paragraph shown right below the heading.
+                     */
                     description?: string | null;
+                    /**
+                     * Optional extra paragraphs, formatted text, bullet points, or links.
+                     */
                     content?: {
                       root: {
                         type: string;
@@ -5507,9 +7780,18 @@ export interface Category {
                   videoAutoplay?: boolean | null;
                   introLinks?:
                     | {
+                        /**
+                         * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                         */
                         label: string;
                         type?: ('custom' | 'reference') | null;
+                        /**
+                         * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                         */
                         url?: string | null;
+                        /**
+                         * Pick an existing page from your website to link to.
+                         */
                         reference?: (string | null) | Page;
                         appearance?: ('primary' | 'secondary' | 'outline') | null;
                         id?: string | null;
@@ -5519,17 +7801,20 @@ export interface Category {
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerWidth?: ('half' | 'wide' | 'full') | null;
             id?: string | null;
@@ -5538,10 +7823,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5560,26 +7860,38 @@ export interface Category {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -5587,10 +7899,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5609,26 +7936,38 @@ export interface Category {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Controls the width of the text content block
@@ -5640,10 +7979,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5662,9 +8016,18 @@ export interface Category {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
@@ -5673,17 +8036,20 @@ export interface Category {
             image?: (string | null) | Media;
             imagePosition?: ('left' | 'right') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             backgroundImage?: (string | null) | Media;
             /**
@@ -5696,10 +8062,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5719,26 +8100,38 @@ export interface Category {
             image?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -5747,10 +8140,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5774,26 +8182,38 @@ export interface Category {
             thumbnail?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             textPosition?: ('left' | 'right') | null;
             id?: string | null;
@@ -5802,10 +8222,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5833,26 +8268,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('1' | '2' | '3' | '4' | '6') | null;
             id?: string | null;
@@ -5861,10 +8308,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5900,26 +8362,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             /**
              * Position of the Intro Text relative to the pod items
@@ -5936,10 +8410,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -5979,26 +8468,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6006,10 +8507,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6038,26 +8554,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('1' | '2' | '3' | '4') | null;
@@ -6067,10 +8595,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6099,26 +8642,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4' | '5' | '6') | null;
@@ -6129,10 +8684,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6166,26 +8736,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6193,10 +8775,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6224,26 +8821,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableCarousel?: boolean | null;
             itemsPerRow?: ('2' | '3' | '4') | null;
@@ -6253,10 +8862,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6280,26 +8904,38 @@ export interface Category {
             numberOfPosts?: number | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6307,10 +8943,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6336,26 +8987,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             enableMasonry?: boolean | null;
             id?: string | null;
@@ -6364,10 +9027,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6390,26 +9068,38 @@ export interface Category {
             mapData: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             widthType?: ('full' | 'wide') | null;
             id?: string | null;
@@ -6418,10 +9108,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6461,26 +9166,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6488,10 +9205,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6522,26 +9254,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6549,10 +9293,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6576,26 +9335,38 @@ export interface Category {
             expiredMessage?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             themeColor?: ('primary' | 'secondary' | 'dark') | null;
             id?: string | null;
@@ -6604,10 +9375,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6630,26 +9416,38 @@ export interface Category {
             htmlEmbedCode: string;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6676,26 +9474,38 @@ export interface Category {
             };
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             bannerType?: ('info' | 'success' | 'warning') | null;
             id?: string | null;
@@ -6704,10 +9514,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6735,26 +9560,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6762,10 +9599,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6792,26 +9644,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             layoutStyle?: ('horizontal' | 'vertical') | null;
             id?: string | null;
@@ -6820,10 +9684,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6854,26 +9733,38 @@ export interface Category {
               | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             itemsPerRow?: ('2' | '3' | '4') | null;
             id?: string | null;
@@ -6882,10 +9773,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6908,26 +9814,38 @@ export interface Category {
             afterLabel?: string | null;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -6935,10 +9853,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -6965,26 +9898,38 @@ export interface Category {
             posterImage?: (string | null) | Media;
             introLinks?:
               | {
+                  /**
+                   * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+                   */
                   label: string;
                   type?: ('custom' | 'reference') | null;
+                  /**
+                   * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+                   */
                   url?: string | null;
+                  /**
+                   * Pick an existing page from your website to link to.
+                   */
                   reference?: (string | null) | Page;
                   appearance?: ('primary' | 'secondary' | 'outline') | null;
                   id?: string | null;
                 }[]
               | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             autoPlay?: boolean | null;
             id?: string | null;
@@ -7001,17 +9946,20 @@ export interface Category {
              */
             author?: string | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -7019,10 +9967,25 @@ export interface Category {
           }
         | {
             introText?: {
+              /**
+               * Small category tag or badge shown above the main heading (e.g. "OUR SERVICES", "ABOUT US").
+               */
               subheading?: string | null;
+              /**
+               * The prominent headline for this section (e.g. "Transforming Ideas into Digital Realities").
+               */
               heading?: string | null;
+              /**
+               * H2 is recommended for standard page sections. Keep H1 for the top page banner.
+               */
               headingSize?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+              /**
+               * A 1-2 sentence introductory paragraph shown right below the heading.
+               */
               description?: string | null;
+              /**
+               * Optional extra paragraphs, formatted text, bullet points, or links.
+               */
               content?: {
                 root: {
                   type: string;
@@ -7083,17 +10046,20 @@ export interface Category {
             displayContactInfo?: boolean | null;
             contactInfoPosition?: ('top' | 'left' | 'right' | 'bottom') | null;
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -7101,17 +10067,20 @@ export interface Category {
           }
         | {
             settings?: {
+              /**
+               * Choose the background color palette for this section.
+               */
               backgroundColor?: ('bg-c1' | 'bg-c2' | 'bg-c3' | 'bg-c4' | 'bg-c5' | 'bg-c6' | 'bg-c7' | 'bg-c8') | null;
               textAlign?: ('left' | 'center' | 'right') | null;
-              /**
-               * Add custom CSS classes here (space separated)
-               */
-              customClass?: string | null;
               enableOverlay?: boolean | null;
               /**
-               * Check this to completely hide this component from the frontend
+               * Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).
                */
               hideComponent?: boolean | null;
+              /**
+               * Optional advanced CSS class name for custom styling. Can be safely left blank.
+               */
+              customClass?: string | null;
             };
             id?: string | null;
             blockName?: string | null;
@@ -7121,21 +10090,21 @@ export interface Category {
     | null;
   seo?: {
     /**
-     * Title for search engines
+     * Recommended: 50–60 characters. Appears as the clickable blue headline in Google search results.
      */
     metaTitle?: string | null;
     /**
-     * Description for search engines
+     * Recommended: 120–160 characters. The preview summary paragraph shown below your headline in search results.
      */
     metaDescription?: string | null;
     /**
-     * Image for social sharing
+     * Recommended: 1200 × 630px. Image displayed when this page link is shared on WhatsApp, LinkedIn, or Facebook.
      */
     ogImage?: (string | null) | Media;
   };
   navigation?: {
     /**
-     * Used for menu links (defaults to page title)
+     * Short label used for menu links (leave blank to use the Page Title).
      */
     navTitle?: string | null;
     hideFromNavigation?: boolean | null;
@@ -7144,11 +10113,11 @@ export interface Category {
   };
   scripts?: {
     /**
-     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     * Custom code injected into <head> (e.g. Google Analytics, Tag Manager, or verification meta tags).
      */
     headScript?: string | null;
     /**
-     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     * Custom code injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
      */
     bodyScript?: string | null;
   };
@@ -7360,9 +10329,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerWidth?: T;
               id?: T;
@@ -7395,9 +10364,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -7429,9 +10398,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               contentWidth?: T;
               id?: T;
@@ -7466,9 +10435,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               backgroundImage?: T;
               contentWidth?: T;
@@ -7503,9 +10472,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -7540,9 +10509,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -7584,9 +10553,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -7635,9 +10604,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               introTextPosition?: T;
               itemsPerRow?: T;
@@ -7679,9 +10648,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -7723,9 +10692,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -7766,9 +10735,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -7818,9 +10787,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -7861,9 +10830,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -7899,9 +10868,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -7940,9 +10909,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableMasonry?: T;
               id?: T;
@@ -7976,9 +10945,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               widthType?: T;
               id?: T;
@@ -8018,9 +10987,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8061,9 +11030,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8097,9 +11066,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               themeColor?: T;
               id?: T;
@@ -8133,9 +11102,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8159,9 +11128,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerType?: T;
               id?: T;
@@ -8203,9 +11172,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8245,9 +11214,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               layoutStyle?: T;
               id?: T;
@@ -8289,9 +11258,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -8328,9 +11297,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8364,9 +11333,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               autoPlay?: T;
               id?: T;
@@ -8382,9 +11351,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8412,9 +11381,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8427,9 +11396,9 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8528,9 +11497,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerWidth?: T;
               id?: T;
@@ -8563,9 +11532,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8597,9 +11566,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               contentWidth?: T;
               id?: T;
@@ -8634,9 +11603,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               backgroundImage?: T;
               contentWidth?: T;
@@ -8671,9 +11640,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -8708,9 +11677,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -8752,9 +11721,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -8803,9 +11772,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               introTextPosition?: T;
               itemsPerRow?: T;
@@ -8847,9 +11816,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -8891,9 +11860,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -8934,9 +11903,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -8986,9 +11955,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9029,9 +11998,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -9067,9 +12036,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9108,9 +12077,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableMasonry?: T;
               id?: T;
@@ -9144,9 +12113,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               widthType?: T;
               id?: T;
@@ -9186,9 +12155,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9229,9 +12198,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9265,9 +12234,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               themeColor?: T;
               id?: T;
@@ -9301,9 +12270,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9327,9 +12296,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerType?: T;
               id?: T;
@@ -9371,9 +12340,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9413,9 +12382,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               layoutStyle?: T;
               id?: T;
@@ -9457,9 +12426,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -9496,9 +12465,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9532,9 +12501,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               autoPlay?: T;
               id?: T;
@@ -9550,9 +12519,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9580,9 +12549,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9595,9 +12564,9 @@ export interface PostsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9699,9 +12668,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerWidth?: T;
               id?: T;
@@ -9734,9 +12703,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -9768,9 +12737,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               contentWidth?: T;
               id?: T;
@@ -9805,9 +12774,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               backgroundImage?: T;
               contentWidth?: T;
@@ -9842,9 +12811,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -9879,9 +12848,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -9923,9 +12892,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -9974,9 +12943,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               introTextPosition?: T;
               itemsPerRow?: T;
@@ -10018,9 +12987,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10062,9 +13031,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -10105,9 +13074,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -10157,9 +13126,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10200,9 +13169,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -10238,9 +13207,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10279,9 +13248,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableMasonry?: T;
               id?: T;
@@ -10315,9 +13284,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               widthType?: T;
               id?: T;
@@ -10357,9 +13326,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10400,9 +13369,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10436,9 +13405,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               themeColor?: T;
               id?: T;
@@ -10472,9 +13441,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10498,9 +13467,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerType?: T;
               id?: T;
@@ -10542,9 +13511,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10584,9 +13553,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               layoutStyle?: T;
               id?: T;
@@ -10628,9 +13597,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -10667,9 +13636,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10703,9 +13672,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               autoPlay?: T;
               id?: T;
@@ -10721,9 +13690,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10751,9 +13720,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10766,9 +13735,9 @@ export interface AuthorsSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10861,9 +13830,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerWidth?: T;
               id?: T;
@@ -10896,9 +13865,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -10930,9 +13899,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               contentWidth?: T;
               id?: T;
@@ -10967,9 +13936,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               backgroundImage?: T;
               contentWidth?: T;
@@ -11004,9 +13973,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -11041,9 +14010,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               textPosition?: T;
               id?: T;
@@ -11085,9 +14054,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -11136,9 +14105,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               introTextPosition?: T;
               itemsPerRow?: T;
@@ -11180,9 +14149,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11224,9 +14193,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -11267,9 +14236,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -11319,9 +14288,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11362,9 +14331,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableCarousel?: T;
               itemsPerRow?: T;
@@ -11400,9 +14369,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11441,9 +14410,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               enableMasonry?: T;
               id?: T;
@@ -11477,9 +14446,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               widthType?: T;
               id?: T;
@@ -11519,9 +14488,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11562,9 +14531,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11598,9 +14567,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               themeColor?: T;
               id?: T;
@@ -11634,9 +14603,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11660,9 +14629,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               bannerType?: T;
               id?: T;
@@ -11704,9 +14673,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11746,9 +14715,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               layoutStyle?: T;
               id?: T;
@@ -11790,9 +14759,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               itemsPerRow?: T;
               id?: T;
@@ -11829,9 +14798,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11865,9 +14834,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               autoPlay?: T;
               id?: T;
@@ -11883,9 +14852,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11913,9 +14882,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -11928,9 +14897,9 @@ export interface CategoriesSelect<T extends boolean = true> {
                 | {
                     backgroundColor?: T;
                     textAlign?: T;
-                    customClass?: T;
                     enableOverlay?: T;
                     hideComponent?: T;
+                    customClass?: T;
                   };
               id?: T;
               blockName?: T;
@@ -12006,36 +14975,48 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface SiteSetting {
   id: string;
+  /**
+   * The official name of your business (e.g. "WebNexa Digital").
+   */
   siteName: string;
   /**
-   * Select the page to serve as the Home page of the site.
+   * Select which page from your Content Tree serves as the main homepage (/).
    */
   homePage?: (string | null) | Page;
   /**
-   * Short description about the site
+   * A short sentence summarizing your company or value proposition.
    */
   description?: string | null;
   /**
-   * Used for main site logos
+   * Main logo shown in the website header. Recommended: Transparent SVG or PNG under 1MB.
    */
   siteIcon?: (string | null) | Media;
   /**
-   * Used for the browser tab icon (.ico or .png)
+   * Small square icon shown on the browser tab (Recommended: 32 × 32px PNG or ICO).
    */
   siteFavicon?: (string | null) | Media;
+  /**
+   * Displayed in the website footer, contact section, and Google Local SEO.
+   */
   address?: string | null;
+  /**
+   * The general customer support or contact email displayed on the site.
+   */
   email?: string | null;
   /**
-   * The email address used to send the emails (e.g. no-reply@gelinst.com.au)
+   * The sender email address configured with your email server (e.g. no-reply@yoursite.com).
    */
   fromEmail?: string | null;
   /**
-   * The email address that will receive the contact form submissions
+   * Where website form inquiries and leads are delivered (separate multiple emails with commas).
    */
   adminEmail?: string | null;
+  /**
+   * Click-to-call phone number displayed in header and footer (e.g. "+1 (555) 000-1234").
+   */
   phone?: string | null;
   /**
-   * Link to Google Maps or similar
+   * Direct link to Google Maps for directions (e.g. https://maps.google.com/...).
    */
   addressUrl?: string | null;
   socialLinks?:
@@ -12071,9 +15052,18 @@ export interface SiteSetting {
   displayHeaderCTA?: boolean | null;
   headerCTA?:
     | {
+        /**
+         * Text written on the button (e.g. "Get a Quote", "Contact Us", "Learn More").
+         */
         label: string;
         type?: ('custom' | 'reference') | null;
+        /**
+         * Enter a full link (e.g. https://google.com) or relative path (e.g. /contact).
+         */
         url?: string | null;
+        /**
+         * Pick an existing page from your website to link to.
+         */
         reference?: (string | null) | Page;
         appearance?: ('primary' | 'secondary' | 'outline') | null;
         id?: string | null;
@@ -12081,11 +15071,11 @@ export interface SiteSetting {
     | null;
   scripts?: {
     /**
-     * Custom script or HTML to be injected into <head> (e.g. Google Analytics, Tag Manager, verification meta tags).
+     * Custom code injected into <head> (e.g. Google Analytics, Tag Manager, or verification meta tags).
      */
     headScript?: string | null;
     /**
-     * Custom script or HTML to be injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
+     * Custom code injected into <body> (e.g. Google Tag Manager noscript, chat widgets, tracking pixels).
      */
     bodyScript?: string | null;
   };

@@ -6,8 +6,8 @@ import { introLinks } from '../../fields/introLinks'
 export const CTA: Block = {
   slug: 'cta',
   labels: {
-    singular: 'Call to Action',
-    plural: 'Calls to Action',
+    singular: 'Call to Action Banner (CTA)',
+    plural: 'Call to Action Banners',
   },
   fields: [
     {

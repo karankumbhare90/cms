@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const LatestPosts: Block = {
   slug: 'latestPosts',
   labels: {
-    singular: 'Latest Posts',
-    plural: 'Latest Posts'
+    singular: 'Latest Blog Articles Grid',
+    plural: 'Latest Post Grids',
   },
   fields: [
     {

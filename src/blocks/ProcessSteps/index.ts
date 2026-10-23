@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const ProcessSteps: Block = {
   slug: 'processSteps',
   labels: {
-    singular: 'Process Steps',
-    plural: 'Process Steps'
+    singular: 'How It Works / Step-by-Step Process',
+    plural: 'Process Steps',
   },
   fields: [
     {

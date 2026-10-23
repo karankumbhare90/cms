@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const BeforeAndAfter: Block = {
   slug: 'beforeAndAfter',
   labels: {
-    singular: 'Before & After Slider',
-    plural: 'Before & After Sliders'
+    singular: 'Before & After Image Comparison Slider',
+    plural: 'Before & After Sliders',
   },
   fields: [
     {

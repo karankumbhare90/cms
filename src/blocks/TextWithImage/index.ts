@@ -6,8 +6,8 @@ import { introLinks } from '@/fields/introLinks'
 export const TextWithImage: Block = {
   slug: 'textWithImage',
   labels: {
-    singular: 'Text With Image',
-    plural: 'Text With Images',
+    singular: 'Text with Image (Side-by-Side)',
+    plural: 'Text with Images',
   },
   fields: [
     {

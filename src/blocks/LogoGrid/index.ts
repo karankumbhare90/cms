@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const LogoGrid: Block = {
   slug: 'logoGrid',
   labels: {
-    singular: 'Logo Grid',
-    plural: 'Logo Grids'
+    singular: 'Client & Partner Logo Grid',
+    plural: 'Logo Grids',
   },
   fields: [
     {

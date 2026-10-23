@@ -6,7 +6,7 @@ import { introLinks } from '../../fields/introLinks'
 export const Map: Block = {
   slug: 'map',
   labels: {
-    singular: 'Map',
+    singular: 'Interactive Map Location',
     plural: 'Maps',
   },
   fields: [

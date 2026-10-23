@@ -5,7 +5,7 @@ import { introText } from '../../fields/introText'
 export const ContactUs: Block = {
   slug: 'contactUs',
   labels: {
-    singular: 'Contact Us Form',
+    singular: 'Contact Us Form & Inquiry Section',
     plural: 'Contact Us Forms',
   },
   fields: [

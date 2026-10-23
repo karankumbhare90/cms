@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const Timeline: Block = {
   slug: 'timeline',
   labels: {
-    singular: 'Timeline',
-    plural: 'Timelines'
+    singular: 'Company Timeline / Milestones',
+    plural: 'Timelines',
   },
   fields: [
     {

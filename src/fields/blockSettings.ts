@@ -2,52 +2,60 @@ import type { Field } from 'payload'
 
 export const blockSettings: Field = {
   name: 'settings',
+  label: 'Section Styling & Visibility Settings',
   type: 'group',
   fields: [
     {
       name: 'backgroundColor',
-      type: 'select', // Can be replaced with a color picker plugin later if needed
+      label: 'Background Theme Color',
+      type: 'select',
       defaultValue: 'bg-c1',
       options: [
-        { label: 'Color 1', value: 'bg-c1' },
-        { label: 'Color 2', value: 'bg-c2' },
-        { label: 'Color 3', value: 'bg-c3' },
-        { label: 'Color 4', value: 'bg-c4' },
-        { label: 'Color 5', value: 'bg-c5' },
-        { label: 'Color 6', value: 'bg-c6' },
-        { label: 'Color 7', value: 'bg-c7' },
-        { label: 'Color 8', value: 'bg-c8' },
+        { label: 'Theme 1 (Default / White)', value: 'bg-c1' },
+        { label: 'Theme 2 (Subtle Light Gray)', value: 'bg-c2' },
+        { label: 'Theme 3 (Brand Tint / Accent)', value: 'bg-c3' },
+        { label: 'Theme 4 (Dark Contrast)', value: 'bg-c4' },
+        { label: 'Theme 5 (Secondary Dark)', value: 'bg-c5' },
+        { label: 'Theme 6 (Card Background)', value: 'bg-c6' },
+        { label: 'Theme 7 (Muted Neutral)', value: 'bg-c7' },
+        { label: 'Theme 8 (Transparent)', value: 'bg-c8' },
       ],
+      admin: {
+        description: 'Choose the background color palette for this section.',
+      },
     },
     {
       name: 'textAlign',
+      label: 'Content Text Alignment',
       type: 'select',
       defaultValue: 'left',
       options: [
-        { label: 'Left', value: 'left' },
-        { label: 'Center', value: 'center' },
-        { label: 'Right', value: 'right' },
+        { label: 'Left Aligned', value: 'left' },
+        { label: 'Center Aligned', value: 'center' },
+        { label: 'Right Aligned', value: 'right' },
       ],
-    },
-    {
-      name: 'customClass',
-      type: 'text',
-      admin: {
-        description: 'Add custom CSS classes here (space separated)',
-      },
     },
     {
       name: 'enableOverlay',
       type: 'checkbox',
       defaultValue: true,
-      label: 'Enable Overlay (for backgrounds)',
+      label: 'Enable Dark Contrast Overlay (for background images)',
     },
     {
       name: 'hideComponent',
       type: 'checkbox',
       defaultValue: false,
+      label: 'Temporarily Hide This Section on Live Site',
       admin: {
-        description: 'Check this to completely hide this component from the frontend',
+        description: 'Check this to turn off this section without deleting it (great for seasonal promotions or draft sections).',
+      },
+    },
+    {
+      name: 'customClass',
+      label: 'Custom CSS Class (For Developers)',
+      type: 'text',
+      admin: {
+        description: 'Optional advanced CSS class name for custom styling. Can be safely left blank.',
       },
     },
   ],

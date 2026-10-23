@@ -6,8 +6,8 @@ import { introLinks } from "../../fields/introLinks";
 export const PortfolioGrid: Block = {
   slug: 'portfolioGrid',
   labels: {
-    singular: 'Portfolio Grid',
-    plural: 'Portfolio Grids'
+    singular: 'Portfolio / Projects Showcase Grid',
+    plural: 'Portfolio Grids',
   },
   fields: [
     {
