@@ -10,6 +10,7 @@ interface PageTreeNode {
   slug: string
   pageType?: string
   parent?: string | null
+  sortOrder?: number
   updatedAt?: string
   _status?: string
   children: PageTreeNode[]
@@ -32,6 +33,7 @@ interface NavSection {
 export const SidebarPageTree: React.FC = () => {
   const [tree, setTree] = useState<PageTreeNode[]>([])
   const [loading, setLoading] = useState(true)
+  const [sortBy, setSortBy] = useState<'sortOrder' | 'title'>('sortOrder')
   const pathname = usePathname()
 
   // Section collapse states (all default open)
@@ -49,9 +51,10 @@ export const SidebarPageTree: React.FC = () => {
     setSectionsOpen((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }))
   }
 
-  const fetchTree = async () => {
+  const fetchTree = async (currentSort = sortBy) => {
     try {
-      const res = await fetch('/api/page-tree')
+      setLoading(true)
+      const res = await fetch(`/api/page-tree?sortBy=${currentSort}`)
       if (res.ok) {
         const data = await res.json()
         setTree(data.tree || [])
@@ -66,7 +69,7 @@ export const SidebarPageTree: React.FC = () => {
           })
         }
         markExpanded(data.tree || [])
-        setExpandedNodes(initialExpanded)
+        setExpandedNodes((prev) => ({ ...initialExpanded, ...prev }))
       }
     } catch (err) {
       console.error('Failed to load sidebar page tree:', err)
@@ -76,8 +79,8 @@ export const SidebarPageTree: React.FC = () => {
   }
 
   useEffect(() => {
-    fetchTree()
-  }, [])
+    fetchTree(sortBy)
+  }, [sortBy])
 
   const toggleExpand = (id: string, e: React.MouseEvent) => {
     e.preventDefault()
@@ -402,23 +405,45 @@ export const SidebarPageTree: React.FC = () => {
                   </span>
                 </Link>
 
-                {/* Quick Add Child Button */}
+                {/* Sort Order Badge if set */}
+                {typeof node.sortOrder === 'number' && node.sortOrder > 0 && (
+                  <span
+                    title={`Sort Order: #${node.sortOrder}`}
+                    style={{
+                      fontSize: '10px',
+                      padding: '1px 5px',
+                      borderRadius: '3px',
+                      backgroundColor: 'var(--theme-elevation-200, rgba(255, 255, 255, 0.08))',
+                      color: 'var(--theme-elevation-500, #94a3b8)',
+                      fontFamily: 'monospace',
+                      marginRight: '6px',
+                      flexShrink: 0,
+                    }}
+                  >
+                    #{node.sortOrder}
+                  </span>
+                )}
+
+                {/* Quick Add Child Button (Plus Icon) - ALWAYS VISIBLE */}
                 <Link
                   href={`/admin/collections/pages/create?parent=${node.id}`}
                   onClick={(e) => e.stopPropagation()}
-                  title={`Add subpage under "${node.title}"`}
+                  title={`+ Add subpage under "${node.title}"`}
                   className="payload-tree-add-btn"
                   style={{
-                    opacity: 0,
-                    padding: '2px 4px',
-                    borderRadius: '3px',
-                    color: 'inherit',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '4px',
+                    color: 'var(--theme-elevation-600, #94a3b8)',
                     textDecoration: 'none',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginLeft: 'auto',
-                    transition: 'opacity 0.15s ease',
+                    backgroundColor: 'var(--theme-elevation-150, rgba(255, 255, 255, 0.07))',
+                    border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.12))',
+                    flexShrink: 0,
+                    transition: 'all 0.15s ease',
                   }}
                 >
                   <svg
@@ -427,7 +452,7 @@ export const SidebarPageTree: React.FC = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
@@ -451,7 +476,7 @@ export const SidebarPageTree: React.FC = () => {
   }
 
   return (
-    <div style={{ margin: '8px 0', padding: '0 4px' }}>
+    <div style={{ margin: '8px 0', padding: '0 4px', width: '100%' }}>
       <style>{`
         /* Hide Payload's default unstyled plain nav groups so our unified tree-styled navigation takes over */
         .nav__wrap > .nav-group,
@@ -461,12 +486,18 @@ export const SidebarPageTree: React.FC = () => {
         .payload-tree-sidebar-item:hover {
           background-color: var(--theme-elevation-100, rgba(255, 255, 255, 0.05)) !important;
         }
-        .payload-tree-sidebar-item:hover .payload-tree-add-btn {
+        .payload-tree-sidebar-item .payload-tree-add-btn {
           opacity: 0.8 !important;
         }
-        .payload-tree-sidebar-item:hover .payload-tree-add-btn:hover {
+        .payload-tree-sidebar-item:hover .payload-tree-add-btn {
           opacity: 1 !important;
-          background-color: var(--theme-elevation-200, rgba(255, 255, 255, 0.15)) !important;
+        }
+        .payload-tree-add-btn:hover {
+          background-color: #2563EB !important;
+          border-color: #2563EB !important;
+          color: #fff !important;
+          opacity: 1 !important;
+          transform: scale(1.08);
         }
       `}</style>
 
@@ -496,8 +527,10 @@ export const SidebarPageTree: React.FC = () => {
             e.currentTarget.style.color = '#fff'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'var(--theme-elevation-100, rgba(255, 255, 255, 0.05))'
-            e.currentTarget.style.borderColor = 'var(--theme-elevation-200, rgba(255, 255, 255, 0.12))'
+            e.currentTarget.style.backgroundColor =
+              'var(--theme-elevation-100, rgba(255, 255, 255, 0.05))'
+            e.currentTarget.style.borderColor =
+              'var(--theme-elevation-200, rgba(255, 255, 255, 0.12))'
             e.currentTarget.style.color = 'var(--theme-elevation-900, #fff)'
           }}
         >
@@ -505,7 +538,14 @@ export const SidebarPageTree: React.FC = () => {
             <span style={{ fontSize: '14px' }}>🌐</span>
             <span>View Live Website</span>
           </div>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
             <line x1="10" y1="14" x2="21" y2="3" />
@@ -540,32 +580,69 @@ export const SidebarPageTree: React.FC = () => {
             CONTENT TREE
           </span>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Link
-              href="/admin/collections/pages/create"
-              onClick={(e) => e.stopPropagation()}
-              title="Create new root page"
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            {/* Sort Order Selector Button */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setSortBy((prev) => (prev === 'sortOrder' ? 'title' : 'sortOrder'))
+              }}
+              title={
+                sortBy === 'sortOrder'
+                  ? 'Currently sorted by Custom Order (Click to sort A-Z)'
+                  : 'Currently sorted Alphabetically (Click to sort by Custom Order)'
+              }
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2px 4px',
+                gap: '2px',
+                padding: '2px 5px',
                 borderRadius: '3px',
-                color: 'var(--theme-elevation-500, #94a3b8)',
-                textDecoration: 'none',
+                fontSize: '10px',
+                fontWeight: 600,
+                backgroundColor:
+                  sortBy === 'sortOrder' ? 'rgba(37, 99, 235, 0.18)' : 'transparent',
+                color:
+                  sortBy === 'sortOrder' ? '#3B82F6' : 'var(--theme-elevation-500, #94a3b8)',
+                border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.12))',
+                cursor: 'pointer',
               }}
             >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
+              <span>{sortBy === 'sortOrder' ? '1-2-3' : 'A-Z'}</span>
+            </button>
+
+            {/* Prominent Plus Button to Create New Root Page */}
+            <Link
+              href="/admin/collections/pages/create"
+              onClick={(e) => e.stopPropagation()}
+              title="Create new root page (+)"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px',
+                padding: '2px 7px',
+                borderRadius: '4px',
+                backgroundColor: '#2563EB',
+                color: '#fff',
+                fontSize: '11px',
+                fontWeight: 700,
+                textDecoration: 'none',
+                boxShadow: '0 1px 3px rgba(37, 99, 235, 0.4)',
+                transition: 'background-color 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#1D4ED8'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#2563EB'
+              }}
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
+              <span>New</span>
             </Link>
 
             <span
@@ -718,9 +795,7 @@ export const SidebarPageTree: React.FC = () => {
             {isSectionOpen && (
               <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                 {section.items.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    pathname?.startsWith(`${item.href}/`)
+                  const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`)
 
                   return (
                     <li key={item.href} style={{ margin: '1px 0' }}>
@@ -755,7 +830,9 @@ export const SidebarPageTree: React.FC = () => {
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          <span style={{ opacity: 0.8, display: 'inline-flex', alignItems: 'center' }}>
+                          <span
+                            style={{ opacity: 0.8, display: 'inline-flex', alignItems: 'center' }}
+                          >
                             {item.icon}
                           </span>
                           <span

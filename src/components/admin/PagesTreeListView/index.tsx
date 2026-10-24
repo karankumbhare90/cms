@@ -9,6 +9,7 @@ interface PageTreeNode {
   slug: string
   pageType?: string
   parent?: string | null
+  sortOrder?: number
   updatedAt?: string
   _status?: string
   children: PageTreeNode[]
@@ -18,11 +19,13 @@ export const PagesTreeListView: React.FC = () => {
   const [tree, setTree] = useState<PageTreeNode[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<'sortOrder' | 'title' | 'updatedAt'>('sortOrder')
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({})
 
-  const fetchTree = async () => {
+  const fetchTree = async (currentSort = sortBy) => {
     try {
-      const res = await fetch('/api/page-tree')
+      setLoading(true)
+      const res = await fetch(`/api/page-tree?sortBy=${currentSort}`)
       if (res.ok) {
         const data = await res.json()
         setTree(data.tree || [])
@@ -37,7 +40,7 @@ export const PagesTreeListView: React.FC = () => {
           })
         }
         markExpanded(data.tree || [])
-        setExpandedNodes(initialExpanded)
+        setExpandedNodes((prev) => ({ ...initialExpanded, ...prev }))
       }
     } catch (err) {
       console.error('Failed to load page tree:', err)
@@ -46,9 +49,24 @@ export const PagesTreeListView: React.FC = () => {
     }
   }
 
+  const handleMove = async (nodeId: string, direction: 'up' | 'down') => {
+    try {
+      const res = await fetch('/api/page-tree', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: nodeId, moveDirection: direction }),
+      })
+      if (res.ok) {
+        fetchTree(sortBy)
+      }
+    } catch (err) {
+      console.error('Failed to move page:', err)
+    }
+  }
+
   useEffect(() => {
-    fetchTree()
-  }, [])
+    fetchTree(sortBy)
+  }, [sortBy])
 
   // Hide the default flat table and native table controls
   useEffect(() => {
@@ -317,8 +335,73 @@ export const PagesTreeListView: React.FC = () => {
               </div>
             </div>
 
-            {/* Badges Column */}
+            {/* Sort Order & Badges Column */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              {/* Sort Order Display & Move Buttons */}
+              {sortBy === 'sortOrder' && node.pageType !== 'home' && node.slug !== '/' && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    backgroundColor: 'var(--theme-elevation-100, rgba(255, 255, 255, 0.05))',
+                    border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
+                  }}
+                  title="Sort Order: lower numbers appear first"
+                >
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      fontFamily: 'monospace',
+                      fontWeight: 600,
+                      color: 'var(--theme-elevation-600, #94a3b8)',
+                    }}
+                  >
+                    #{typeof node.sortOrder === 'number' ? node.sortOrder : 0}
+                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                    <button
+                      type="button"
+                      onClick={() => handleMove(node.id, 'up')}
+                      title="Move up"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        color: 'var(--theme-elevation-500, #94a3b8)',
+                        display: 'flex',
+                        lineHeight: 1,
+                      }}
+                    >
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <polyline points="18 15 12 9 6 15" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleMove(node.id, 'down')}
+                      title="Move down"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        color: 'var(--theme-elevation-500, #94a3b8)',
+                        display: 'flex',
+                        lineHeight: 1,
+                      }}
+                    >
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <span
                 style={{
                   fontSize: '11px',
@@ -345,19 +428,19 @@ export const PagesTreeListView: React.FC = () => {
             >
               <Link
                 href={`/admin/collections/pages/create?parent=${node.id}`}
-                title={`Add child page under "${node.title}"`}
+                title={`+ Add child page under "${node.title}"`}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '4px',
-                  padding: '5px 9px',
+                  padding: '5px 10px',
                   borderRadius: '4px',
                   fontSize: '12px',
-                  fontWeight: 500,
-                  color: 'inherit',
+                  fontWeight: 600,
+                  color: '#2563EB',
                   textDecoration: 'none',
-                  backgroundColor: 'var(--theme-elevation-150, rgba(255, 255, 255, 0.06))',
-                  border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.1))',
+                  backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                  border: '1px solid rgba(37, 99, 235, 0.25)',
                   transition: 'background-color 0.15s ease',
                 }}
                 className="payload-tree-btn"
@@ -368,12 +451,12 @@ export const PagesTreeListView: React.FC = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2.5"
+                  strokeWidth="3"
                 >
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                Add Subpage
+                + Subpage
               </Link>
 
               <Link
@@ -523,8 +606,32 @@ export const PagesTreeListView: React.FC = () => {
           </span>
         </div>
 
-        {/* Right: Search + Expand/Collapse Controls */}
+        {/* Right: Search + Sort + Expand/Collapse Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {/* Sort By Dropdown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '12px', color: 'var(--theme-elevation-500, #94a3b8)', fontWeight: 500 }}>
+              Sort:
+            </span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              style={{
+                padding: '6px 10px',
+                borderRadius: '5px',
+                border: '1px solid var(--theme-elevation-200, rgba(255, 255, 255, 0.12))',
+                backgroundColor: 'var(--theme-elevation-100, rgba(0, 0, 0, 0.2))',
+                color: 'inherit',
+                fontSize: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="sortOrder">Custom Order (sortOrder)</option>
+              <option value="title">Alphabetical (A-Z)</option>
+              <option value="updatedAt">Recently Updated</option>
+            </select>
+          </div>
+
           {/* Search Input */}
           <div style={{ position: 'relative' }}>
             <input
@@ -539,7 +646,7 @@ export const PagesTreeListView: React.FC = () => {
                 backgroundColor: 'var(--theme-elevation-100, rgba(0, 0, 0, 0.2))',
                 color: 'inherit',
                 fontSize: '13px',
-                width: '210px',
+                width: '190px',
               }}
             />
             <svg
@@ -653,7 +760,7 @@ export const PagesTreeListView: React.FC = () => {
         >
           <span style={{ minWidth: '40px' }} />
           <span style={{ flex: '1 1 280px' }}>PAGE HIERARCHY & TITLE</span>
-          <span style={{ minWidth: '100px' }}>TYPE</span>
+          <span style={{ minWidth: '160px' }}>ORDER & TYPE</span>
           <span style={{ marginLeft: 'auto' }}>ACTIONS</span>
         </div>
 

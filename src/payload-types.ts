@@ -206,6 +206,10 @@ export interface Page {
    * Place this page under a parent in your site tree (e.g. place under Our Services).
    */
   parent?: (string | null) | Page;
+  /**
+   * Set numerical display order (e.g. 1, 2, 3). Lower numbers appear first in the Content Tree and website menus.
+   */
+  sortOrder?: number | null;
   listingLayout?: {
     /**
      * Title shown when this page is displayed inside service grids or card lists (defaults to Page Title).
@@ -10263,6 +10267,7 @@ export interface PagesSelect<T extends boolean = true> {
   pageType?: T;
   slug?: T;
   parent?: T;
+  sortOrder?: T;
   listingLayout?:
     | T
     | {

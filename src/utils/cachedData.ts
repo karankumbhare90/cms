@@ -71,6 +71,12 @@ export const getNavigationCached = unstable_cache(
         })
 
         if (childPages.length > 0) {
+          childPages.sort((a: any, b: any) => {
+            const orderA = typeof a.sortOrder === 'number' ? a.sortOrder : 9999
+            const orderB = typeof b.sortOrder === 'number' ? b.sortOrder : 9999
+            if (orderA !== orderB) return orderA - orderB
+            return (a.title || '').localeCompare(b.title || '')
+          })
           const autoLinks = childPages.map((child: any) => {
             const newLink = {
               label: child.navigation?.navTitle || child.title,

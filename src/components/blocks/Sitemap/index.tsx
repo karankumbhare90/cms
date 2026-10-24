@@ -115,6 +115,14 @@ export const Sitemap: React.FC<any> = async ({ settings }) => {
           typeof item.parent === 'object' && item.parent !== null ? item.parent.id : item.parent
         return itemParentId === parentId || (!parentId && !itemParentId)
       })
+      .sort((a, b) => {
+        if (a.pageType === 'home' || a.slug === '/' || a.slug === 'home') return -1
+        if (b.pageType === 'home' || b.slug === '/' || b.slug === 'home') return 1
+        const orderA = typeof a.sortOrder === 'number' ? a.sortOrder : 9999
+        const orderB = typeof b.sortOrder === 'number' ? b.sortOrder : 9999
+        if (orderA !== orderB) return orderA - orderB
+        return (a.title || '').localeCompare(b.title || '')
+      })
       .map((item) => ({
         ...item,
         children: buildTree(items, item.id),

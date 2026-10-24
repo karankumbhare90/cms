@@ -6,7 +6,7 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'sortOrder', 'updatedAt'],
     components: {
       beforeListTable: ['@/components/admin/PagesTreeListView#PagesTreeListView'],
     },
@@ -111,6 +111,16 @@ export const Pages: CollectionConfig = {
           return { and: filters }
         }
         return true
+      },
+    },
+    {
+      name: 'sortOrder',
+      label: 'Sort Order',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Set numerical display order (e.g. 1, 2, 3). Lower numbers appear first in the Content Tree and website menus.',
       },
     },
     {
